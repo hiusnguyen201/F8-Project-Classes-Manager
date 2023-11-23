@@ -1,1 +1,1 @@
-# Dự án quản lý lớp học (NodeJS + ExpressJS)
+# Dự án quản lý lớp học (NodeJS Express + MySql)
