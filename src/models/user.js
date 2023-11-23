@@ -15,6 +15,14 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.User_Column, { foreignKey: "id" });
       User.belongsToMany(models.Role, { through: "users_roles" });
       User.belongsToMany(models.Permission, { through: "users_permissions" });
+
+      User.hasOne(models.Course, { foreignKey: "id" });
+      User.hasOne(models.Student_Class, { foreignKey: "id" });
+      User.hasOne(models.Teacher_Calender, { foreignKey: "id" });
+      User.belongsToMany(models.Class, { through: "classes_teachers" });
+      User.hasMany(models.Student_Attendance, { foreignKey: "id" });
+      User.hasMany(models.Exercise, { foreignKey: "id" });
+      User.hasMany(models.Submit_Exercise, { foreignKey: "id" });
     }
   }
   User.init(
