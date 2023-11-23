@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       otp: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(10),
         unique: true,
       },
       expire: {
@@ -18,6 +18,12 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: "users",
+          },
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,

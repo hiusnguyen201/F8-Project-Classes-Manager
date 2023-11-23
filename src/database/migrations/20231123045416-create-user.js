@@ -27,6 +27,7 @@ module.exports = {
       },
       first_login: {
         type: Sequelize.TINYINT(1),
+        defaultValue: 0,
       },
       type_id: {
         type: Sequelize.INTEGER,
