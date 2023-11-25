@@ -3,4 +3,8 @@ module.exports = {
     res.render("students/home/index");
   },
 };
+<<<<<<< HEAD
 //
+=======
+//
+>>>>>>> feature/16-code-feature-login

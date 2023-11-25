@@ -1,7 +1,7 @@
 "use strict";
 const moment = require("moment");
 const momentUtil = require("../../utils/moment.util");
-
+//
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {

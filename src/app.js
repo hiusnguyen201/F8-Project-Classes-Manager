@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 //
+=======
+// 
+>>>>>>> feature/16-code-feature-login
 require("dotenv").config();
 var createError = require("http-errors");
 var express = require("express");

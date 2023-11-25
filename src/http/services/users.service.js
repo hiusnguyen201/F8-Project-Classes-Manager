@@ -36,5 +36,9 @@ module.exports = {
     return status;
   },
 };
+<<<<<<< HEAD
 
 //
+=======
+//
+>>>>>>> feature/16-code-feature-login

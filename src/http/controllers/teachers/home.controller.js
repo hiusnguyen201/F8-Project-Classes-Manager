@@ -4,4 +4,8 @@ module.exports = {
     res.render(renderPath.HOME_TEACHER);
   },
 };
+<<<<<<< HEAD
 //
+=======
+//
+>>>>>>> feature/16-code-feature-login
