@@ -1,8 +1,9 @@
 var express = require("express");
 var router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("Hello Admin");
-});
+// Admin
+const HomeController = require("../..//http/controllers/admin/home.controller");
+
+router.get("/", HomeController.index);
 
 module.exports = router;
