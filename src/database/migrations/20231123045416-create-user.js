@@ -37,6 +37,7 @@ module.exports = {
           },
           key: "id",
         },
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -52,3 +53,5 @@ module.exports = {
     await queryInterface.dropTable("Users");
   },
 };
+
+//

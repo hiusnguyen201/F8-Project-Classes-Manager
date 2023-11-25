@@ -4,3 +4,4 @@ module.exports = {
     res.render(renderPath.HOME_STUDENT);
   },
 };
+//

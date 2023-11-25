@@ -39,3 +39,4 @@ module.exports = {
     await queryInterface.dropTable("User_Otps");
   },
 };
+// 

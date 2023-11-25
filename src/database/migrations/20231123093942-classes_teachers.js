@@ -42,3 +42,4 @@ module.exports = {
     return queryInterface.dropTable("classes_teachers");
   },
 };
+//
