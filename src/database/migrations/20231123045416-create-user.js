@@ -37,11 +37,7 @@ module.exports = {
           },
           key: "id",
         },
-<<<<<<< HEAD
         allowNull: false,
-=======
-        allowNull: false
->>>>>>> feature/16-code-feature-login
       },
       createdAt: {
         allowNull: false,
