@@ -6,3 +6,4 @@ const HomeController = require("../..//http/controllers/students/home.controller
 router.get("/", HomeController.index);
 
 module.exports = router;
+//

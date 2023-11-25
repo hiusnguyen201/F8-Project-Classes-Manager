@@ -10,3 +10,4 @@ module.exports = {
     return bcrypt.compareSync(value, hash);
   },
 };
+//
