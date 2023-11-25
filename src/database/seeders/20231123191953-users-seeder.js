@@ -1,7 +1,6 @@
 "use strict";
 const bcryptUtil = require("../../utils/bcrypt.util");
 const momentUtil = require("../../utils/moment.util");
-//
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {

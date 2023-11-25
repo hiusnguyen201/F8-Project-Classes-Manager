@@ -27,8 +27,3 @@ module.exports = {
     dialect: process.env.DB_DRIVER,
   },
 };
-<<<<<<< HEAD
-//
-=======
-//
->>>>>>> feature/16-code-feature-login

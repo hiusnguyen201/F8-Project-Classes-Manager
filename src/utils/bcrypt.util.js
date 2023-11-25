@@ -1,4 +1,3 @@
-//
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
@@ -11,4 +10,3 @@ module.exports = {
     return bcrypt.compareSync(value, hash);
   },
 };
-//

@@ -6,8 +6,3 @@ module.exports = (req, res, next) => {
   }
   next();
 };
-<<<<<<< HEAD
-//
-=======
-//
->>>>>>> feature/16-code-feature-login
