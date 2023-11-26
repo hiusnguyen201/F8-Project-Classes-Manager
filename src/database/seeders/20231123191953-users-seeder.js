@@ -16,8 +16,8 @@ module.exports = {
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 3,
-        createdAt: momentUtil.getTimeNow(),
-        updatedAt: momentUtil.getTimeNow(),
+        createdAt: momentUtil.getTimeUTC(),
+        updatedAt: momentUtil.getTimeUTC(),
       });
     }
 
@@ -30,8 +30,8 @@ module.exports = {
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 2,
-        createdAt: momentUtil.getTimeNow(),
-        updatedAt: momentUtil.getTimeNow(),
+        createdAt: momentUtil.getTimeUTC(),
+        updatedAt: momentUtil.getTimeUTC(),
       });
     }
 
@@ -44,8 +44,8 @@ module.exports = {
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 1,
-        createdAt: momentUtil.getTimeNow(),
-        updatedAt: momentUtil.getTimeNow(),
+        createdAt: momentUtil.getTimeUTC(),
+        updatedAt: momentUtil.getTimeUTC(),
       });
     }
 

@@ -2,9 +2,8 @@
 var express = require("express");
 var router = express.Router();
 
-// Teacher
-const HomeController = require("../..//http/controllers/teachers/home.controller");
-
-router.get("/", HomeController.index);
+router.get("/", (req, res) => {
+  res.send("Hello Teacher");
+});
 
 module.exports = router;
