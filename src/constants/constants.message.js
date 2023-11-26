@@ -18,3 +18,4 @@ const messageInfo = {
 };
 
 module.exports = { messageError, messageInfo };
+module.exports = { messageError };
