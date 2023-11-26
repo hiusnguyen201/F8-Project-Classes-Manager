@@ -5,14 +5,17 @@ module.exports = (sequelize, DataTypes) => {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
+     * The `models/index` file will call this method automatically./
      */
     static associate(models) {
       Class.belongsTo(models.Course, { foreignKey: "course_id" });
       Class.hasMany(models.Comment, { foreignKey: "id" });
       Class.hasOne(models.Student_Class, { foreignKey: "id" });
       Class.hasOne(models.Teacher_Calender, { foreignKey: "id" });
-      Class.belongsToMany(models.User, { through: "classes_teachers" });
+      Class.belongsToMany(models.User, {
+        foreignKey: "class_id",
+        through: "classes_teachers",
+      });
       Class.hasMany(models.Student_Attendance, { foreignKey: "id" });
       Class.hasMany(models.Exercise, { foreignKey: "id" });
     }

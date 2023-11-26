@@ -1,7 +1,6 @@
 "use strict";
 const bcryptUtil = require("../../utils/bcrypt.util");
 const momentUtil = require("../../utils/moment.util");
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -16,8 +15,8 @@ module.exports = {
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 3,
-        createdAt: momentUtil.getTimeUTC(),
-        updatedAt: momentUtil.getTimeUTC(),
+        createdAt: momentUtil.getTimeNow(),
+        updatedAt: momentUtil.getTimeNow(),
       });
     }
 
@@ -30,8 +29,8 @@ module.exports = {
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 2,
-        createdAt: momentUtil.getTimeUTC(),
-        updatedAt: momentUtil.getTimeUTC(),
+        createdAt: momentUtil.getTimeNow(),
+        updatedAt: momentUtil.getTimeNow(),
       });
     }
 
@@ -44,8 +43,8 @@ module.exports = {
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 1,
-        createdAt: momentUtil.getTimeUTC(),
-        updatedAt: momentUtil.getTimeUTC(),
+        createdAt: momentUtil.getTimeNow(),
+        updatedAt: momentUtil.getTimeNow(),
       });
     }
 

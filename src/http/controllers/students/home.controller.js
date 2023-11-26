@@ -1,5 +1,6 @@
+const { renderPath } = require("../../../constants/constants.path");
 module.exports = {
   index: (req, res) => {
-    res.render("students/home/index");
+    res.render(renderPath.HOME_STUDENT);
   },
 };
