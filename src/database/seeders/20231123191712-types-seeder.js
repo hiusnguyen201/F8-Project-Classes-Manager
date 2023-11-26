@@ -9,18 +9,18 @@ module.exports = {
       [
         {
           name: "admin",
-          createdAt: momentUtil.getTimeUTC(),
-          updatedAt: momentUtil.getTimeUTC(),
+          createdAt: momentUtil.getTimeNow(),
+          updatedAt: momentUtil.getTimeNow(),
         },
         {
           name: "teacher",
-          createdAt: momentUtil.getTimeUTC(),
-          updatedAt: momentUtil.getTimeUTC(),
+          createdAt: momentUtil.getTimeNow(),
+          updatedAt: momentUtil.getTimeNow(),
         },
         {
           name: "student",
-          createdAt: momentUtil.getTimeUTC(),
-          updatedAt: momentUtil.getTimeUTC(),
+          createdAt: momentUtil.getTimeNow(),
+          updatedAt: momentUtil.getTimeNow(),
         },
       ],
       {}

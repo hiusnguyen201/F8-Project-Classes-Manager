@@ -1,8 +1,7 @@
-//
 const moment = require("moment");
 
 module.exports = {
-  getTimeUTC: () => {
+  getTimeNow: () => {
     return moment().format("YYYY-MM-DD HH:mm:ss");
   },
 
