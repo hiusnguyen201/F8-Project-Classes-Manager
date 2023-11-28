@@ -18,6 +18,6 @@ router.post(
 );
 
 router.get("/otp", AuthMiddleware, AuthController.otp);
-router.post("/otp", AuthController.handleOtp);
+router.post("/otp", AuthMiddleware, AuthController.handleOtp);
 
 module.exports = router;

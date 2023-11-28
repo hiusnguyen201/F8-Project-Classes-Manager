@@ -8,7 +8,8 @@ const {
 } = require("../../../constants/constants.message");
 const sendMail = require("../../../helpers/nodemailer.helper");
 const job = require("../../../helpers/kue.helper");
-const otpService = require("../../services/otps.service");
+const otpsService = require("../../services/otps.service");
+const tokensService = require("../../services/tokens.service");
 
 module.exports = {
   login: (req, res) => {
@@ -19,7 +20,7 @@ module.exports = {
     }
 
     res.render(renderPath.LOGIN_AUTH, {
-      layout: "layouts/auth",
+      layout: "layouts/auth.layout.ejs",
       title: `Login - ${process.env.APP_NAME} Accounts`,
       errors,
     });
@@ -27,9 +28,12 @@ module.exports = {
 
   handleLogin: async (req, res) => {
     // Create Otp
-    const userOtp = await otpService.createOtp(+req.user.id);
+    const userOtp = await otpsService.createOtp(+req.user.id);
 
-    const mailTemplate = otpService.getMailTemplate(req.user.name, userOtp.otp);
+    const mailTemplate = otpsService.getMailTemplate(
+      req.user.name,
+      userOtp.otp
+    );
 
     // Send Mail
     job.createJob(
@@ -51,7 +55,7 @@ module.exports = {
     const success = req.flash("success");
     const error = req.flash("error");
     res.render(renderPath.OTP_AUTH, {
-      layout: "layouts/auth",
+      layout: "layouts/auth.layout.ejs",
       title: `Verify Otp - ${process.env.APP_NAME} Accounts`,
       loginPath: redirectPath.LOGIN_AUTH,
       success,
@@ -72,6 +76,16 @@ module.exports = {
       req.flash("error", messageError.WRONG_OTP);
       return res.redirect(redirectPath.OTP_AUTH);
     }
+
+    const loginToken = await tokensService.getLoginTokenById(+req.user.id);
+
+    if (loginToken) {
+      tokensService.removeLoginTokenByObj(loginToken);
+      res.clearCookie("token");
+    }
+
+    const newLoginToken = await tokensService.createLoginToken(+req.user.id);
+    res.cookie("token", newLoginToken.token);
 
     const { Type: userType } = req.user;
     if (userType.name === "student") {
