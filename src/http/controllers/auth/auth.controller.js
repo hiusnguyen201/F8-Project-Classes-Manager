@@ -47,6 +47,14 @@ module.exports = {
     );
 
     req.session.otpToken = userOtp.otp;
+
+    setTimeout(async () => {
+      const userOtp = await otpsService.getUserOtpByOtp(+req.session.otpToken);
+      if (userOtp) {
+        otpsService.removeUserOtpByOtp(+req.session.otpToken);
+      }
+    }, 60000 * process.env.OTP_EXPIRE_MINUTES);
+
     req.flash("success", messageInfo.SENDED_OTP);
     res.redirect(redirectPath.OTP_AUTH);
   },
@@ -72,12 +80,21 @@ module.exports = {
       return res.redirect(redirectPath.OTP_AUTH);
     }
 
+    const userOtp = await otpsService.getUserOtpByOtp(+req.session.otpToken);
+    if (!userOtp && req.session.otpToken) {
+      req.flash("error", messageError.OTP_EXPIRE);
+      delete req.session.otpToken;
+      return res.redirect(redirectPath.OTP_AUTH);
+    }
+
     if (otp !== req.session.otpToken) {
       req.flash("error", messageError.WRONG_OTP);
       return res.redirect(redirectPath.OTP_AUTH);
     }
 
-    const loginToken = await tokensService.getLoginTokenById(+req.user.id);
+    otpsService.removeUserOtpByOtp(+otp);
+    delete req.session.otpToken;
+    const loginToken = await tokensService.getLoginTokenByUserId(+req.user.id);
 
     if (loginToken) {
       tokensService.removeLoginTokenByObj(loginToken);

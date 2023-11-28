@@ -3,6 +3,7 @@ const tokenUtil = require("../../utils/token.util");
 const models = require("../../models/index");
 const LoginToken = models.Login_Token;
 const User = models.User;
+const Type = models.Type;
 
 module.exports = {
   createLoginToken: async (userId) => {
@@ -20,14 +21,24 @@ module.exports = {
     return loginToken;
   },
 
-  getLoginTokenById: async (userId) => {
-    const loginToken = await LoginToken.findByPk(userId);
+  getLoginTokenByUserId: async (userId) => {
+    const loginToken = await LoginToken.findOne({
+      where: {
+        user_id: userId,
+      },
+    });
     return loginToken;
   },
 
   getLoginTokenByToken: async (token) => {
     const loginToken = await LoginToken.findOne({
-      token: token ?? "",
+      where: {
+        token: token ?? "",
+      },
+      include: {
+        model: User,
+        include: Type,
+      },
     });
 
     return loginToken;

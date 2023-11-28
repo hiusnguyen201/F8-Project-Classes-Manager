@@ -55,4 +55,18 @@ module.exports = {
       .replaceAll("{{expire}}", process.env.OTP_EXPIRE_MINUTES);
     return mailTemplate;
   },
+
+  removeUserOtpByOtp: async (otp) => {
+    const status = await UserOtp.destroy({
+      where: {
+        otp,
+      },
+    });
+
+    if (!status) {
+      throw new Error(messageError.SERVER_ERROR);
+    }
+
+    return;
+  },
 };

@@ -3,6 +3,7 @@ const messageError = {
   MISSING_CREDENTIALS: "Please Complete Information",
   WRONG_OTP: "The Otp You've Entered Is Incorrect. Please Try Again",
   EMPTY_OTP: "Please Enter The Otp Below",
+  OTP_EXPIRE: "The Otp You've Entered Is Expired. Please Login Again",
 
   // User
   INVALID_ACCOUNT: "Wrong Email Or Password. Try Again",

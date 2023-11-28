@@ -2,22 +2,22 @@ const tokensService = require("../services/tokens.service");
 const { redirectPath } = require("../../constants/constants.path");
 
 module.exports = async (req, res, next) => {
-  if (!req.user) {
-    res.redirect(redirectPath.LOGIN_AUTH);
-    return;
-  }
-
   const tokenCookie = req.cookies.token;
 
+  if (req.session.otpToken) {
+    return res.redirect(redirectPath.OTP_AUTH);
+  }
+
   if (!tokenCookie) {
-    res.redirect(redirectPath.LOGIN_AUTH);
-    return;
+    return res.redirect(redirectPath.LOGIN_AUTH);
   }
 
   const tokenValid = await tokensService.getLoginTokenByToken(tokenCookie);
 
-  if (req.user && !tokenValid) {
-    tokensService.removeLoginTokenByUserId(+req.user.id);
+  if (!tokenValid) {
+    if (req.user) {
+      res.clearCookie("token");
+    }
 
     req.logout((err) => {
       if (err) {
@@ -25,13 +25,7 @@ module.exports = async (req, res, next) => {
       }
     });
 
-    res.redirect(redirectPath.LOGIN_AUTH);
-    return;
-  }
-
-  if (!tokenValid) {
-    res.redirect(redirectPath.LOGIN_AUTH);
-    return;
+    return res.redirect(redirectPath.LOGIN_AUTH);
   }
 
   next();

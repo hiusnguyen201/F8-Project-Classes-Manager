@@ -17,6 +17,8 @@ const studentsRouter = require("./routes/students/index");
 const teachersRouter = require("./routes/teachers/index");
 const adminRouter = require("./routes/admin/index");
 const authRouter = require("./routes/auth/index");
+const TypeMiddleware = require("./http/middlewares/type.middleware");
+const AuthMiddleware = require("./http/middlewares/auth.middleware");
 
 var app = express();
 app.use(flash());
@@ -58,9 +60,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.use("/auth", authRouter);
+app.use("/auth", TypeMiddleware, authRouter);
 
 app.use(TokenMiddleware);
+app.use(TypeMiddleware);
 app.use("/", studentsRouter);
 app.use("/teacher", teachersRouter);
 app.use("/admin", adminRouter);
