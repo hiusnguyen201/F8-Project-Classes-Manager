@@ -1,9 +1,7 @@
 const { messageError } = require("../../constants/constants.message");
-const tokenUtil = require("../../utils/token.util");
 const models = require("../../models/index");
 const User = models.User;
 const Type = models.Type;
-const LoginToken = models.Login_Token;
 
 module.exports = {
   getUserByEmail: async (email) => {
@@ -17,6 +15,10 @@ module.exports = {
         model: Type,
       },
     });
+
+    if (!user) {
+      throw new Error(messageError.SERVER_ERROR);
+    }
 
     return user;
   },

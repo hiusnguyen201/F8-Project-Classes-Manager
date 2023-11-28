@@ -5,6 +5,7 @@ const passport = require("passport");
 
 // Auth
 const AuthController = require("../../http/controllers/auth/auth.controller");
+const AuthMiddleware = require("../../http/middlewares/auth.middleware");
 const { redirectPath } = require("../../constants/constants.path");
 
 router.get("/login", AuthController.login);
@@ -16,5 +17,8 @@ router.post(
   }),
   AuthController.handleLogin
 );
+
+router.get("/otp", AuthMiddleware, AuthController.otp);
+router.post("/otp", AuthMiddleware, AuthController.handleOtp);
 
 module.exports = router;

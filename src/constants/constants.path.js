@@ -1,6 +1,7 @@
 const redirectPath = {
   // Auth
   LOGIN_AUTH: "/auth/login",
+  OTP_AUTH: "/auth/otp",
   REGISTER: "/auth/register",
 
   // Student
@@ -16,6 +17,7 @@ const redirectPath = {
 const renderPath = {
   // Auth
   LOGIN_AUTH: "auth/login",
+  OTP_AUTH: "auth/otp",
 
   // Student
   HOME_STUDENT: "students/home/index",
