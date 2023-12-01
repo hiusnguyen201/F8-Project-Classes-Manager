@@ -14,18 +14,6 @@ module.exports = {
     } catch (error) {
       throw new Error(messageError.SERVER_ERROR);
     }
-<<<<<<< HEAD
-
-    const user = await User.findOne({
-      where: { email },
-      include: {
-        model: Type,
-      },
-    });
-
-    return user;
-=======
->>>>>>> develop
   },
 };
 //
