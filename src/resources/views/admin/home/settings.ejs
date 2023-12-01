@@ -1,0 +1,276 @@
+<div class="card-body">
+  <div class="card pr-3 py-4 mx-auto">
+    <h4 class="setting-title ml-3">Settings</h4>
+    <div class="row">
+      <div class="col-6 col-sm-3">
+        <div
+          class="nav flex-column nav-tabs h-100"
+          id="vert-tabs-tab"
+          role="tablist"
+          aria-orientation="vertical"
+        >
+          <a
+            class="nav-link active"
+            id="vert-tabs-home-tab"
+            data-toggle="pill"
+            href="#vert-tabs-home"
+            role="tab"
+            aria-controls="vert-tabs-home"
+            aria-selected="true"
+            ><i class="fas fa-user mr-2"></i>Account settings</a
+          >
+          <a
+            class="nav-link"
+            id="vert-tabs-profile-tab"
+            data-toggle="pill"
+            href="#vert-tabs-profile"
+            role="tab"
+            aria-controls="vert-tabs-profile"
+            aria-selected="false"
+            ><i class="fas fa-shield-alt mr-2"></i>Security and login</a
+          >
+        </div>
+      </div>
+      <div class="col-7 col-sm-9">
+        <div class="tab-content" id="vert-tabs-tabContent">
+          <div
+            class="tab-pane text-left fade show active"
+            id="vert-tabs-home"
+            role="tabpanel"
+            aria-labelledby="vert-tabs-home-tab"
+          >
+            <h5>User Profile</h5>
+            <div class="tab-pane_group">
+              <span class="tab-pane_title">Name</span>
+            </div>
+            <div class="tab-pane_group">
+              <span class="tab-pane_title">Email</span>
+            </div>
+            <div class="tab-pane_group">
+              <span class="tab-pane_title">Phone</span>
+            </div>
+            <div class="tab-pane_group">
+              <span class="tab-pane_title">Address</span>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="vert-tabs-profile"
+            role="tabpanel"
+            aria-labelledby="vert-tabs-profile-tab"
+          >
+            <div class="group-field">
+              <h5>Link Social Account To Login</h5>
+              <div class="tab-pane_group">
+                <span class="tab-pane_title">Link with Google</span>
+                <div
+                  class="d-flex align-items-center py-1"
+                >
+                  <div class="col-6">
+                    <span class="tab-pane_status d-flex align-items-center"
+                      ><i class="fab fa-google mr-2"></i><%= (userSocial)?
+                      'Connected' : "Unconnected" %></span
+                    >
+                  </div>
+                  <div class="col-5">
+                    <a
+                      href="javascript:void(0)"
+                      id="login-google"
+                      class="<%= (userSocial)? 'active' : "" %> btn d-flex align-items-center justify-content-center"
+                      ><%= (userSocial)? 'ON' : "OFF" %></a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane_group">
+                <span class="tab-pane_title">Link with Facebook</span>
+                <div
+                  class="d-flex align-items-center py-1"
+                >
+                  <div class="col-6">
+                    <span class="tab-pane_status d-flex align-items-center"><i
+                        class="fab fa-facebook mr-2"
+                        style="color: #0866ff"
+                      ></i
+                      >Unconnected</span>
+                  </div>
+                  <div class="col-5">
+                    <a
+                      href="javascript:void(0)"
+                      id="login-facebook"
+                      class="btn d-flex align-items-center justify-content-center"
+                      >OFF</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane_group">
+                <span class="tab-pane_title">Link with Github</span>
+                <div
+                  class="d-flex align-items-center py-1"
+                >
+                  <div class="col-6">
+                    <span class="tab-pane_status d-flex align-items-center"><i class="fab fa-github mr-2" style="color: #1f2328"></i
+                      >Unconnected</span>
+                  </div>
+                  <div class="col-5">
+                    <a
+                      href="javascript:void(0)"
+                      id="login-github"
+                      class="btn d-flex align-items-center justify-content-center"
+                      >OFF</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="group-field">
+              <h5>Password</h5>
+              <button class="btn btn-primary">Change Password</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.card -->
+
+<style>
+  .setting-title {
+    font-size: 32px;
+    color: #232946;
+    font-weight: 600;
+  }
+
+  .nav-tabs.flex-column .nav-link.active {
+    border-right: 2px solid #6246ea;
+    background-color: #f6f6ff;
+    color: #6246ea;
+  }
+
+  .nav-tabs.flex-column .nav-link {
+    color: #232946;
+    border-radius: 0;
+    border: none;
+  }
+
+  .card {
+    max-width: 1080px;
+    border-radius: 0;
+  }
+
+  #login-github,
+  #login-google,
+  #login-facebook {
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+    max-width: 90px;
+    position: relative;
+  }
+
+  #login-google.active {
+    background-color: #6246ea;
+    color: #fffffe;
+  }
+
+  .nav-tabs.flex-column .nav-link:hover {
+    transition: 0.3s;
+    color: #6246ea;
+  }
+
+  .card .row h5 {
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .card .row .tab-pane_title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .tab-content h5 {
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .tab-pane_group + .tab-pane_group {
+    margin-top: 24px;
+  }
+
+  .group-field + .group-field {
+    margin-top: 30px;
+  }
+
+  .tab-pane_status {
+    font-size: 16px;
+  }
+
+  .toggle-container {
+    position: relative;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toggle-container .toggle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 90px;
+    height: 50px;
+    background-color: #444;
+    border-radius: 30px;
+  }
+
+  .toggle-container .toggle .toggle-button {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .toggle-containe .text {
+    position: absolute;
+    left: 95px;
+  }
+
+  .fab {
+    font-size: 24px;
+  }
+
+  .fa-google {
+    background: conic-gradient(
+        from -45deg,
+        #ea4335 110deg,
+        #4285f4 90deg 180deg,
+        #34a853 180deg 270deg,
+        #fbbc05 270deg
+      )
+      73% 55%/150% 150% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+</style>
+
+<script>
+  const btn = document.querySelector("#login-google");
+  btn.onclick = () => {
+    var googleWindow = window.open(
+      "/auth/google/redirect",
+      "google",
+      "height=600,width=800"
+    );
+  };
+</script>

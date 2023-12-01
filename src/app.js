@@ -9,16 +9,16 @@ const expressLayouts = require("express-ejs-layouts");
 const passport = require("passport");
 const session = require("express-session");
 
-const localPassport = require("./helpers/passport.helper");
+const localPassport = require("./helpers/passports/local.passport");
+const googlePassport = require("./helpers/passports/google.passport");
 const TokenMiddleware = require("./http/middlewares/token.middleware");
+const TypeMiddleware = require("./http/middlewares/type.middeware");
 const models = require("./models/index");
 
 const studentsRouter = require("./routes/students/index");
 const teachersRouter = require("./routes/teachers/index");
 const adminRouter = require("./routes/admin/index");
 const authRouter = require("./routes/auth/index");
-const TypeMiddleware = require("./http/middlewares/type.middleware");
-const AuthMiddleware = require("./http/middlewares/auth.middleware");
 
 var app = express();
 app.use(flash());
@@ -46,6 +46,7 @@ passport.deserializeUser(async (id, done) => {
 });
 
 passport.use("local", localPassport);
+passport.use("google", googlePassport);
 
 // view engine setup
 app.set("views", path.join(__dirname, "resources/views"));
@@ -60,9 +61,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.use("/auth", TypeMiddleware, authRouter);
+app.use("/auth", authRouter);
 
-app.use(TokenMiddleware);
+// app.use(TokenMiddleware);
 app.use(TypeMiddleware);
 app.use("/", studentsRouter);
 app.use("/teacher", teachersRouter);

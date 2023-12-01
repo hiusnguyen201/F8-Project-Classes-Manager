@@ -1,0 +1,118 @@
+body {
+  color: #232946;
+}
+
+.user-panel {
+  overflow: unset;
+}
+
+.user-panel img {
+  width: 1.5rem;
+}
+
+.user-panel .info {
+  font-size: 0.9rem;
+}
+
+.user-panel .info a:hover {
+  color: #fffffe;
+}
+
+.dropdown-menu_user {
+  min-width: 200px;
+}
+
+.navbar-white {
+  background-color: #001529;
+}
+
+.white-color {
+  color: #fffffe;
+}
+
+.brand-link {
+  background-color: #001529;
+}
+
+[class*="sidebar-dark"] .brand-link,
+.main-header {
+  border-bottom: none;
+}
+
+.sidebar {
+  background-color: #fffffe;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+  background-color: #6246ea;
+  border-radius: 0;
+}
+
+.nav-tabs.flex-column .nav-link {
+  font-size: 16px;
+}
+
+.brand-link {
+  height: 63px;
+  padding: 9px;
+}
+
+.brand-text {
+  text-align: center;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: #f7515e;
+  background: linear-gradient(
+    135deg,
+    #5271ff 0%,
+    #f7515e 25%,
+    #e641ff 50%,
+    #f7515e 75%,
+    #5271ff 100%
+  );
+  background-size: 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navbar-nav .nav-item:hover {
+  background-color: #192530;
+  transition: 0.3s;
+}
+
+.layout-fixed .brand-link {
+  width: 232px;
+}
+
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav)
+  .main-header,
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav)
+  .content-wrapper {
+  margin-left: 232px;
+}
+
+.main-sidebar {
+  width: 232px;
+}
+
+@media (min-width: 992px) {
+  .sidebar-mini.sidebar-collapse .main-sidebar {
+    width: 3.6rem !important;
+  }
+
+  .sidebar-mini.sidebar-collapse .content-wrapper,
+  .sidebar-mini.sidebar-collapse .main-header {
+    margin-left: 3.6rem !important;
+  }
+}
+
+@media (max-width: 992px) {
+  body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav)
+    .main-header,
+  body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav)
+    .content-wrapper {
+    margin-left: 0;
+  }
+}

@@ -5,21 +5,14 @@ const Type = models.Type;
 
 module.exports = {
   getUserByEmail: async (email) => {
-    if (!email) {
-      throw new Error(messageError.EMPTY_FIELD);
-    }
+    try {
+      const user = await User.findOne({
+        where: { email },
+      });
 
-    const user = await User.findOne({
-      where: { email },
-      include: {
-        model: Type,
-      },
-    });
-
-    if (!user) {
+      return user;
+    } catch (error) {
       throw new Error(messageError.SERVER_ERROR);
     }
-
-    return user;
   },
 };

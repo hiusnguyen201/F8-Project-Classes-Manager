@@ -1,5 +1,5 @@
 "use strict";
-const bcryptUtil = require("../../utils/bcrypt.util");
+const tokenUtil = require("../../utils/token.util");
 const momentUtil = require("../../utils/moment.util");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -11,12 +11,12 @@ module.exports = {
       data.push({
         name: `user ${i + 1}`,
         email: `user${i + 1}@gmail.com`,
-        password: bcryptUtil.makeHash("123456"),
+        password: tokenUtil.createHashByBcrypt("123456"),
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 3,
-        createdAt: momentUtil.getTimeNow(),
-        updatedAt: momentUtil.getTimeNow(),
+        createdAt: momentUtil.getDateNow(),
+        updatedAt: momentUtil.getDateNow(),
       });
     }
 
@@ -25,12 +25,12 @@ module.exports = {
       data.push({
         name: `user ${i + 1}`,
         email: `user${i + 1}@gmail.com`,
-        password: bcryptUtil.makeHash("123456"),
+        password: tokenUtil.createHashByBcrypt("123456"),
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 2,
-        createdAt: momentUtil.getTimeNow(),
-        updatedAt: momentUtil.getTimeNow(),
+        createdAt: momentUtil.getDateNow(),
+        updatedAt: momentUtil.getDateNow(),
       });
     }
 
@@ -39,12 +39,12 @@ module.exports = {
       data.push({
         name: `user ${i + 1}`,
         email: `user${i + 1}@gmail.com`,
-        password: bcryptUtil.makeHash("123456"),
+        password: tokenUtil.createHashByBcrypt("123456"),
         phone: `012345678${i}${i + 1}`,
         address: `Viet Nam ${i + 1}`,
         type_id: 1,
-        createdAt: momentUtil.getTimeNow(),
-        updatedAt: momentUtil.getTimeNow(),
+        createdAt: momentUtil.getDateNow(),
+        updatedAt: momentUtil.getDateNow(),
       });
     }
 
