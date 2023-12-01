@@ -1,69 +1,96 @@
-const path = require("path");
-const fs = require("fs");
-
-const { messageError } = require("../../constants/constants.message");
+const {
+  messageError,
+  messageInfo,
+} = require("../../constants/constants.message");
 const momentUtil = require("../../utils/moment.util");
-const otpLibUtil = require("../../utils/otplib.util");
+const tokenUtil = require("../../utils/token.util");
+const stringUtil = require("../../utils/string.util");
+const sendMailUtil = require("../../utils/sendMail.util");
+const job = require("../../helpers/kue.helper");
 const models = require("../../models/index");
 const UserOtp = models.User_Otp;
 
 module.exports = {
-  createOtp: async function (userId) {
-    let newOtp = otpLibUtil.createOtpToken();
+  createUserOtp: async (user) => {
+    try {
+      // Check Exist Otp
+      const existUserOtp = await UserOtp.findOne({
+        where: { user_id: +user.id },
+      });
+      if (existUserOtp) {
+        await existUserOtp.destroy();
+      }
 
-    const existOtp = await this.getUserOtpByOtp(newOtp);
-
-    if (existOtp) {
-      this.createOtp(userId);
-    } else {
+      // Create new Otp
+      const newOtp = tokenUtil.createOtpTokenByOtplib();
       const userOtp = await UserOtp.create({
         otp: newOtp,
         expire: momentUtil.createOtpExpire(),
-        user_id: userId,
+        user_id: +user.id,
+        createdAt: momentUtil.getDateNow(),
+        updatedAt: momentUtil.getDateNow(),
       });
 
-      if (!userOtp) {
-        throw new Error(messageError.SERVER_ERROR);
+      // Get Mail Template
+      const mailTemplate = stringUtil.getMailTemplate(user.name, newOtp);
+
+      try {
+        // Send Email
+        job.createJob(
+          "SendMail",
+          {
+            title: messageInfo.TWO_FA,
+            to: user.email,
+            name: user.name,
+          },
+          sendMailUtil(user.email, messageInfo.TWO_FA, mailTemplate)
+        );
+      } catch (error) {
+        throw new Error(messageError.MAIL_SEND_VERIFY);
       }
 
       return userOtp;
+    } catch (error) {
+      throw new Error(messageError.SERVER_ERROR);
+    }
+  },
+
+  getUserOtpByUserId: async (userId) => {
+    try {
+      const userOtp = await UserOtp.findOne({
+        where: {
+          user_id: +userId,
+        },
+      });
+      return userOtp;
+    } catch (error) {
+      throw new Error(messageError.SERVER_ERROR);
     }
   },
 
   getUserOtpByOtp: async (otp) => {
-    const userOtp = await UserOtp.findOne({
-      where: { otp },
-    });
-    return userOtp;
-  },
-
-  getMailTemplate: (name, otp) => {
-    const mailTemplatePath = path.join(
-      path.dirname(__dirname),
-      "../resources/views/auth/otp-mail.html"
-    );
-    let mailTemplate = fs.readFileSync(mailTemplatePath).toString();
-
-    if (!mailTemplate) {
-      throw new Error(messageError.MAIL_ACTIVE_TEMPLATE);
+    try {
+      const userOtp = await UserOtp.findOne({
+        where: { otp },
+      });
+      return userOtp;
+    } catch (error) {
+      throw new Error(messageError.SERVER_ERROR);
     }
-
-    mailTemplate = mailTemplate
-      .replaceAll("{{brand}}", process.env.APP_NAME)
-      .replaceAll("{{name}}", name)
-      .replaceAll("{{otp}}", otp)
-      .replaceAll("{{expire}}", process.env.OTP_EXPIRE_MINUTES);
-    return mailTemplate;
   },
 
   removeUserOtpByOtp: async (otp) => {
-    const status = await UserOtp.destroy({
-      where: {
-        otp,
-      },
-    });
+    try {
+      const status = await UserOtp.destroy({
+        where: {
+          otp,
+        },
+      });
 
-    if (!status) {
+      if (status) {
+        return status;
+      }
+    } catch (error) {
       throw new Error(messageError.SERVER_ERROR);
     }
 

@@ -4,13 +4,15 @@ const messageError = {
   WRONG_OTP: "The Otp You've Entered Is Incorrect. Please Try Again",
   EMPTY_OTP: "Please Enter The Otp Below",
   OTP_EXPIRE: "The Otp You've Entered Is Expired. Please Login Again",
+  LOGIN_GOOGLE_FAILED: "Login With Google Failed",
+  INVALID_ACCOUNT_GOOGLE: "Invalid account google or account is already linked",
 
   // User
   INVALID_ACCOUNT: "Wrong Email Or Password. Try Again",
-  EMPTY_FIELD: "Field Is Empty",
 
   SERVER_ERROR: "Server Error",
   MAIL_ACTIVE_TEMPLATE: "Read Active Mail Template Error",
+  MAIL_SEND_VERIFY: "Send Mail To Verify Error",
 };
 
 const messageInfo = {

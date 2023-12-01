@@ -1,5 +1,4 @@
 "use strict";
-const moment = require("moment");
 const momentUtil = require("../../utils/moment.util");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,18 +8,18 @@ module.exports = {
       [
         {
           name: "admin",
-          createdAt: momentUtil.getTimeNow(),
-          updatedAt: momentUtil.getTimeNow(),
+          createdAt: momentUtil.getDateNow(),
+          updatedAt: momentUtil.getDateNow(),
         },
         {
           name: "teacher",
-          createdAt: momentUtil.getTimeNow(),
-          updatedAt: momentUtil.getTimeNow(),
+          createdAt: momentUtil.getDateNow(),
+          updatedAt: momentUtil.getDateNow(),
         },
         {
           name: "student",
-          createdAt: momentUtil.getTimeNow(),
-          updatedAt: momentUtil.getTimeNow(),
+          createdAt: momentUtil.getDateNow(),
+          updatedAt: momentUtil.getDateNow(),
         },
       ],
       {}

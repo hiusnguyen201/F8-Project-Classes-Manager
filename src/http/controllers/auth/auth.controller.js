@@ -6,10 +6,20 @@ const {
   messageError,
   messageInfo,
 } = require("../../../constants/constants.message");
-const sendMail = require("../../../helpers/nodemailer.helper");
-const job = require("../../../helpers/kue.helper");
 const otpsService = require("../../services/otps.service");
 const tokensService = require("../../services/tokens.service");
+const momentUtil = require("../../../utils/moment.util");
+const validateTokenUtil = require("../../../utils/validateToken.util");
+
+const checkType = (res, user) => {
+  if (user.type_id === 1) {
+    return res.redirect(redirectPath.HOME_ADMIN);
+  } else if (user.type_id === 2) {
+    return res.redirect(redirectPath.HOME_TEACHER);
+  } else if (user.type_id === 3) {
+    return res.redirect(redirectPath.HOME_STUDENT);
+  }
+};
 
 module.exports = {
   login: (req, res) => {
@@ -26,37 +36,15 @@ module.exports = {
     });
   },
 
-  handleLogin: async (req, res) => {
-    // Create Otp
-    const userOtp = await otpsService.createOtp(+req.user.id);
-
-    const mailTemplate = otpsService.getMailTemplate(
-      req.user.name,
-      userOtp.otp
-    );
-
-    // Send Mail
-    job.createJob(
-      "SendMail",
-      {
-        title: messageInfo.TWO_FA,
-        to: req.user.email,
-        name: req.user.name,
-      },
-      sendMail(req.user.email, messageInfo.TWO_FA, mailTemplate)
-    );
-
-    req.session.otpToken = userOtp.otp;
-
-    setTimeout(async () => {
-      const userOtp = await otpsService.getUserOtpByOtp(+req.session.otpToken);
-      if (userOtp) {
-        otpsService.removeUserOtpByOtp(+req.session.otpToken);
-      }
-    }, 60000 * process.env.OTP_EXPIRE_MINUTES);
-
-    req.flash("success", messageInfo.SENDED_OTP);
-    res.redirect(redirectPath.OTP_AUTH);
+  handleLogin: async (req, res, social = null) => {
+    if (social) {
+      await tokensService.createLoginToken(res, +req.user.id);
+      checkType(res, req.user);
+    } else {
+      await otpsService.createUserOtp(req.user);
+      req.flash("success", messageInfo.SENDED_OTP);
+      res.redirect(redirectPath.OTP_AUTH);
+    }
   },
 
   otp: (req, res) => {
@@ -80,37 +68,38 @@ module.exports = {
       return res.redirect(redirectPath.OTP_AUTH);
     }
 
-    const userOtp = await otpsService.getUserOtpByOtp(+req.session.otpToken);
-    if (!userOtp && req.session.otpToken) {
+    const userOtp = await otpsService.getUserOtpByUserId(+req.user.id);
+
+    if (
+      momentUtil.comparisonDate(userOtp.expire, momentUtil.getDateNow()) > 0
+    ) {
       req.flash("error", messageError.OTP_EXPIRE);
-      delete req.session.otpToken;
       return res.redirect(redirectPath.OTP_AUTH);
     }
 
-    if (otp !== req.session.otpToken) {
+    if (otp !== userOtp.otp) {
       req.flash("error", messageError.WRONG_OTP);
       return res.redirect(redirectPath.OTP_AUTH);
     }
-
     otpsService.removeUserOtpByOtp(+otp);
-    delete req.session.otpToken;
-    const loginToken = await tokensService.getLoginTokenByUserId(+req.user.id);
 
-    if (loginToken) {
-      tokensService.removeLoginTokenByObj(loginToken);
+    await tokensService.createLoginToken(res, +req.user.id);
+
+    checkType(res, req.user);
+  },
+
+  logout: async (req, res) => {
+    const tokenCookie = req.cookies.token;
+    const tokenValid = await validateTokenUtil(req, res, tokenCookie);
+    if (tokenValid) {
       res.clearCookie("token");
-    }
-
-    const newLoginToken = await tokensService.createLoginToken(+req.user.id);
-    res.cookie("token", newLoginToken.token);
-
-    const { Type: userType } = req.user;
-    if (userType.name === "student") {
-      res.redirect(redirectPath.HOME_STUDENT);
-    } else if (userType.name === "teacher") {
-      res.redirect(redirectPath.HOME_TEACHER);
-    } else if (userType.name === "admin") {
-      res.redirect(redirectPath.HOME_ADMIN);
+      req.logout((err) => {
+        if (err) {
+          return next(err);
+        }
+      });
+      tokensService.removeLoginTokenByObj(tokenValid);
+      return res.redirect(redirectPath.LOGIN_AUTH);
     }
   },
 };

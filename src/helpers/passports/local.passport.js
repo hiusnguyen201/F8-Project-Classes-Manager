@@ -1,8 +1,8 @@
 const LocalStrategy = require("passport-local").Strategy;
 
-const usersService = require("../http/services/users.service");
-const bcryptUtil = require("../utils/bcrypt.util");
-const { messageError } = require("../constants/constants.message");
+const usersService = require("../../http/services/users.service");
+const tokenUtil = require("../../utils/token.util");
+const { messageError } = require("../../constants/constants.message");
 
 module.exports = new LocalStrategy(
   {
@@ -18,7 +18,7 @@ module.exports = new LocalStrategy(
       });
     }
 
-    if (!bcryptUtil.compareHash(password, user.password)) {
+    if (!tokenUtil.compareHashByBcrypt(password, user.password)) {
       return done(null, false, {
         message: messageError.INVALID_ACCOUNT,
       });

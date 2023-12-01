@@ -4,7 +4,7 @@
     class="col-12 col-md-8 col-lg-6 col-xl-5 d-flex justify-content-center align-items-center px-0"
   >
     <div class="card">
-      <p class="text-center fw-bold form-title mb-1">LOGIN</p>
+      <p class="text-center fw-bold form-title mb-2">LOGIN</p>
 
       <% if(errors?.length) { %>
       <div class="alert alert-danger"><%= errors %></div>
@@ -41,7 +41,7 @@
       <span>Or login with</span>
       <div class="row socials-login">
         <div class="col-4">
-          <a href="#" class="social-link"
+          <a href="/auth/google/redirect" class="social-link"
             ><i class="fa-brands fa-google fa-lg"></i
           ></a>
         </div>
