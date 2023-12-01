@@ -1,0 +1,254 @@
+/*  */
+
+:root {
+  --primary-color: #fffffe;
+  --second-color: #d1d1e9;
+  --bg-button: #6246ea;
+  --card-bg: #232946;
+  --text-color: #b8c1ec;
+}
+
+a {
+  text-decoration: none;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  background: var(--card-bg);
+}
+
+.form-title {
+  font-size: 42px;
+  color: var(--bg-button);
+  letter-spacing: 8px;
+}
+
+.alert {
+  font-size: 16px;
+  margin: 0;
+}
+
+.card {
+  border: none;
+  background: var(--primary-color);
+  padding: 48px 40px 56px;
+  width: 481px;
+}
+
+.form-login {
+  margin-top: 16px;
+}
+
+.form-floating > .form-control {
+  background-color: var(--primary-color);
+  color: var(--card-bg);
+  border: 1px solid var(--text-color);
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.1rem var(--text-color);
+}
+
+.form-floating > label {
+  color: var(--card-bg);
+  font-weight: 500;
+  border: none;
+}
+
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+  color: var(--text-color);
+}
+
+.form-floating > .form-control:focus ~ label::after {
+  background: var(--primary-color);
+}
+
+.form-floating > .form-control:focus ~ label {
+  font-weight: 400;
+  color: var(--text-color);
+}
+
+.recover-btn {
+  margin-top: 16px;
+  color: var(--bg-button);
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.recover-btn:hover {
+  opacity: 0.8;
+}
+
+.btn-submit {
+  margin-top: 16px;
+  padding: 15px 0;
+  background-color: var(--bg-button);
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.btn-submit:hover,
+.btn:first-child:active {
+  background-color: var(--bg-button);
+  color: var(--primary-color);
+}
+
+span {
+  font-size: 16px;
+  color: var(--card-bg);
+}
+
+.socials-login {
+  margin-top: 16px;
+}
+
+.socials-login .col-4 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-link .fa-brands {
+  padding: 24px;
+  color: var(--primary-color);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.social-link .fa-brands:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.social-link {
+  width: 100%;
+}
+
+.social-link .fa-brands.fa-google {
+  background-color: #d14938;
+}
+.social-link .fa-brands.fa-facebook {
+  background-color: #426bc6;
+}
+.social-link .fa-brands.fa-github {
+  background-color: #2b3034;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 65px white inset !important;
+}
+
+.card-verify-otp {
+  width: 650px;
+}
+
+.inputfield {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+.input[name="otp"] {
+  height: 3em;
+  width: 3em;
+  border: 2px solid var(--card-bg);
+  outline: none;
+  text-align: center;
+  font-size: 1.5em;
+  border-radius: 0.3em;
+  background-color: var(--primary-color);
+  outline: none;
+  /*Hide number field arrows*/
+  -moz-appearance: textfield;
+}
+input[name="otp"]::-webkit-outer-spin-button,
+input[name="otp"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.btn-back-login,
+.btn-back-login:hover,
+.btn-back-login:first-child:active {
+  background: #d14938;
+}
+
+.btn-reset-form,
+.btn-reset-form:hover,
+.btn-reset-form:first-child:active {
+  background: #426bc6;
+}
+
+@media (max-width: 481px) {
+  .card {
+    border-radius: 0;
+  }
+
+  .socials-login {
+    flex-direction: column;
+  }
+  .socials-login > .col-4 {
+    width: 100%;
+  }
+  .socials-login > .col-4 + .col-4 {
+    margin-top: 12px;
+  }
+
+  .input[name="otp"] {
+    width: 1.8em;
+    height: 1.8em;
+  }
+
+  .form-title {
+    font-size: 38px;
+    letter-spacing: 2px;
+  }
+
+  form.mt-5 {
+    margin-top: 32px !important;
+  }
+
+  .d-grid.mt-5 {
+    margin-top: 18px !important;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  .row > .col-6 {
+    width: 100%;
+  }
+
+  .row > .col-6:first-child {
+    order: 4;
+  }
+
+  .btn-back-login {
+    margin-bottom: 0;
+    margin-top: 12px;
+  }
+  .btn-reset-form {
+    margin: 0;
+  }
+
+  .card {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .col-md-8 {
+    width: 100%;
+  }
+}

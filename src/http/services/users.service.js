@@ -1,15 +1,20 @@
 const { messageError } = require("../../constants/constants.message");
-const tokenUtil = require("../../utils/token.util");
 const models = require("../../models/index");
 const User = models.User;
 const Type = models.Type;
-const LoginToken = models.Login_Token;
 
 module.exports = {
   getUserByEmail: async (email) => {
-    if (!email) {
-      throw new Error(messageError.EMPTY_FIELD);
+    try {
+      const user = await User.findOne({
+        where: { email },
+      });
+
+      return user;
+    } catch (error) {
+      throw new Error(messageError.SERVER_ERROR);
     }
+<<<<<<< HEAD
 
     const user = await User.findOne({
       where: { email },
@@ -19,6 +24,8 @@ module.exports = {
     });
 
     return user;
+=======
+>>>>>>> develop
   },
 };
 //

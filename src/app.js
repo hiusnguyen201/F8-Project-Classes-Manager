@@ -1,4 +1,3 @@
-// 
 require("dotenv").config();
 var createError = require("http-errors");
 var express = require("express");
@@ -10,8 +9,10 @@ const expressLayouts = require("express-ejs-layouts");
 const passport = require("passport");
 const session = require("express-session");
 
-const localPassport = require("./helpers/passport.helper");
-const authMiddleware = require("./http/middlewares/auth.middleware");
+const localPassport = require("./helpers/passports/local.passport");
+const googlePassport = require("./helpers/passports/google.passport");
+const TokenMiddleware = require("./http/middlewares/token.middleware");
+const TypeMiddleware = require("./http/middlewares/type.middeware");
 const models = require("./models/index");
 
 const studentsRouter = require("./routes/students/index");
@@ -39,17 +40,19 @@ passport.deserializeUser(async (id, done) => {
     attributes: {
       exclude: ["password"],
     },
+    include: models.Type,
   });
   done(null, user);
 });
 
 passport.use("local", localPassport);
+passport.use("google", googlePassport);
 
 // view engine setup
 app.set("views", path.join(__dirname, "resources/views"));
 app.set("view engine", "ejs");
-app.set("layout", "layouts/layout");
-app.set("authLayout", "layouts/auth");
+app.set("layout", "layouts/main.layout.ejs");
+app.set("authLayout", "layouts/auth.layout.ejs");
 app.use(expressLayouts);
 
 app.use(logger("dev"));
@@ -60,7 +63,8 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 app.use("/auth", authRouter);
 
-app.use(authMiddleware);
+// app.use(TokenMiddleware);
+app.use(TypeMiddleware);
 app.use("/", studentsRouter);
 app.use("/teacher", teachersRouter);
 app.use("/admin", adminRouter);
