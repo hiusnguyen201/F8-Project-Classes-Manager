@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.INTEGER,
       provider: DataTypes.STRING(100),
       provider_id: DataTypes.STRING(100),
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

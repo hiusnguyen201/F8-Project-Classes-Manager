@@ -14,6 +14,8 @@ const redirectPath = {
   // Admin
   HOME_ADMIN: "/admin",
   SETTINGS_ADMIN: "/admin/settings",
+  SETTINGS_PROFILE_ADMIN: "/admin/settings/profile",
+  SETTINGS_SECURITY_ADMIN: "/admin/settings/security",
 };
 
 const renderPath = {

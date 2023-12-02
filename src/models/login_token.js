@@ -20,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       token: DataTypes.STRING(100),
       user_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

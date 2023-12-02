@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       attachment: DataTypes.STRING(200),
       student_id: DataTypes.INTEGER,
       exercise_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

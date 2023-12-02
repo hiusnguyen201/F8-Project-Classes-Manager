@@ -10,7 +10,9 @@ module.exports = {
         where: { email },
       });
 
-      return user;
+      if (user) {
+        return user;
+      }
     } catch (error) {
       throw new Error(messageError.SERVER_ERROR);
     }

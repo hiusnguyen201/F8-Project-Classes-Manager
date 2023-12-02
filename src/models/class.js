@@ -34,6 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       schedule: DataTypes.TINYINT(1),
       time_learn: DataTypes.STRING(50),
       course_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

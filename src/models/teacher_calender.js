@@ -22,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       schedule_date: DataTypes.DATE,
       teacher_id: DataTypes.INTEGER,
       class_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

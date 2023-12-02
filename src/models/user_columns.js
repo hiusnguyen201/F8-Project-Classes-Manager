@@ -22,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       feature_name: DataTypes.STRING(100),
       status: DataTypes.TINYINT(1),
       position: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

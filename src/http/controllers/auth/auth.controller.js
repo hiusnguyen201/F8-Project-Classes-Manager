@@ -8,8 +8,6 @@ const {
 } = require("../../../constants/constants.message");
 const otpsService = require("../../services/otps.service");
 const tokensService = require("../../services/tokens.service");
-const momentUtil = require("../../../utils/moment.util");
-const validateTokenUtil = require("../../../utils/validateToken.util");
 
 const checkType = (res, user) => {
   if (user.type_id === 1) {
@@ -37,11 +35,14 @@ module.exports = {
   },
 
   handleLogin: async (req, res, social = null) => {
+    const user = req.user;
     if (social) {
-      await tokensService.createLoginToken(res, +req.user.id);
-      checkType(res, req.user);
+      res.clearCookie("token");
+      const loginToken = await tokensService.createLoginToken(+user.id);
+      res.cookie("token", loginToken.token);
+      checkType(res, user);
     } else {
-      await otpsService.createUserOtp(req.user);
+      await otpsService.createUserOtp(user);
       req.flash("success", messageInfo.SENDED_OTP);
       res.redirect(redirectPath.OTP_AUTH);
     }
@@ -68,38 +69,29 @@ module.exports = {
       return res.redirect(redirectPath.OTP_AUTH);
     }
 
-    const userOtp = await otpsService.getUserOtpByUserId(+req.user.id);
+    const user = req.user;
+    const [data, errMessage] = await otpsService.verifyOtp(otp, user.id);
 
-    if (
-      momentUtil.comparisonDate(userOtp.expire, momentUtil.getDateNow()) > 0
-    ) {
-      req.flash("error", messageError.OTP_EXPIRE);
+    if (!data) {
+      req.flash("error", errMessage);
       return res.redirect(redirectPath.OTP_AUTH);
     }
 
-    if (otp !== userOtp.otp) {
-      req.flash("error", messageError.WRONG_OTP);
-      return res.redirect(redirectPath.OTP_AUTH);
-    }
-    otpsService.removeUserOtpByOtp(+otp);
+    console.log(data);
 
-    await tokensService.createLoginToken(res, +req.user.id);
-
+    res.cookie("token", data.token);
     checkType(res, req.user);
   },
 
   logout: async (req, res) => {
     const tokenCookie = req.cookies.token;
-    const tokenValid = await validateTokenUtil(req, res, tokenCookie);
-    if (tokenValid) {
-      res.clearCookie("token");
-      req.logout((err) => {
-        if (err) {
-          return next(err);
-        }
-      });
-      tokensService.removeLoginTokenByObj(tokenValid);
-      return res.redirect(redirectPath.LOGIN_AUTH);
-    }
+    res.clearCookie("token");
+    req.logout((err) => {
+      if (err) {
+        return next(err);
+      }
+    });
+    await tokensService.removeLoginTokenByToken(tokenCookie);
+    return res.redirect(redirectPath.LOGIN_AUTH);
   },
 };

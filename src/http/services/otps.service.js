@@ -8,9 +8,11 @@ const stringUtil = require("../../utils/string.util");
 const sendMailUtil = require("../../utils/sendMail.util");
 const job = require("../../helpers/kue.helper");
 const models = require("../../models/index");
+const tokensService = require("../services/tokens.service");
 const UserOtp = models.User_Otp;
 
 module.exports = {
+  // Done
   createUserOtp: async (user) => {
     try {
       // Check Exist Otp
@@ -31,10 +33,10 @@ module.exports = {
         updatedAt: momentUtil.getDateNow(),
       });
 
-      // Get Mail Template
-      const mailTemplate = stringUtil.getMailTemplate(user.name, newOtp);
+      if (userOtp) {
+        // Get Mail Template
+        const mailTemplate = stringUtil.getMailTemplate(user.name, newOtp);
 
-      try {
         // Send Email
         job.createJob(
           "SendMail",
@@ -45,55 +47,60 @@ module.exports = {
           },
           sendMailUtil(user.email, messageInfo.TWO_FA, mailTemplate)
         );
-      } catch (error) {
-        throw new Error(messageError.MAIL_SEND_VERIFY);
+
+        return userOtp;
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error(messageError.SERVER_ERROR);
+    }
+  },
+
+  // Done
+  verifyOtp: async (otp, userId) => {
+    try {
+      const userOtp = await UserOtp.findOne({
+        where: { user_id: +userId },
+      });
+
+      if (
+        momentUtil.comparisonDate(userOtp.expire, momentUtil.getDateNow()) > 0
+      ) {
+        return [null, messageError.OTP_EXPIRE];
       }
 
-      return userOtp;
-    } catch (error) {
-      throw new Error(messageError.SERVER_ERROR);
-    }
-  },
+      if (otp !== userOtp.otp) {
+        return [null, messageError.WRONG_OTP];
+      }
 
-  getUserOtpByUserId: async (userId) => {
-    try {
-      const userOtp = await UserOtp.findOne({
-        where: {
-          user_id: +userId,
-        },
-      });
-      return userOtp;
-    } catch (error) {
-      throw new Error(messageError.SERVER_ERROR);
-    }
-  },
-
-  getUserOtpByOtp: async (otp) => {
-    try {
-      const userOtp = await UserOtp.findOne({
-        where: { otp },
-      });
-      return userOtp;
-    } catch (error) {
-      throw new Error(messageError.SERVER_ERROR);
-    }
-  },
-
-  removeUserOtpByOtp: async (otp) => {
-    try {
-      const status = await UserOtp.destroy({
+      await UserOtp.destroy({
         where: {
           otp,
         },
       });
 
-      if (status) {
-        return status;
+      const loginToken = await tokensService.createLoginToken(+userId);
+      if (loginToken) {
+        return [loginToken, null];
       }
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
+  },
 
-    return;
+  // Done
+  getUserOtpByUserId: async (userId) => {
+    try {
+      const userOtp = await UserOtp.findOne({
+        where: { user_id: +userId },
+      });
+      if (userOtp) {
+        return userOtp;
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error(messageError.SERVER_ERROR);
+    }
   },
 };

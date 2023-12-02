@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       values: DataTypes.STRING(150),
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,
