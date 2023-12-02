@@ -29,6 +29,8 @@ module.exports = (sequelize, DataTypes) => {
       complete_date: DataTypes.DATE,
       dropout_date: DataTypes.DATE,
       recover_date: DataTypes.DATE,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

@@ -22,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       path_name: DataTypes.STRING(200),
       module_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

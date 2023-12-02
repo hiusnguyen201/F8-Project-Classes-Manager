@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       attachment: DataTypes.STRING(200),
       class_id: DataTypes.INTEGER,
       parent_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

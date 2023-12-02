@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
       content: DataTypes.TEXT,
       class_id: DataTypes.INTEGER,
       teacher_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

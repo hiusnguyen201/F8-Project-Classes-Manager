@@ -1,50 +1,39 @@
 const { messageError } = require("../../constants/constants.message");
 const tokenUtil = require("../../utils/token.util");
 const momentUtil = require("../../utils/moment.util");
-const otpsService = require("../services/otps.service");
 const models = require("../../models/index");
 const LoginToken = models.Login_Token;
 
 module.exports = {
-  createLoginToken: async function (res, userId) {
-    const loginToken = await this.getLoginTokenByUserId(+userId);
-    if (loginToken) {
-      this.removeLoginTokenByObj(loginToken);
-      res.clearCookie("token");
-    }
-
-    const token = tokenUtil.createTokenByMd5();
+  // Done
+  createLoginToken: async function (userId) {
     try {
-      const loginToken = await LoginToken.create({
+      const loginToken = await LoginToken.findOne({
+        where: { user_id: +userId },
+      });
+
+      if (loginToken) {
+        await loginToken.destroy();
+      }
+
+      const token = tokenUtil.createTokenByMd5();
+      const newLoginToken = await LoginToken.create({
         token,
         user_id: userId,
         createdAt: momentUtil.getDateNow(),
         updatedAt: momentUtil.getDateNow(),
       });
 
-      if (loginToken) {
-        res.cookie("token", loginToken.token);
-        return loginToken;
+      if (newLoginToken) {
+        return newLoginToken;
       }
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },
 
-  getLoginTokenByUserId: async (userId) => {
-    try {
-      const loginToken = await LoginToken.findOne({
-        where: {
-          user_id: userId,
-        },
-      });
-
-      return loginToken;
-    } catch (error) {
-      throw new Error(messageError.SERVER_ERROR);
-    }
-  },
-
+  // Done
   getLoginTokenByToken: async (token) => {
     try {
       const loginToken = await LoginToken.findOne({
@@ -54,18 +43,22 @@ module.exports = {
       });
 
       return loginToken;
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },
 
-  removeLoginTokenByObj: async (loginToken) => {
+  // Done
+  removeLoginTokenByToken: async (token) => {
     try {
-      const statusDestroy = await loginToken.destroy();
-      if (statusDestroy) {
-        return;
-      }
-    } catch (error) {
+      await LoginToken.destroy({
+        where: {
+          token,
+        },
+      });
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },
@@ -81,7 +74,8 @@ module.exports = {
       if (statusDestroy) {
         return;
       }
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },

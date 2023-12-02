@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       otp: DataTypes.STRING(10),
       expire: DataTypes.DATE,
       user_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

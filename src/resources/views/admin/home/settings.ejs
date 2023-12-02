@@ -10,20 +10,18 @@
           aria-orientation="vertical"
         >
           <a
-            class="nav-link active"
+            class="nav-link <%= checkIncludes(url, 'profile')? 'active' : '' %>"
             id="vert-tabs-home-tab"
-            data-toggle="pill"
-            href="#vert-tabs-home"
+            href="<%= checkIncludes(url, 'profile')? 'javascript:void(0)' : redirectPath.SETTINGS_PROFILE_ADMIN %>"
             role="tab"
             aria-controls="vert-tabs-home"
             aria-selected="true"
             ><i class="fas fa-user mr-2"></i>Account settings</a
           >
           <a
-            class="nav-link"
+            class="nav-link <%= checkIncludes(url, 'security')? 'active' : '' %>"
             id="vert-tabs-profile-tab"
-            data-toggle="pill"
-            href="#vert-tabs-profile"
+            href="<%= checkIncludes(url, 'security')? 'javascript:void(0)' : redirectPath.SETTINGS_SECURITY_ADMIN %>"
             role="tab"
             aria-controls="vert-tabs-profile"
             aria-selected="false"
@@ -34,7 +32,7 @@
       <div class="col-7 col-sm-9">
         <div class="tab-content" id="vert-tabs-tabContent">
           <div
-            class="tab-pane text-left fade show active"
+            class="tab-pane fade <%= checkIncludes(url, 'profile')? 'text-left show active' : '' %>"
             id="vert-tabs-home"
             role="tabpanel"
             aria-labelledby="vert-tabs-home-tab"
@@ -42,19 +40,55 @@
             <h5>User Profile</h5>
             <div class="tab-pane_group">
               <span class="tab-pane_title">Name</span>
+              <div class="d-grid">
+                <div class="col-9 px-0">
+                  <input
+                    class="tab-pane_info"
+                    type="text"
+                    value="<%= user.name %>"
+                  />
+                </div>
+              </div>
             </div>
             <div class="tab-pane_group">
               <span class="tab-pane_title">Email</span>
+              <div class="d-grid">
+                <div class="col-9 px-0">
+                  <input
+                    class="tab-pane_info"
+                    type="email"
+                    value="<%= user.email %>"
+                  />
+                </div>
+              </div>
             </div>
             <div class="tab-pane_group">
               <span class="tab-pane_title">Phone</span>
+              <div class="d-grid">
+                <div class="col-9 px-0">
+                  <input
+                    class="tab-pane_info"
+                    type="tel"
+                    value="<%= user.phone %>"
+                  />
+                </div>
+              </div>
             </div>
             <div class="tab-pane_group">
               <span class="tab-pane_title">Address</span>
+              <div class="d-grid">
+                <div class="col-9 px-0">
+                  <input
+                    class="tab-pane_info"
+                    type="text"
+                    value="<%= user.address %>"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div
-            class="tab-pane fade"
+            class="tab-pane fade <%= checkIncludes(url, 'security')? 'text-left show active' : '' %>"
             id="vert-tabs-profile"
             role="tabpanel"
             aria-labelledby="vert-tabs-profile-tab"
@@ -63,26 +97,55 @@
               <h5>Link Social Account To Login</h5>
               <div class="tab-pane_group">
                 <span class="tab-pane_title">Link with Google</span>
-                <div
-                  class="d-flex align-items-center py-1"
-                >
+                <div class="d-flex align-items-center py-1 mb-1">
                   <div class="col-6">
                     <span class="tab-pane_status d-flex align-items-center"
-                      ><i class="fab fa-google mr-2"></i><%= (userSocial)?
+                      ><i class="fab fa-google mr-2"></i><%= (userGoogle)?
                       'Connected' : "Unconnected" %></span
                     >
                   </div>
                   <div class="col-5">
+                    <% if(userGoogle) {%>
+                    <form action="" method="post">
+                      <input
+                        type="hidden"
+                        name="userSocialId"
+                        value="<%= userGoogle?.id%>"
+                      />
+                      <input
+                        type="hidden"
+                        name="provider"
+                        value="<%= userGoogle?.provider%>"
+                      />
+                      <input
+                        type="hidden"
+                        name="csrfToken"
+                        value="<%= csrf.createToken() %>"
+                      />
+                      <input type="hidden" name="_method" value="DELETE" />
+                      <button
+                        id="login-google"
+                        type="submit"
+                        class="ml-5 active btn d-flex align-items-center justify-content-center"
+                      >
+                        <%= (userGoogle)? "ON" : "OFF" %>
+                      </button>
+                    </form>
+                    <% } else {%>
                     <a
-                      href="javascript:void(0)"
                       id="login-google"
-                      class="<%= (userSocial)? 'active' : "" %> btn d-flex align-items-center justify-content-center"
-                      ><%= (userSocial)? 'ON' : "OFF" %></a
+                      href="javascript:void(0)"
+                      class="ml-5 btn d-flex align-items-center justify-content-center btn-google"
+                      >OFF</a
                     >
+                    <% } %>
                   </div>
                 </div>
+                <span class="text-danger" style="font-size: 16px"
+                  ><%= (error?.length)? error : '' %></span
+                >
               </div>
-              <div class="tab-pane_group">
+              <!-- <div class="tab-pane_group">
                 <span class="tab-pane_title">Link with Facebook</span>
                 <div
                   class="d-flex align-items-center py-1"
@@ -123,6 +186,7 @@
                   </div>
                 </div>
               </div>
+            </div> -->
             </div>
             <div class="group-field">
               <h5>Password</h5>
@@ -133,144 +197,163 @@
       </div>
     </div>
   </div>
+  <!-- /.card -->
+
+  <style>
+    .setting-title {
+      font-size: 32px;
+      color: #232946;
+      font-weight: 600;
+    }
+
+    .nav-tabs.flex-column .nav-link.active {
+      border-right: 2px solid #6246ea;
+      background-color: #f6f6ff;
+      color: #6246ea;
+    }
+
+    .nav-tabs.flex-column .nav-link {
+      color: #232946;
+      border-radius: 0;
+      border: none;
+    }
+
+    .card {
+      max-width: 1080px;
+      border-radius: 0;
+    }
+
+    #login-github,
+    #login-google,
+    #login-facebook,
+    .btn-google {
+      background-color: transparent;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      width: 90px;
+      position: relative;
+    }
+
+    #login-google.active {
+      background-color: #6246ea;
+      color: #fffffe;
+    }
+
+    .nav-tabs.flex-column .nav-link:hover {
+      transition: 0.3s;
+      color: #6246ea;
+    }
+
+    .card .row h5 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .card .row .tab-pane_title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .tab-content h5 {
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .tab-pane_group {
+      width: 70%;
+    }
+
+    .tab-pane_group + .tab-pane_group {
+      margin-top: 24px;
+    }
+
+    .group-field + .group-field {
+      margin-top: 15px;
+    }
+
+    .tab-pane_status {
+      font-size: 16px;
+    }
+
+    .toggle-container {
+      position: relative;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-container .toggle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 90px;
+      height: 50px;
+      background-color: #444;
+      border-radius: 30px;
+    }
+
+    .toggle-container .toggle .toggle-button {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .toggle-containe .text {
+      position: absolute;
+      left: 95px;
+    }
+
+    .fab {
+      font-size: 24px;
+    }
+
+    .fa-google {
+      background: conic-gradient(
+          from -45deg,
+          #ea4335 110deg,
+          #4285f4 90deg 180deg,
+          #34a853 180deg 270deg,
+          #fbbc05 270deg
+        )
+        73% 55%/150% 150% no-repeat;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tab-pane_info {
+      border: 0;
+      width: 100%;
+      border-bottom: 1px solid #eaeaea;
+      pointer-events: none;
+    }
+  </style>
+
+  <script>
+    const btn = document.querySelector("#login-google.btn-google");
+    btn.onclick = () => {
+      var googleWindow = window.open(
+        "/auth/google/redirect",
+        "google",
+        "height=600,width=800"
+      );
+
+      const timer = setInterval(() => {
+        if (googleWindow.closed) {
+          window.location.reload();
+          clearInterval(timer);
+        }
+      });
+    };
+  </script>
 </div>
-<!-- /.card -->
-
-<style>
-  .setting-title {
-    font-size: 32px;
-    color: #232946;
-    font-weight: 600;
-  }
-
-  .nav-tabs.flex-column .nav-link.active {
-    border-right: 2px solid #6246ea;
-    background-color: #f6f6ff;
-    color: #6246ea;
-  }
-
-  .nav-tabs.flex-column .nav-link {
-    color: #232946;
-    border-radius: 0;
-    border: none;
-  }
-
-  .card {
-    max-width: 1080px;
-    border-radius: 0;
-  }
-
-  #login-github,
-  #login-google,
-  #login-facebook {
-    background-color: transparent;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 30px;
-    border: 1px solid #ccc;
-    max-width: 90px;
-    position: relative;
-  }
-
-  #login-google.active {
-    background-color: #6246ea;
-    color: #fffffe;
-  }
-
-  .nav-tabs.flex-column .nav-link:hover {
-    transition: 0.3s;
-    color: #6246ea;
-  }
-
-  .card .row h5 {
-    font-size: 22px;
-    font-weight: 600;
-  }
-
-  .card .row .tab-pane_title {
-    font-size: 16px;
-    font-weight: 600;
-  }
-
-  .tab-content h5 {
-    padding-bottom: 8px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .tab-pane_group + .tab-pane_group {
-    margin-top: 24px;
-  }
-
-  .group-field + .group-field {
-    margin-top: 30px;
-  }
-
-  .tab-pane_status {
-    font-size: 16px;
-  }
-
-  .toggle-container {
-    position: relative;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .toggle-container .toggle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 90px;
-    height: 50px;
-    background-color: #444;
-    border-radius: 30px;
-  }
-
-  .toggle-container .toggle .toggle-button {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 40px;
-    height: 40px;
-    background: #fff;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  .toggle-containe .text {
-    position: absolute;
-    left: 95px;
-  }
-
-  .fab {
-    font-size: 24px;
-  }
-
-  .fa-google {
-    background: conic-gradient(
-        from -45deg,
-        #ea4335 110deg,
-        #4285f4 90deg 180deg,
-        #34a853 180deg 270deg,
-        #fbbc05 270deg
-      )
-      73% 55%/150% 150% no-repeat;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-  }
-</style>
-
-<script>
-  const btn = document.querySelector("#login-google");
-  btn.onclick = () => {
-    var googleWindow = window.open(
-      "/auth/google/redirect",
-      "google",
-      "height=600,width=800"
-    );
-  };
-</script>
