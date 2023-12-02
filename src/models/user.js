@@ -48,6 +48,8 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING(200),
       first_login: DataTypes.TINYINT(1),
       type_id: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

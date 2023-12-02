@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
       try_learn: DataTypes.TINYINT,
       quantity: DataTypes.INTEGER,
       duration: DataTypes.INTEGER,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,

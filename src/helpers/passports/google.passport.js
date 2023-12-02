@@ -1,4 +1,4 @@
-const GoogleStrategy = require("passport-google-oidc");
+const GoogleStrategy = require("passport-google-oauth2");
 const socialsService = require("../../http/services/socials.service");
 const tokensService = require("../../http/services/tokens.service");
 const usersService = require("../../http/services/users.service");
@@ -12,14 +12,14 @@ module.exports = new GoogleStrategy(
     passReqToCallback: true,
     scope: ["profile", "email"],
   },
-  async (req, issuer, profile, done) => {
-    const provider = "google";
+  async (req, accessToken, refreshToken, profile, done) => {
     const token = req.cookies.token;
+
     const tokenValid = await tokensService.getLoginTokenByToken(token);
     if (!tokenValid) {
       // Login Page
       const userSocial = await socialsService.getUserSocialByProvider(
-        provider,
+        profile.provider,
         profile.id
       );
 
@@ -30,8 +30,7 @@ module.exports = new GoogleStrategy(
       return done(null, userSocial.User);
     } else {
       // Social Link page
-      const { value: emailUser } = profile.emails[0];
-      const user = await usersService.getUserByEmail(emailUser);
+      const user = await usersService.getUserByEmail(profile.email);
       if (!user) {
         return done(null, false, {
           message: messageError.INVALID_ACCOUNT_GOOGLE,
@@ -40,13 +39,13 @@ module.exports = new GoogleStrategy(
 
       const [newUserSocial, created] =
         await socialsService.findOrCreateUserSocialProvider(
-          provider,
+          profile.provider,
           profile.id,
           +user.id
         );
 
       if (newUserSocial) {
-        return done(null, newUserSocial.User);
+        return done(null, user);
       }
     }
   }

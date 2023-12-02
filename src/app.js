@@ -8,6 +8,8 @@ const flash = require("connect-flash");
 const expressLayouts = require("express-ejs-layouts");
 const passport = require("passport");
 const session = require("express-session");
+var methodOverride = require("method-override");
+var helmet = require("helmet");
 
 const localPassport = require("./helpers/passports/local.passport");
 const googlePassport = require("./helpers/passports/google.passport");
@@ -21,6 +23,9 @@ const adminRouter = require("./routes/admin/index");
 const authRouter = require("./routes/auth/index");
 
 var app = express();
+// app.use(helmet());
+app.disable("x-powered-by");
+
 app.use(flash());
 app.use(
   session({
@@ -61,9 +66,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
+app.use(
+  methodOverride(function (req, res) {
+    if (req.body && typeof req.body === "object" && "_method" in req.body) {
+      var method = req.body._method;
+      delete req.body._method;
+      return method;
+    }
+  })
+);
+
 app.use("/auth", authRouter);
 
-// app.use(TokenMiddleware);
+app.use(TokenMiddleware);
 app.use(TypeMiddleware);
 app.use("/", studentsRouter);
 app.use("/teacher", teachersRouter);

@@ -20,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       opt_key: DataTypes.STRING(100),
       opt_value: DataTypes.TEXT,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,
