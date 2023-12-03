@@ -17,4 +17,21 @@ module.exports = {
       throw new Error(messageError.SERVER_ERROR);
     }
   },
+
+  getUserById: async (userId) => {
+    try {
+      const user = await User.findByPk(+userId, {
+        attributes: {
+          exclude: ["password"],
+        },
+        include: Type,
+      });
+
+      if (user) {
+        return user;
+      }
+    } catch (error) {
+      throw new Error(messageError.SERVER_ERROR);
+    }
+  },
 };

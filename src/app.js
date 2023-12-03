@@ -11,12 +11,19 @@ const session = require("express-session");
 var methodOverride = require("method-override");
 var helmet = require("helmet");
 
-const localPassport = require("./helpers/passports/local.passport");
-const googlePassport = require("./helpers/passports/google.passport");
-const TokenMiddleware = require("./http/middlewares/token.middleware");
-const TypeMiddleware = require("./http/middlewares/type.middeware");
 const models = require("./models/index");
 
+// Passport
+const localPassport = require("./helpers/passports/local.passport");
+const googlePassport = require("./helpers/passports/google.passport");
+const githubPassport = require("./helpers/passports/github.passport");
+const facebookPassport = require("./helpers/passports/facebook.passport");
+
+// Middleware
+const TokenMiddleware = require("./http/middlewares/token.middleware");
+const TypeMiddleware = require("./http/middlewares/type.middeware");
+
+// Route
 const studentsRouter = require("./routes/students/index");
 const teachersRouter = require("./routes/teachers/index");
 const adminRouter = require("./routes/admin/index");
@@ -37,8 +44,8 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.serializeUser((user, done) => {
-  done(null, user.id);
+passport.serializeUser((id, done) => {
+  done(null, id);
 });
 passport.deserializeUser(async (id, done) => {
   const user = await models.User.findByPk(id, {
@@ -52,6 +59,8 @@ passport.deserializeUser(async (id, done) => {
 
 passport.use("local", localPassport);
 passport.use("google", googlePassport);
+passport.use("github", githubPassport);
+passport.use("facebook", facebookPassport);
 
 // view engine setup
 app.set("views", path.join(__dirname, "resources/views"));

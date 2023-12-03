@@ -1,13 +1,13 @@
-const GoogleStrategy = require("passport-google-oauth2");
+const GitHubStrategy = require("passport-github2").Strategy;
 const socialsService = require("../../http/services/socials.service");
 const tokensService = require("../../http/services/tokens.service");
 const { messageError } = require("../../constants/constants.message");
 
-module.exports = new GoogleStrategy(
+module.exports = new GitHubStrategy(
   {
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: process.env.GITHUB_CALLBACK_URL,
     passReqToCallback: true,
     scope: ["profile"],
   },
@@ -22,7 +22,6 @@ module.exports = new GoogleStrategy(
     const tokenValid = await tokensService.getLoginTokenByToken(token);
     if (!tokenValid) {
       // Login Page
-
       if (!userSocial) {
         return done(null, false, { message: messageError.ACCOUNT_NOT_LINKED });
       }

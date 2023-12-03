@@ -1,15 +1,14 @@
-const GoogleStrategy = require("passport-google-oauth2");
+const FacebookStrategy = require("passport-facebook").Strategy;
 const socialsService = require("../../http/services/socials.service");
 const tokensService = require("../../http/services/tokens.service");
 const { messageError } = require("../../constants/constants.message");
 
-module.exports = new GoogleStrategy(
+module.exports = new FacebookStrategy(
   {
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    clientID: process.env.FACEBOOK_APP_ID,
+    clientSecret: process.env.FACEBOOK_APP_SECRET,
+    callbackURL: process.env.FACEBOOK_CALLBACK_URL,
     passReqToCallback: true,
-    scope: ["profile"],
   },
   async (req, accessToken, refreshToken, profile, done) => {
     const token = req.cookies.token;

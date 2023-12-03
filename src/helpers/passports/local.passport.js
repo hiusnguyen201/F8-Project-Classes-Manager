@@ -10,7 +10,7 @@ module.exports = new LocalStrategy(
     passwordField: "password",
   },
   async (email, password, done) => {
-    let user = await usersService.getUserByEmail(email);
+    const user = await usersService.getUserByEmail(email);
 
     if (!user) {
       return done(null, false, {
@@ -24,9 +24,6 @@ module.exports = new LocalStrategy(
       });
     }
 
-    delete user.dataValues.password;
-    delete user._previousDataValues.password;
-
-    done(null, user);
+    done(null, user.id);
   }
 );

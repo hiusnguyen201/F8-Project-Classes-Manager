@@ -9,6 +9,7 @@ const TokenMiddleware = require("../../http/middlewares/token.middleware");
 const GuestMiddleware = require("../../http/middlewares/guest.middleware");
 const { redirectPath } = require("../../constants/constants.path");
 
+// Local Login
 router.get("/login", GuestMiddleware, AuthController.login);
 router.post(
   "/login",
@@ -22,24 +23,19 @@ router.post(
   }
 );
 
+// Google Login
 router.get("/google/redirect", passport.authenticate("google"));
 router.get(
   "/google/callback",
   (req, res, next) => {
     passport.authenticate("google", (err, user, info, status) => {
-      const token = req.cookies.token;
       if (err) {
         return next(err);
       }
 
       if (!user) {
-        if (!token) {
-          req.flash("error", info.message);
-          return res.redirect(redirectPath.LOGIN_AUTH);
-        } else {
-          req.flash("error", info.message);
-          return res.send("<script>window.close()</script>");
-        }
+        req.flash("error", info.message);
+        return res.send("<script>window.close()</script>");
       }
 
       req.logIn(user, function (err) {
@@ -51,13 +47,66 @@ router.get(
       });
     })(req, res, next);
   },
-  async (req, res) => {
-    const token = req.cookies.token;
-    if (!token) {
-      AuthController.handleLogin(req, res, "google");
-    } else {
-      res.send("<script>window.close()</script>");
-    }
+  (req, res) => {
+    AuthController.handleLogin(req, res, "google");
+  }
+);
+
+// Github Login
+router.get("/github/redirect", passport.authenticate("github"));
+router.get(
+  "/github/callback",
+  (req, res, next) => {
+    passport.authenticate("github", (err, user, info, status) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        req.flash("error", info.message);
+        return res.send("<script>window.close()</script>");
+      }
+
+      req.logIn(user, function (err) {
+        if (err) {
+          return next(err);
+        }
+
+        next();
+      });
+    })(req, res, next);
+  },
+  (req, res) => {
+    AuthController.handleLogin(req, res, "github");
+  }
+);
+
+// Facebook Login
+router.get("/facebook/redirect", passport.authenticate("facebook"));
+router.get(
+  "/facebook/callback",
+  (req, res, next) => {
+    passport.authenticate("facebook", (err, user, info, status) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        req.flash("error", info.message);
+        return res.send("<script>window.close()</script>");
+      }
+
+      req.logIn(user, function (err) {
+        if (err) {
+          return next(err);
+        }
+
+        next();
+      });
+    })(req, res, next);
+  },
+  (req, res) => {
+    AuthController.handleLogin(req, res, "facebook");
   }
 );
 
