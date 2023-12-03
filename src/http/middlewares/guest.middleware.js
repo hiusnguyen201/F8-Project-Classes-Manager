@@ -2,8 +2,7 @@ const tokensService = require("../services/tokens.service");
 const { redirectPath } = require("../../constants/constants.path");
 
 module.exports = async (req, res, next) => {
-  const user = req.user;
-  if (!user) {
+  if (!req.user) {
     res.clearCookie("token");
   }
 

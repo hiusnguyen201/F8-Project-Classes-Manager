@@ -1,52 +1,29 @@
 <div class="card-body">
   <div class="card pr-3 py-4 mx-auto">
-    <h4 class="setting-title ml-3">Settings</h4>
     <div class="row">
       <div class="col-6 col-sm-3">
-        <div
-          class="nav flex-column nav-tabs h-100"
-          id="vert-tabs-tab"
-          role="tablist"
-          aria-orientation="vertical"
-        >
-          <a
-            class="nav-link <%= checkIncludes(url, 'profile')? 'active' : '' %>"
-            id="vert-tabs-home-tab"
+        <h4 class="setting-title ml-3">Settings</h4>
+        <div class="nav flex-column nav-tabs h-100" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
+          <a class="nav-link <%= checkIncludes(url, 'profile')? 'active' : '' %>" id="vert-tabs-home-tab"
             href="<%= checkIncludes(url, 'profile')? 'javascript:void(0)' : redirectPath.SETTINGS_PROFILE_ADMIN %>"
-            role="tab"
-            aria-controls="vert-tabs-home"
-            aria-selected="true"
-            ><i class="fas fa-user mr-2"></i>Account settings</a
-          >
-          <a
-            class="nav-link <%= checkIncludes(url, 'security')? 'active' : '' %>"
-            id="vert-tabs-profile-tab"
+            role="tab" aria-controls="vert-tabs-home" aria-selected="true"><i class="fas fa-user mr-2"></i>Account
+            settings</a>
+          <a class="nav-link <%= checkIncludes(url, 'security')? 'active' : '' %>" id="vert-tabs-profile-tab"
             href="<%= checkIncludes(url, 'security')? 'javascript:void(0)' : redirectPath.SETTINGS_SECURITY_ADMIN %>"
-            role="tab"
-            aria-controls="vert-tabs-profile"
-            aria-selected="false"
-            ><i class="fas fa-shield-alt mr-2"></i>Security and login</a
-          >
+            role="tab" aria-controls="vert-tabs-profile" aria-selected="false"><i
+              class="fas fa-shield-alt mr-2"></i>Security and login</a>
         </div>
       </div>
       <div class="col-7 col-sm-9">
         <div class="tab-content" id="vert-tabs-tabContent">
-          <div
-            class="tab-pane fade <%= checkIncludes(url, 'profile')? 'text-left show active' : '' %>"
-            id="vert-tabs-home"
-            role="tabpanel"
-            aria-labelledby="vert-tabs-home-tab"
-          >
+          <div class="tab-pane fade <%= checkIncludes(url, 'profile')? 'text-left show active' : '' %>"
+            id="vert-tabs-home" role="tabpanel" aria-labelledby="vert-tabs-home-tab">
             <h5>User Profile</h5>
             <div class="tab-pane_group">
               <span class="tab-pane_title">Name</span>
               <div class="d-grid">
                 <div class="col-9 px-0">
-                  <input
-                    class="tab-pane_info"
-                    type="text"
-                    value="<%= user.name %>"
-                  />
+                  <input class="tab-pane_info" type="text" value="<%= user.name %>" />
                 </div>
               </div>
             </div>
@@ -54,11 +31,7 @@
               <span class="tab-pane_title">Email</span>
               <div class="d-grid">
                 <div class="col-9 px-0">
-                  <input
-                    class="tab-pane_info"
-                    type="email"
-                    value="<%= user.email %>"
-                  />
+                  <input class="tab-pane_info" type="email" value="<%= user.email %>" />
                 </div>
               </div>
             </div>
@@ -66,11 +39,7 @@
               <span class="tab-pane_title">Phone</span>
               <div class="d-grid">
                 <div class="col-9 px-0">
-                  <input
-                    class="tab-pane_info"
-                    type="tel"
-                    value="<%= user.phone %>"
-                  />
+                  <input class="tab-pane_info" type="tel" value="<%= user.phone %>" />
                 </div>
               </div>
             </div>
@@ -78,115 +47,108 @@
               <span class="tab-pane_title">Address</span>
               <div class="d-grid">
                 <div class="col-9 px-0">
-                  <input
-                    class="tab-pane_info"
-                    type="text"
-                    value="<%= user.address %>"
-                  />
+                  <input class="tab-pane_info" type="text" value="<%= user.address %>" />
                 </div>
               </div>
             </div>
           </div>
-          <div
-            class="tab-pane fade <%= checkIncludes(url, 'security')? 'text-left show active' : '' %>"
-            id="vert-tabs-profile"
-            role="tabpanel"
-            aria-labelledby="vert-tabs-profile-tab"
-          >
+          <div class="tab-pane fade <%= checkIncludes(url, 'security')? 'text-left show active' : '' %>"
+            id="vert-tabs-profile" role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
             <div class="group-field">
+              <span style=" display: block; font-size: 16px;">
+                <% if(error?.length) {%>
+                  <div class="alert alert-danger">
+                    <%= error %>
+                  </div>
+                  <% } %>
+              </span>
               <h5>Link Social Account To Login</h5>
+              <!-- Google -->
               <div class="tab-pane_group">
                 <span class="tab-pane_title">Link with Google</span>
                 <div class="d-flex align-items-center py-1 mb-1">
                   <div class="col-6">
-                    <span class="tab-pane_status d-flex align-items-center"
-                      ><i class="fab fa-google mr-2"></i><%= (userGoogle)?
-                      'Connected' : "Unconnected" %></span
-                    >
+                    <span class="tab-pane_status d-flex align-items-center"><i class="fab fa-google mr-2"></i>
+                      <%= (userGoogle)? 'Connected' : "Unconnected" %>
+                    </span>
                   </div>
                   <div class="col-5">
                     <% if(userGoogle) {%>
-                    <form action="" method="post">
-                      <input
-                        type="hidden"
-                        name="userSocialId"
-                        value="<%= userGoogle?.id%>"
-                      />
-                      <input
-                        type="hidden"
-                        name="provider"
-                        value="<%= userGoogle?.provider%>"
-                      />
-                      <input
-                        type="hidden"
-                        name="csrfToken"
-                        value="<%= csrf.createToken() %>"
-                      />
-                      <input type="hidden" name="_method" value="DELETE" />
-                      <button
-                        id="login-google"
-                        type="submit"
-                        class="ml-5 active btn d-flex align-items-center justify-content-center"
-                      >
-                        <%= (userGoogle)? "ON" : "OFF" %>
-                      </button>
-                    </form>
-                    <% } else {%>
-                    <a
-                      id="login-google"
-                      href="javascript:void(0)"
-                      class="ml-5 btn d-flex align-items-center justify-content-center btn-google"
-                      >OFF</a
-                    >
-                    <% } %>
-                  </div>
-                </div>
-                <span class="text-danger" style="font-size: 16px"
-                  ><%= (error?.length)? error : '' %></span
-                >
-              </div>
-              <!-- <div class="tab-pane_group">
-                <span class="tab-pane_title">Link with Facebook</span>
-                <div
-                  class="d-flex align-items-center py-1"
-                >
-                  <div class="col-6">
-                    <span class="tab-pane_status d-flex align-items-center"><i
-                        class="fab fa-facebook mr-2"
-                        style="color: #0866ff"
-                      ></i
-                      >Unconnected</span>
-                  </div>
-                  <div class="col-5">
-                    <a
-                      href="javascript:void(0)"
-                      id="login-facebook"
-                      class="btn d-flex align-items-center justify-content-center"
-                      >OFF</a
-                    >
+                      <form action="" method="post">
+                        <input type="hidden" name="userSocialId" value="<%= userGoogle?.id%>" />
+                        <input type="hidden" name="provider" value="<%= userGoogle?.provider%>" />
+                        <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit"
+                          class="ml-5 btn d-flex align-items-center justify-content-center btn-google active">
+                          <%= (userGoogle)? "ON" : "OFF" %>
+                        </button>
+                      </form>
+                      <% } else {%>
+                        <a onclick="socialLogin('google')" href="javascript:void(0)"
+                          class="ml-5 btn d-flex align-items-center justify-content-center btn-google">OFF</a>
+                        <% } %>
                   </div>
                 </div>
               </div>
+              <!-- Github -->
               <div class="tab-pane_group">
                 <span class="tab-pane_title">Link with Github</span>
-                <div
-                  class="d-flex align-items-center py-1"
-                >
+                <div class="d-flex align-items-center py-1 mb-1">
                   <div class="col-6">
-                    <span class="tab-pane_status d-flex align-items-center"><i class="fab fa-github mr-2" style="color: #1f2328"></i
-                      >Unconnected</span>
+                    <span class="tab-pane_status d-flex align-items-center"><i class="fab fa-github mr-2"
+                        style="color: #1f2328"></i>
+                      <%= (userGithub)? 'Connected' : "Unconnected" %>
+                    </span>
                   </div>
                   <div class="col-5">
-                    <a
-                      href="javascript:void(0)"
-                      id="login-github"
-                      class="btn d-flex align-items-center justify-content-center"
-                      >OFF</a
-                    >
+                    <% if(userGithub) {%>
+                      <form action="" method="post">
+                        <input type="hidden" name="userSocialId" value="<%= userGithub?.id%>" />
+                        <input type="hidden" name="provider" value="<%= userGithub?.provider%>" />
+                        <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit"
+                          class="ml-5 btn d-flex align-items-center justify-content-center btn-github active">
+                          <%= (userGithub)? "ON" : "OFF" %>
+                        </button>
+                      </form>
+                      <% } else {%>
+                        <a onclick="socialLogin('github')" href="javascript:void(0)"
+                          class="ml-5 btn d-flex align-items-center justify-content-center btn-github">OFF</a>
+                        <% } %>
                   </div>
                 </div>
               </div>
-            </div> -->
+              <!-- Facebook -->
+              <div class="tab-pane_group">
+                <span class="tab-pane_title">Link with Facebook</span>
+                <div class="d-flex align-items-center py-1 mb-1">
+                  <div class="col-6">
+                    <span class="tab-pane_status d-flex align-items-center"><i class="fab fa-facebook mr-2"
+                        style="color: #0866ff"></i>
+                      <%= (userFacebook)? 'Connected' : "Unconnected" %>
+                    </span>
+                  </div>
+                  <div class="col-5">
+                    <% if(userFacebook) {%>
+                      <form action="" method="post">
+                        <input type="hidden" name="userSocialId" value="<%= userFacebook?.id%>" />
+                        <input type="hidden" name="provider" value="<%= userFacebook?.provider%>" />
+                        <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit"
+                          class="ml-5 btn d-flex align-items-center justify-content-center btn-github active">
+                          <%= (userFacebook)? "ON" : "OFF" %>
+                        </button>
+                      </form>
+                      <% } else {%>
+                        <a onclick="socialLogin('facebook')" href="javascript:void(0)"
+                          class="ml-5 btn d-flex align-items-center justify-content-center btn-github">OFF</a>
+                        <% } %>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="group-field">
               <h5>Password</h5>
@@ -223,10 +185,9 @@
       border-radius: 0;
     }
 
-    #login-github,
-    #login-google,
-    #login-facebook,
-    .btn-google {
+    .btn-google,
+    .btn-github,
+    .btn-facebook {
       background-color: transparent;
       font-size: 16px;
       font-weight: 600;
@@ -236,7 +197,9 @@
       position: relative;
     }
 
-    #login-google.active {
+    .btn-google.active,
+    .btn-github.active,
+    .btn-facebook.active {
       background-color: #6246ea;
       color: #fffffe;
     }
@@ -266,11 +229,11 @@
       width: 70%;
     }
 
-    .tab-pane_group + .tab-pane_group {
+    .tab-pane_group+.tab-pane_group {
       margin-top: 24px;
     }
 
-    .group-field + .group-field {
+    .group-field+.group-field {
       margin-top: 15px;
     }
 
@@ -317,14 +280,11 @@
     }
 
     .fa-google {
-      background: conic-gradient(
-          from -45deg,
+      background: conic-gradient(from -45deg,
           #ea4335 110deg,
           #4285f4 90deg 180deg,
           #34a853 180deg 270deg,
-          #fbbc05 270deg
-        )
-        73% 55%/150% 150% no-repeat;
+          #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -340,18 +300,17 @@
   </style>
 
   <script>
-    const btn = document.querySelector("#login-google.btn-google");
-    btn.onclick = () => {
-      var googleWindow = window.open(
-        "/auth/google/redirect",
-        "google",
+    const socialLogin = (provider) => {
+      var socialWindow = window.open(
+        `/auth/${provider}/redirect`,
+        `${provider}`,
         "height=600,width=800"
       );
 
-      const timer = setInterval(() => {
-        if (googleWindow.closed) {
+      const timerSocial = setInterval(() => {
+        if (socialWindow.closed) {
           window.location.reload();
-          clearInterval(timer);
+          clearInterval(timerSocial);
         }
       });
     };

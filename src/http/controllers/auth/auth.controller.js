@@ -9,16 +9,6 @@ const {
 const otpsService = require("../../services/otps.service");
 const tokensService = require("../../services/tokens.service");
 
-const checkType = (res, user) => {
-  if (user.type_id === 1) {
-    return res.redirect(redirectPath.HOME_ADMIN);
-  } else if (user.type_id === 2) {
-    return res.redirect(redirectPath.HOME_TEACHER);
-  } else if (user.type_id === 3) {
-    return res.redirect(redirectPath.HOME_STUDENT);
-  }
-};
-
 module.exports = {
   login: (req, res) => {
     const errors = req.flash("error");
@@ -31,20 +21,21 @@ module.exports = {
       layout: "layouts/auth.layout.ejs",
       title: `Login - ${process.env.APP_NAME} Accounts`,
       errors,
+      redirectPath,
     });
   },
 
   handleLogin: async (req, res, social = null) => {
-    const user = req.user;
+    const userId = req.user;
     if (social) {
       res.clearCookie("token");
-      const loginToken = await tokensService.createLoginToken(+user.id);
+      const loginToken = await tokensService.createLoginToken(userId);
       res.cookie("token", loginToken.token);
-      checkType(res, user);
+      return res.send("<script>window.close()</script>");
     } else {
-      await otpsService.createUserOtp(user);
+      await otpsService.createUserOtp(userId);
       req.flash("success", messageInfo.SENDED_OTP);
-      res.redirect(redirectPath.OTP_AUTH);
+      return res.redirect(redirectPath.OTP_AUTH);
     }
   },
 
@@ -77,10 +68,8 @@ module.exports = {
       return res.redirect(redirectPath.OTP_AUTH);
     }
 
-    console.log(data);
-
     res.cookie("token", data.token);
-    checkType(res, req.user);
+    return res.redirect(redirectPath.HOME_STUDENT);
   },
 
   logout: async (req, res) => {

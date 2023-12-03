@@ -4,8 +4,8 @@ const messageError = {
   WRONG_OTP: "The Otp You've Entered Is Incorrect. Please Try Again",
   EMPTY_OTP: "Please Enter The Otp Below",
   OTP_EXPIRE: "The Otp You've Entered Is Expired. Please Login Again",
-  LOGIN_GOOGLE_FAILED: "Account google is not linked",
-  INVALID_ACCOUNT_GOOGLE: "Invalid account google or account is already linked",
+  ACCOUNT_NOT_LINKED: "Account is not linked",
+  INVALID_LINK_ACCOUNT: "Invalid account or account is already linked",
   INVALID_TOKEN_CSRF: "Invalid token",
   SOMETHING_WRONG: "Something wrong",
 

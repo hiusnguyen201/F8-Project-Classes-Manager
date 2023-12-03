@@ -5,7 +5,7 @@ const csrf = require("../../../http/middlewares/csrf.middleware");
 const { checkIncludes } = require("../../../utils/string.util");
 
 module.exports = {
-  index: (req, res) => {
+  index: async (req, res) => {
     res.render(renderPath.HOME_ADMIN, {
       layout: "layouts/main.layout.ejs",
       user: req.user,
@@ -16,21 +16,28 @@ module.exports = {
   settings: async (req, res) => {
     const error = req.flash("error");
     const user = req.user;
-
     const userGoogle = await socialsService.getUserSocialByUserIdAndProvider(
       +user.id,
       "google"
     );
-
-    const url = req.path;
+    const userGithub = await socialsService.getUserSocialByUserIdAndProvider(
+      +user.id,
+      "github"
+    );
+    const userFacebook = await socialsService.getUserSocialByUserIdAndProvider(
+      +user.id,
+      "facebook"
+    );
 
     res.render(renderPath.SETTINGS_ADMIN, {
       layout: "layouts/main.layout.ejs",
-      user: req.user,
+      user,
       redirectPath,
       userGoogle,
+      userGithub,
+      userFacebook,
       csrf,
-      url,
+      url: req.path,
       error,
       checkIncludes,
     });
@@ -38,10 +45,11 @@ module.exports = {
 
   handleRemoveUserSocial: async (req, res) => {
     const { userSocialId, provider } = req.body;
+    const user = req.user;
     const [status, errMessage] = await socialsService.removeUserSocial(
       userSocialId,
       provider,
-      req.user.id
+      user.id
     );
 
     if (!status) {
