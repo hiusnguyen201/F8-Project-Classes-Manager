@@ -9,15 +9,16 @@ const sendMailUtil = require("../../utils/sendMail.util");
 const job = require("../../helpers/kue.helper");
 const models = require("../../models/index");
 const tokensService = require("../services/tokens.service");
+const usersService = require("../services/users.service");
 const UserOtp = models.User_Otp;
 
 module.exports = {
   // Done
-  createUserOtp: async (user) => {
+  createUserOtp: async (userId) => {
     try {
       // Check Exist Otp
       const existUserOtp = await UserOtp.findOne({
-        where: { user_id: +user.id },
+        where: { user_id: +userId },
       });
       if (existUserOtp) {
         await existUserOtp.destroy();
@@ -28,12 +29,13 @@ module.exports = {
       const userOtp = await UserOtp.create({
         otp: newOtp,
         expire: momentUtil.createOtpExpire(),
-        user_id: +user.id,
+        user_id: +userId,
         createdAt: momentUtil.getDateNow(),
         updatedAt: momentUtil.getDateNow(),
       });
 
       if (userOtp) {
+        const user = await usersService.getUserById(userOtp.user_id);
         // Get Mail Template
         const mailTemplate = stringUtil.getMailTemplate(user.name, newOtp);
 
@@ -97,6 +99,24 @@ module.exports = {
       });
       if (userOtp) {
         return userOtp;
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error(messageError.SERVER_ERROR);
+    }
+  },
+
+  // Done
+  removeUserOtpByUserId: async (userId) => {
+    try {
+      const userOtp = await UserOtp.findOne({
+        where: {
+          user_id: +userId,
+        },
+      });
+
+      if (userOtp) {
+        await userOtp.destroy();
       }
     } catch (err) {
       console.log(err);

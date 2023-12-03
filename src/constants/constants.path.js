@@ -4,6 +4,9 @@ const redirectPath = {
   OTP_AUTH: "/auth/otp",
   REGISTER: "/auth/register",
   LOGOUT: "/auth/logout",
+  LOGIN_GOOGLE: "/auth/google/redirect",
+  LOGIN_GITHUB: "/auth/github/redirect",
+  LOGIN_FACEBOOK: "/auth/facebook/redirect",
 
   // Student
   HOME_STUDENT: "/",

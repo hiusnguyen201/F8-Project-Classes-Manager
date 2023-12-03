@@ -12,11 +12,11 @@ module.exports = {
           provider,
           provider_id,
         },
-        include: User,
       });
 
       return userSocial;
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },
@@ -31,7 +31,8 @@ module.exports = {
         },
       });
       return userSocial;
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },
@@ -55,7 +56,8 @@ module.exports = {
       if (userSocial) {
         return [userSocial, created];
       }
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },
@@ -79,7 +81,8 @@ module.exports = {
       if (statusRemove) {
         return [true, null];
       }
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },
