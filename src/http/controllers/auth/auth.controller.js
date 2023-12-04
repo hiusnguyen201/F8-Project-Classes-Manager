@@ -27,10 +27,15 @@ module.exports = {
 
   handleLogin: async (req, res, social = null) => {
     const userId = req.user;
+    const token = req.cookies.token;
     if (social) {
-      res.clearCookie("token");
-      const loginToken = await tokensService.createLoginToken(userId);
-      res.cookie("token", loginToken.token);
+      if (token) {
+        req.flash("success", messageInfo.LINK_ACCOUNT_SOCIAL_SUCCESS);
+      } else {
+        res.clearCookie("token");
+        const loginToken = await tokensService.createLoginToken(userId);
+        res.cookie("token", loginToken.token);
+      }
       return res.send("<script>window.close()</script>");
     } else {
       await otpsService.createUserOtp(userId);
@@ -84,3 +89,4 @@ module.exports = {
     return res.redirect(redirectPath.LOGIN_AUTH);
   },
 };
+//

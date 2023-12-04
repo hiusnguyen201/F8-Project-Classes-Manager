@@ -19,6 +19,7 @@ const redirectPath = {
   SETTINGS_ADMIN: "/admin/settings",
   SETTINGS_PROFILE_ADMIN: "/admin/settings/profile",
   SETTINGS_SECURITY_ADMIN: "/admin/settings/security",
+  SETTINGS_PASSWORD_ADMIN: "/admin/settings/password",
 };
 
 const renderPath = {
@@ -34,7 +35,7 @@ const renderPath = {
 
   // Admin
   HOME_ADMIN: "admin/home/index",
-  SETTINGS_ADMIN: "admin/home/settings",
+  SETTINGS_ADMIN: "admin/settings/index",
 };
 
 module.exports = {
