@@ -9,6 +9,7 @@ const AuthMiddleware = require("../../http/middlewares/auth.middleware");
 const TokenMiddleware = require("../../http/middlewares/token.middleware");
 const GuestMiddleware = require("../../http/middlewares/guest.middleware");
 const { redirectPath } = require("../../constants/constants.path");
+const { messageInfo } = require("../../constants/constants.message");
 
 // Local Login
 router.get("/login", GuestMiddleware, AuthController.login);

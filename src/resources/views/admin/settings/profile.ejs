@@ -1,0 +1,36 @@
+<div class="tab-pane fade <%= checkIncludes(url, 'profile')? 'text-left show active' : '' %>" id="vert-tabs-home"
+    role="tabpanel" aria-labelledby="vert-tabs-home-tab">
+    <h5>User Profile</h5>
+    <div class="tab-pane_group">
+        <span class="tab-pane_title">Name</span>
+        <div class="d-grid">
+            <div class="col-9 px-0">
+                <input class="tab-pane_info" type="text" value="<%= user.name %>" />
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane_group">
+        <span class="tab-pane_title">Email</span>
+        <div class="d-grid">
+            <div class="col-9 px-0">
+                <input class="tab-pane_info" type="email" value="<%= user.email %>" />
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane_group">
+        <span class="tab-pane_title">Phone</span>
+        <div class="d-grid">
+            <div class="col-9 px-0">
+                <input class="tab-pane_info" type="tel" value="<%= user.phone %>" />
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane_group">
+        <span class="tab-pane_title">Address</span>
+        <div class="d-grid">
+            <div class="col-9 px-0">
+                <input class="tab-pane_info" type="text" value="<%= user.address %>" />
+            </div>
+        </div>
+    </div>
+</div>

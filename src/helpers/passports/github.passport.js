@@ -1,6 +1,5 @@
 const GitHubStrategy = require("passport-github2").Strategy;
 const socialsService = require("../../http/services/socials.service");
-const tokensService = require("../../http/services/tokens.service");
 const { messageError } = require("../../constants/constants.message");
 
 module.exports = new GitHubStrategy(
@@ -12,20 +11,16 @@ module.exports = new GitHubStrategy(
     scope: ["profile"],
   },
   async (req, accessToken, refreshToken, profile, done) => {
-    const token = req.cookies.token;
-
     const userSocial = await socialsService.getUserSocialByProvider(
       profile.provider,
       profile.id
     );
 
-    const tokenValid = await tokensService.getLoginTokenByToken(token);
-    if (!tokenValid) {
+    if (!req.isAuthenticated()) {
       // Login Page
       if (!userSocial) {
         return done(null, false, { message: messageError.ACCOUNT_NOT_LINKED });
       }
-
       return done(null, userSocial.user_id);
     } else {
       // Social Link page

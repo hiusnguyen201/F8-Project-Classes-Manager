@@ -9,6 +9,12 @@ const messageError = {
   INVALID_TOKEN_CSRF: "Invalid token",
   SOMETHING_WRONG: "Something wrong",
 
+  // Settings Page
+  OLD_PASS_INVALID: "Old password isn't valid",
+  NEW_PASS_NOT_STRONG:
+    "New password at least 6 characters including a number and a lowercase letter",
+  CONFIRM_PASS_INVALID: "Confirm passwod isn't match new password",
+
   // User
   INVALID_ACCOUNT: "Wrong Email Or Password. Try Again",
 
@@ -20,6 +26,10 @@ const messageError = {
 const messageInfo = {
   TWO_FA: "Two-Factor Login Verification",
   SENDED_OTP: "We've Send A Verification Code To Your Email",
+  SOCIAL_ACCOUNT_LINKED: "Account social is linked",
+  CHANGE_PASS_SUCCESS: "Change password is successfully",
+  REMOVE_ACCOUNT_SOCIAL_SUCCESS: "Remove account social is successfully",
+  LINK_ACCOUNT_SOCIAL_SUCCESS: "Link account social is successfully",
 };
 
 module.exports = { messageError, messageInfo };

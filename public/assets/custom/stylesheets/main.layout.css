@@ -57,10 +57,22 @@ body {
   padding: 9px;
 }
 
+.header-submenu_item:hover {
+  color: #6246ea;
+  background-color: unset;
+  transition: 0.3s;
+}
+
+.header-logout_item:hover {
+  background-color: unset;
+  color: #f7515e;
+  transition: 0.3s;
+}
+
 .brand-text {
   text-align: center;
-  font-size: 36px;
   font-weight: 800;
+  font-size: 32px;
   letter-spacing: 8px;
   text-transform: uppercase;
   color: #f7515e;
@@ -98,13 +110,23 @@ body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav)
 }
 
 @media (min-width: 992px) {
-  .sidebar-mini.sidebar-collapse .main-sidebar {
+  /* .sidebar-mini.sidebar-collapse .main-sidebar {
     width: 3.6rem !important;
-  }
+  } */
 
   .sidebar-mini.sidebar-collapse .content-wrapper,
   .sidebar-mini.sidebar-collapse .main-header {
     margin-left: 3.6rem !important;
+  }
+
+  .sidebar-mini.sidebar-collapse .main-sidebar,
+  .sidebar-mini.sidebar-collapse.layout-fixed .brand-link {
+    width: 3.6rem;
+  }
+
+  .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover,
+  .sidebar-mini.sidebar-collapse.layout-fixed .main-sidebar:hover .brand-link {
+    width: 232px;
   }
 }
 
