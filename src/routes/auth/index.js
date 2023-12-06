@@ -4,26 +4,22 @@ var router = express.Router();
 const passport = require("passport");
 
 // Auth
-const AuthController = require("../../http/controllers/auth/auth.controller");
+const AuthController = require("../..//http/controllers/auth/auth.controller");
 const AuthMiddleware = require("../../http/middlewares/auth.middleware");
 const TokenMiddleware = require("../../http/middlewares/token.middleware");
 const GuestMiddleware = require("../../http/middlewares/guest.middleware");
+const JwtTokenMiddleware = require("../../http/middlewares/jwtToken.middleware");
+const OtpMiddleware = require("../../http/middlewares/otp.middleware");
+const csrf = require("../../http/middlewares/csrf.middleware");
+const {
+  validateResetPassword,
+  validateEmailResetPass,
+  validateLoginAccount,
+} = require("../../utils/validator");
 const { redirectPath } = require("../../constants/constants.path");
-const { messageInfo } = require("../../constants/constants.message");
 
-// Local Login
-router.get("/login", GuestMiddleware, AuthController.login);
-router.post(
-  "/login",
-  GuestMiddleware,
-  passport.authenticate("local", {
-    failureRedirect: redirectPath.LOGIN_AUTH,
-    failureFlash: true,
-  }),
-  (req, res) => {
-    AuthController.handleLogin(req, res, null);
-  }
-);
+// Logout
+router.get("/logout", TokenMiddleware, AuthController.logout);
 
 // Google Login
 router.get("/google/redirect", passport.authenticate("google"));
@@ -112,9 +108,42 @@ router.get(
   }
 );
 
+router.use(GuestMiddleware);
+// Local Login
+router.get("/login", AuthController.login);
+router.post(
+  "/login",
+  csrf.verify,
+  validateLoginAccount(),
+  passport.authenticate("local", {
+    failureRedirect: redirectPath.LOGIN_AUTH,
+    failureFlash: true,
+  }),
+  (req, res) => {
+    AuthController.handleLogin(req, res, null);
+  }
+);
+
+// Password
+router.get("/passwordreset", AuthController.emailResetPass);
+router.post(
+  "/passwordreset",
+  csrf.verify,
+  validateEmailResetPass(),
+  AuthController.handleEmailResetPass
+);
+router.get("/passwordreset/:token", AuthController.resetPassword);
+router.patch(
+  "/passwordreset/:token",
+  csrf.verify,
+  validateResetPassword(),
+  AuthController.handleResetPassword
+);
+
 router.use(AuthMiddleware);
-router.get("/otp", GuestMiddleware, AuthController.otp);
-router.post("/otp", GuestMiddleware, AuthController.handleOtp);
-router.get("/logout", TokenMiddleware, AuthController.logout);
+router.use(OtpMiddleware);
+// Otp
+router.get("/otp", AuthController.otp);
+router.post("/otp", csrf.verify, AuthController.handleOtp);
 
 module.exports = router;

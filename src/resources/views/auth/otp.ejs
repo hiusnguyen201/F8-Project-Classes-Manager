@@ -18,6 +18,11 @@
           <input name="otp" type="number" maxlength="1" class="input" />
           <input name="otp" type="number" maxlength="1" class="input" />
           <input name="otp" type="number" maxlength="1" class="input" />
+          <input
+            type="hidden"
+            name="csrfToken"
+            value="<%= csrf.createToken() %>"
+          />
         </div>
         <div class="d-grid mt-4">
           <button type="submit" class="btn btn-submit btn-submit-otp">
@@ -28,7 +33,9 @@
 
       <div class="row">
         <div class="col-6">
-          <a href="<%= loginPath %>" class="btn btn-submit w-100 btn-back-login"
+          <a
+            href="<%= redirectPath.LOGIN_AUTH %>"
+            class="btn btn-submit w-100 btn-back-login"
             >Back To Login</a
           >
         </div>

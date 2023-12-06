@@ -1,99 +1,151 @@
-<div class="tab-pane fade <%= checkIncludes(url, 'security')? 'text-left show active' : '' %>" id="vert-tabs-profile"
-    role="tabpanel" aria-labelledby="vert-tabs-profile-tab">
-    <div class="group-field">
-        <span style=" display: block; font-size: 16px;">
-            <% if(error?.length) {%>
-                <div class="alert alert-danger">
-                    <%= error %>
-                </div>
-                <% } %>
-        </span>
-        <h5>Link Social Account To Login</h5>
-        <!-- Google -->
-        <div class="tab-pane_group">
-            <span class="tab-pane_title">Link with Google</span>
-            <div class="d-flex align-items-center justify-content-between py-1 mb-1">
-                <div class="col-6">
-                    <span class="tab-pane_status d-flex align-items-center"><i class="fab fa-google mr-2"></i>
-                        <%= (userGoogle)? 'Connected' : "Unconnected" %>
-                    </span>
-                </div>
-                <div class="col-5">
-                    <% if(userGoogle) {%>
-                        <form action="" method="post">
-                            <input type="hidden" name="userSocialId" value="<%= userGoogle?.id%>" />
-                            <input type="hidden" name="provider" value="<%= userGoogle?.provider%>" />
-                            <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
-                            <input type="hidden" name="_method" value="DELETE" />
-                            <button type="submit"
-                                class="ml-5 d-flex align-items-center justify-content-center btn-social btn active">
-                                <%= (userGoogle)? "ON" : "OFF" %>
-                            </button>
-                        </form>
-                        <% } else {%>
-                            <a onclick="socialLogin('google')" href="javascript:void(0)"
-                                class="ml-5 btn d-flex align-items-center justify-content-center btn-social">OFF</a>
-                            <% } %>
-                </div>
-            </div>
+<div
+  class="tab-pane fade <%= checkIncludes(url, 'security')? 'text-left show active' : '' %>"
+  id="vert-tabs-profile"
+  role="tabpanel"
+  aria-labelledby="vert-tabs-profile-tab"
+>
+  <div class="group-field">
+    <h5>Link Social Account To Login</h5>
+    <!-- Google -->
+    <div class="tab-pane_group">
+      <span class="tab-pane_title">Link with Google</span>
+      <div class="d-flex align-items-center justify-content-between py-1 mb-1">
+        <div class="col-6">
+          <span class="tab-pane_status d-flex align-items-center"
+            ><i class="fab fa-google mr-2"></i>
+            <%= (userGoogle)? 'Connected' : "Unconnected" %>
+          </span>
         </div>
-        <!-- Github -->
-        <div class="tab-pane_group">
-            <span class="tab-pane_title">Link with Github</span>
-            <div class="d-flex align-items-center justify-content-between py-1 mb-1">
-                <div class="col-6">
-                    <span class="tab-pane_status d-flex align-items-center"><i class="fab fa-github mr-2"
-                            style="color: #1f2328"></i>
-                        <%= (userGithub)? 'Connected' : "Unconnected" %>
-                    </span>
-                </div>
-                <div class="col-5">
-                    <% if(userGithub) {%>
-                        <form action="" method="post">
-                            <input type="hidden" name="userSocialId" value="<%= userGithub?.id%>" />
-                            <input type="hidden" name="provider" value="<%= userGithub?.provider%>" />
-                            <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
-                            <input type="hidden" name="_method" value="DELETE" />
-                            <button type="submit"
-                                class="ml-5 d-flex align-items-center justify-content-center btn-social btn active">
-                                <%= (userGithub)? "ON" : "OFF" %>
-                            </button>
-                        </form>
-                        <% } else {%>
-                            <a onclick="socialLogin('github')" href="javascript:void(0)"
-                                class="ml-5 btn d-flex align-items-center justify-content-center btn-social">OFF</a>
-                            <% } %>
-                </div>
-            </div>
+        <div class="col-5">
+          <% if(userGoogle) {%>
+          <form action="" method="post">
+            <input
+              type="hidden"
+              name="userSocialId"
+              value="<%= userGoogle?.id%>"
+            />
+            <input
+              type="hidden"
+              name="provider"
+              value="<%= userGoogle?.provider%>"
+            />
+            <input
+              type="hidden"
+              name="csrfToken"
+              value="<%= csrf.createToken() %>"
+            />
+            <input type="hidden" name="_method" value="DELETE" />
+            <button
+              type="submit"
+              class="ml-5 d-flex align-items-center justify-content-center btn-social btn active"
+            >
+              <%= (userGoogle)? "ON" : "OFF" %>
+            </button>
+          </form>
+          <% } else {%>
+          <a
+            onclick="socialLogin('google')"
+            href="javascript:void(0)"
+            class="ml-5 btn d-flex align-items-center justify-content-center btn-social"
+            >OFF</a
+          >
+          <% } %>
         </div>
-        <!-- Facebook -->
-        <div class="tab-pane_group">
-            <span class="tab-pane_title">Link with Facebook</span>
-            <div class="d-flex align-items-center justify-content-between py-1 mb-1">
-                <div class="col-6">
-                    <span class="tab-pane_status d-flex align-items-center"><i class="fab fa-facebook mr-2"
-                            style="color: #0866ff"></i>
-                        <%= (userFacebook)? 'Connected' : "Unconnected" %>
-                    </span>
-                </div>
-                <div class="col-5">
-                    <% if(userFacebook) {%>
-                        <form action="" method="post">
-                            <input type="hidden" name="userSocialId" value="<%= userFacebook?.id%>" />
-                            <input type="hidden" name="provider" value="<%= userFacebook?.provider%>" />
-                            <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
-                            <input type="hidden" name="_method" value="DELETE" />
-                            <button type="submit"
-                                class="ml-5 d-flex align-items-center justify-content-center btn-social btn active">
-                                <%= (userFacebook)? "ON" : "OFF" %>
-                            </button>
-                        </form>
-                        <% } else {%>
-                            <a onclick="socialLogin('facebook')" href="javascript:void(0)"
-                                class="ml-5 btn d-flex align-items-center justify-content-center btn-social">OFF</a>
-                            <% } %>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <!-- Github -->
+    <div class="tab-pane_group">
+      <span class="tab-pane_title">Link with Github</span>
+      <div class="d-flex align-items-center justify-content-between py-1 mb-1">
+        <div class="col-6">
+          <span class="tab-pane_status d-flex align-items-center"
+            ><i class="fab fa-github mr-2" style="color: #1f2328"></i>
+            <%= (userGithub)? 'Connected' : "Unconnected" %>
+          </span>
+        </div>
+        <div class="col-5">
+          <% if(userGithub) {%>
+          <form action="" method="post">
+            <input
+              type="hidden"
+              name="userSocialId"
+              value="<%= userGithub?.id%>"
+            />
+            <input
+              type="hidden"
+              name="provider"
+              value="<%= userGithub?.provider%>"
+            />
+            <input
+              type="hidden"
+              name="csrfToken"
+              value="<%= csrf.createToken() %>"
+            />
+            <input type="hidden" name="_method" value="DELETE" />
+            <button
+              type="submit"
+              class="ml-5 d-flex align-items-center justify-content-center btn-social btn active"
+            >
+              <%= (userGithub)? "ON" : "OFF" %>
+            </button>
+          </form>
+          <% } else {%>
+          <a
+            onclick="socialLogin('github')"
+            href="javascript:void(0)"
+            class="ml-5 btn d-flex align-items-center justify-content-center btn-social"
+            >OFF</a
+          >
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <!-- Facebook -->
+    <div class="tab-pane_group">
+      <span class="tab-pane_title">Link with Facebook</span>
+      <div class="d-flex align-items-center justify-content-between py-1 mb-1">
+        <div class="col-6">
+          <span class="tab-pane_status d-flex align-items-center"
+            ><i class="fab fa-facebook mr-2" style="color: #0866ff"></i>
+            <%= (userFacebook)? 'Connected' : "Unconnected" %>
+          </span>
+        </div>
+        <div class="col-5">
+          <% if(userFacebook) {%>
+          <form action="" method="post">
+            <input
+              type="hidden"
+              name="userSocialId"
+              value="<%= userFacebook?.id%>"
+            />
+            <input
+              type="hidden"
+              name="provider"
+              value="<%= userFacebook?.provider%>"
+            />
+            <input
+              type="hidden"
+              name="csrfToken"
+              value="<%= csrf.createToken() %>"
+            />
+            <input type="hidden" name="_method" value="DELETE" />
+            <button
+              type="submit"
+              class="ml-5 d-flex align-items-center justify-content-center btn-social btn active"
+            >
+              <%= (userFacebook)? "ON" : "OFF" %>
+            </button>
+          </form>
+          <% } else {%>
+          <a
+            onclick="socialLogin('facebook')"
+            href="javascript:void(0)"
+            class="ml-5 btn d-flex align-items-center justify-content-center btn-social"
+            >OFF</a
+          >
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

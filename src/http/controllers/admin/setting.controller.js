@@ -27,8 +27,8 @@ module.exports = {
       "facebook"
     );
 
-    res.render(renderPath.SETTINGS_ADMIN, {
-      layout: "layouts/main.layout.ejs",
+    return res.render(renderPath.SETTINGS_ADMIN, {
+      title: `Settings - ${process.env.APP_NAME}`,
       user,
       redirectPath,
       userGoogle,
@@ -40,6 +40,24 @@ module.exports = {
       success,
       checkIncludes,
     });
+  },
+
+  handleUpdateProfile: async (req, res) => {
+    let { errors } = validationResult(req);
+    if (errors[0]?.msg === "Invalid value") {
+      errors = [];
+    }
+
+    if (errors?.length) {
+      req.flash("error", errors[0].msg);
+      return res.redirect(redirectPath.SETTINGS_PROFILE_ADMIN);
+    }
+
+    const userId = req.user.id;
+    const { name, email, phone, address } = req.body;
+    await usersService.updateProfile(userId, name, email, phone, address);
+    req.flash("success", messageInfo.UPDATED_PROFILE);
+    return res.redirect(redirectPath.SETTINGS_PROFILE_ADMIN);
   },
 
   handleRemoveUserSocial: async (req, res) => {

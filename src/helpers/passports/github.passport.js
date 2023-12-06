@@ -16,21 +16,21 @@ module.exports = new GitHubStrategy(
       profile.id
     );
 
-    if (!req.isAuthenticated()) {
+    if (!req.cookies.token) {
       // Login Page
       if (!userSocial) {
         return done(null, false, { message: messageError.ACCOUNT_NOT_LINKED });
       }
+
       return done(null, userSocial.user_id);
     } else {
-      // Social Link page
       if (userSocial) {
         return done(null, false, {
           message: messageError.INVALID_LINK_ACCOUNT,
         });
       }
-
-      const [newUserSocial, created] =
+      // Social Link page
+      const [newUserSocial] =
         await socialsService.findOrCreateUserSocialProvider(
           profile.provider,
           profile.id,

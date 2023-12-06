@@ -4,6 +4,8 @@ const redirectPath = {
   OTP_AUTH: "/auth/otp",
   REGISTER: "/auth/register",
   LOGOUT: "/auth/logout",
+  EMAIL_PASS_RESET: "/auth/passwordreset",
+  RESET_PASSWORD_LINK: "/auth/passwordreset/:token",
   LOGIN_GOOGLE: "/auth/google/redirect",
   LOGIN_GITHUB: "/auth/github/redirect",
   LOGIN_FACEBOOK: "/auth/facebook/redirect",
@@ -26,6 +28,8 @@ const renderPath = {
   // Auth
   LOGIN_AUTH: "auth/login",
   OTP_AUTH: "auth/otp",
+  EMAIL_PASS_RESET: "auth/emailPassReset",
+  RESET_PASSWORD_LINK: "auth/resetPassword",
 
   // Student
   HOME_STUDENT: "students/home/index",

@@ -1,46 +1,78 @@
-//
 <div class="row d-flex justify-content-center">
-  <div class="col-12 col-md-8 col-lg-6 col-xl-5 d-flex justify-content-center align-items-center px-0">
+  <div
+    class="col-12 col-md-8 col-lg-6 col-xl-5 d-flex justify-content-center align-items-center px-0"
+  >
     <div class="card">
-      <p class="text-center fw-bold form-title mb-2">LOGIN</p>
+      <p class="text-center fw-bold form-title mb-3">LOGIN</p>
 
-      <% if(errors?.length) { %>
-        <div class="alert alert-danger">
-          <%= errors %>
+      <% if(error?.length) { %>
+      <div class="alert alert-danger"><%= error %></div>
+      <% } %> <% if(success?.length) { %>
+      <div class="alert alert-success"><%= success %></div>
+      <% } %>
+
+      <form action="" class="form-login" method="post">
+        <div class="form-floating mb-3">
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            placeholder="Email..."
+          />
+          <label for="floatingInput" class="form-label">Email address</label>
         </div>
-        <% } %>
+        <div class="form-floating">
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            placeholder="Password..."
+            autocomplete="off"
+          />
+          <input
+            type="hidden"
+            name="csrfToken"
+            value="<%= csrf.createToken() %>"
+          />
+          <label for="floatingPassword" class="form-label">Password</label>
+        </div>
+        <a
+          href="<%= redirectPath.EMAIL_PASS_RESET %>"
+          class="recover-btn d-block"
+          >Forgot your password?</a
+        >
+        <div class="d-grid">
+          <button type="submit" class="btn btn-submit">Log in</button>
+        </div>
+      </form>
 
-          <form action="" class="form-login" method="post">
-            <div class="form-floating mb-3">
-              <input type="email" class="form-control" name="email" id="floatingInput" placeholder="Email..." />
-              <label for="floatingInput" class="form-label">Email address</label>
-            </div>
-            <div class="form-floating">
-              <input type="password" name="password" class="form-control" id="floatingPassword"
-                placeholder="Password..." autocomplete="off" />
-              <label for="floatingPassword" class="form-label">Password</label>
-            </div>
-            <a href="#" class="recover-btn d-block">Forgot your password?</a>
-            <div class="d-grid">
-              <button type="submit" class="btn btn-submit">Log in</button>
-            </div>
-          </form>
-
-          <span>Or login with</span>
-          <div class="row socials-login">
-            <div class="col-4">
-              <a onclick="socialLogin('google')" href="javascript:void(0)" class="social-link"><i
-                  class="fa-brands fa-google fa-lg"></i></a>
-            </div>
-            <div class="col-4">
-              <a onclick="socialLogin('facebook')" href="javascript:void(0)" class="social-link"><i
-                  class="fa-brands fa-facebook fa-lg"></i></a>
-            </div>
-            <div class="col-4">
-              <a onclick="socialLogin('github')" href="javascript:void(0)" class="social-link"><i
-                  class="fa-brands fa-github fa-lg"></i></a>
-            </div>
-          </div>
+      <span>Or login with</span>
+      <div class="row socials-login">
+        <div class="col-4">
+          <a
+            onclick="socialLogin('google')"
+            href="javascript:void(0)"
+            class="social-link"
+            ><i class="fa-brands fa-google fa-lg"></i
+          ></a>
+        </div>
+        <div class="col-4">
+          <a
+            onclick="socialLogin('facebook')"
+            href="javascript:void(0)"
+            class="social-link"
+            ><i class="fa-brands fa-facebook fa-lg"></i
+          ></a>
+        </div>
+        <div class="col-4">
+          <a
+            onclick="socialLogin('github')"
+            href="javascript:void(0)"
+            class="social-link"
+            ><i class="fa-brands fa-github fa-lg"></i
+          ></a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

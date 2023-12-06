@@ -36,8 +36,8 @@ module.exports = {
 
       if (userOtp) {
         const user = await usersService.getUserById(userOtp.user_id);
-        // Get Mail Template
-        const mailTemplate = stringUtil.getMailTemplate(user.name, newOtp);
+        // Get Otp Mail Html
+        const otpMailHtml = stringUtil.getOtpMailHtml(user.name, newOtp);
 
         // Send Email
         job.createJob(
@@ -47,7 +47,7 @@ module.exports = {
             to: user.email,
             name: user.name,
           },
-          sendMailUtil(user.email, messageInfo.TWO_FA, mailTemplate)
+          sendMailUtil(user.email, messageInfo.TWO_FA, otpMailHtml)
         );
 
         return userOtp;
@@ -68,6 +68,13 @@ module.exports = {
       if (
         momentUtil.comparisonDate(userOtp.expire, momentUtil.getDateNow()) > 0
       ) {
+        await userOtp.destroy();
+        req.logout((err) => {
+          if (err) {
+            console.log(err);
+            return [null, null];
+          }
+        });
         return [null, messageError.OTP_EXPIRE];
       }
 
