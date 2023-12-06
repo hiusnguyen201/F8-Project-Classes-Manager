@@ -15,7 +15,7 @@ module.exports = new FacebookStrategy(
       profile.id
     );
 
-    if (!req.isAuthenticated()) {
+    if (!req.cookies.token) {
       // Login Page
       if (!userSocial) {
         return done(null, false, { message: messageError.ACCOUNT_NOT_LINKED });
@@ -29,7 +29,7 @@ module.exports = new FacebookStrategy(
         });
       }
 
-      const [newUserSocial, created] =
+      const [newUserSocial] =
         await socialsService.findOrCreateUserSocialProvider(
           profile.provider,
           profile.id,

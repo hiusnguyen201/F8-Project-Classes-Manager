@@ -1,0 +1,45 @@
+<div class="row d-flex justify-content-center">
+  <div
+    class="col-12 col-md-8 col-lg-6 col-xl-5 d-flex justify-content-center align-items-center px-0"
+  >
+    <div class="card">
+      <p class="text-center fw-bold form-title mb-3">RESET PASSWORD</p>
+      <% if(error?.length) { %>
+      <div class="alert alert-danger mb-3"><%= error %></div>
+      <% } %> <% if(success?.length) { %>
+      <div class="alert alert-success mb-3"><%= success %></div>
+      <% } else {%>
+      <form action="" method="post">
+        <div class="form-floating mb-3">
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="floatingInput"
+            placeholder="Email..."
+          />
+          <input
+            type="hidden"
+            name="csrfToken"
+            value="<%= csrf.createToken() %>"
+          />
+          <label for="floatingInput" class="form-label">Email address</label>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-submit">
+            Send password reset email
+          </button>
+        </div>
+      </form>
+      <% } %>
+
+      <div class="d-grid">
+        <a
+          href="<%= redirectPath.LOGIN_AUTH %>"
+          class="btn btn-submit w-100 btn-back-login my-0"
+          >Back to login</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

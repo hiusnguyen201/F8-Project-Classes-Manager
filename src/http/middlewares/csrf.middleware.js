@@ -10,10 +10,15 @@ module.exports = {
 
     if (req.method !== "GET") {
       if (!tokens.verify(secret, token)) {
-        const user = await usersService.getUserById(req.user);
-        const { Type } = user;
-        req.flash("error", messageError.INVALID_TOKEN_CSRF);
-        return res.redirect(`/${Type.name}${req.url}`);
+        if (req.user) {
+          const user = await usersService.getUserById(req.user);
+          const { Type } = user;
+          req.flash("error", messageError.INVALID_TOKEN_CSRF);
+          return res.redirect(`/${Type.name}${req.url}`);
+        } else {
+          req.flash("error", messageError.INVALID_TOKEN_CSRF);
+          return res.redirect(`/${req.url}`);
+        }
       }
     }
 

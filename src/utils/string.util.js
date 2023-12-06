@@ -3,10 +3,10 @@ const fs = require("fs");
 const { messageError } = require("../constants/constants.message");
 
 module.exports = {
-  getMailTemplate: (name, otp) => {
+  getOtpMailHtml: (name, otp) => {
     const mailTemplatePath = path.join(
       path.dirname(__dirname),
-      "/resources/views/auth/otp-mail.html"
+      "/resources/views/mail/otp.mail.html"
     );
     try {
       let mailTemplate = fs.readFileSync(mailTemplatePath).toString();
@@ -19,8 +19,33 @@ module.exports = {
           .replaceAll("{{expire}}", process.env.OTP_EXPIRE_MINUTES);
         return mailTemplate;
       }
-    } catch (error) {
-      throw new Error(messageError.MAIL_ACTIVE_TEMPLATE);
+    } catch (err) {
+      console.log(err);
+      throw new Error(messageError.READ_MAIL_HTML);
+    }
+  },
+
+  getResetPasswordMailHtml: (name, linkReset, token) => {
+    const mailTemplatePath = path.join(
+      path.dirname(__dirname),
+      "/resources/views/mail/resetPassword.mail.html"
+    );
+
+    try {
+      let mailTemplate = fs.readFileSync(mailTemplatePath).toString();
+
+      if (mailTemplate) {
+        mailTemplate = mailTemplate
+          .replaceAll("{{brand}}", process.env.APP_NAME)
+          .replaceAll("{{name}}", name)
+          .replaceAll("{{expire}}", process.env.JWT_EXPIRE)
+          .replaceAll("{{linkReset}}", linkReset)
+          .replaceAll("{{token}}", token);
+        return mailTemplate;
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error(messageError.READ_MAIL_HTML);
     }
   },
 

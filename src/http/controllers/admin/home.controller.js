@@ -5,9 +5,9 @@ const {
 
 module.exports = {
   index: async (req, res) => {
-    res.render(renderPath.HOME_ADMIN, {
-      layout: "layouts/main.layout.ejs",
+    return res.render(renderPath.HOME_ADMIN, {
       user: req.user,
+      title: `Home - ${process.env.APP_NAME}`,
       redirectPath,
     });
   },

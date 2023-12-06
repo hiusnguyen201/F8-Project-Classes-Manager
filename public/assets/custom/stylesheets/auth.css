@@ -1,5 +1,3 @@
-/*  */
-
 :root {
   --primary-color: #fffffe;
   --second-color: #d1d1e9;
@@ -22,9 +20,9 @@ body {
 }
 
 .form-title {
-  font-size: 42px;
+  font-size: 38px;
   color: var(--bg-button);
-  letter-spacing: 8px;
+  letter-spacing: 4px;
 }
 
 .alert {
@@ -98,6 +96,11 @@ body {
   color: var(--primary-color);
 }
 
+.btn-submit:hover {
+  background-color: #4f39bf;
+  transition: 0.3s;
+}
+
 span {
   font-size: 16px;
   color: var(--card-bg);
@@ -122,23 +125,39 @@ span {
   border-radius: 4px;
 }
 
-.social-link .fa-brands:hover {
-  cursor: pointer;
-  opacity: 0.8;
-}
-
 .social-link {
   width: 100%;
 }
 
-.social-link .fa-brands.fa-google {
+.social-link .fa-brands.fa-google,
+.btn-back-login {
   background-color: #d14938;
 }
-.social-link .fa-brands.fa-facebook {
-  background-color: #426bc6;
+.social-link .fa-brands.fa-google:hover,
+.btn-back-login:hover {
+  background-color: #9b382b;
+  cursor: pointer;
+  transition: 0.3s;
 }
+
+.social-link .fa-brands.fa-facebook,
+.btn-reset-form {
+  background-color: #3676ff;
+}
+.social-link .fa-brands.fa-facebook:hover,
+.btn-reset-form:hover {
+  background-color: #3367d7;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
 .social-link .fa-brands.fa-github {
   background-color: #2b3034;
+}
+.social-link .fa-brands.fa-github:hover {
+  background-color: #3f4848;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 input:-webkit-autofill,
@@ -174,18 +193,6 @@ input[name="otp"]::-webkit-outer-spin-button,
 input[name="otp"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-.btn-back-login,
-.btn-back-login:hover,
-.btn-back-login:first-child:active {
-  background: #d14938;
-}
-
-.btn-reset-form,
-.btn-reset-form:hover,
-.btn-reset-form:first-child:active {
-  background: #426bc6;
 }
 
 @media (max-width: 481px) {

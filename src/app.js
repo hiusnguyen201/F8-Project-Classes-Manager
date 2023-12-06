@@ -66,7 +66,6 @@ passport.use("facebook", facebookPassport);
 app.set("views", path.join(__dirname, "resources/views"));
 app.set("view engine", "ejs");
 app.set("layout", "layouts/main.layout.ejs");
-app.set("authLayout", "layouts/auth.layout.ejs");
 app.use(expressLayouts);
 
 app.use(logger("dev"));

@@ -1,40 +1,59 @@
 <div class="card-body">
   <div class="card mx-auto">
     <div class="row mx-2">
-      <div class="col-6 col-sm-4" style="max-width: 276px;">
-        <h4 class="setting-title"><a class="d-flex align-items-center btn-back px-2 py-2"
-            href="<%= redirectPath.HOME_ADMIN %>"><i class="fas fa-arrow-left"></i></a>Settings</h4>
-        <div class="nav flex-column nav-tabs" id="vert-tabs-tab" role="tablist" aria-orientation="vertical">
-          <a class="nav-link <%= checkIncludes(url, 'profile')? 'active' : '' %>" id="vert-tabs-home-tab"
+      <div class="col-6 col-sm-4" style="max-width: 276px">
+        <h4 class="setting-title">
+          <a
+            class="d-flex align-items-center btn-back px-2 py-2"
+            href="<%= redirectPath.HOME_ADMIN %>"
+            ><i class="fas fa-arrow-left"></i></a
+          >Settings
+        </h4>
+        <div
+          class="nav flex-column nav-tabs"
+          id="vert-tabs-tab"
+          role="tablist"
+          aria-orientation="vertical"
+        >
+          <a
+            class="nav-link <%= checkIncludes(url, 'profile')? 'active' : '' %>"
+            id="vert-tabs-home-tab"
             href="<%= checkIncludes(url, 'profile')? 'javascript:void(0)' : redirectPath.SETTINGS_PROFILE_ADMIN %>"
-            role="tab" aria-controls="vert-tabs-home" aria-selected="true"><i class="fas fa-user mr-2"></i>Account
-            settings</a>
-          <a class="nav-link <%= checkIncludes(url, 'security')? 'active' : '' %>" id="vert-tabs-profile-tab"
+            role="tab"
+            aria-controls="vert-tabs-home"
+            aria-selected="true"
+            ><i class="fas fa-user mr-2"></i>Account settings</a
+          >
+          <a
+            class="nav-link <%= checkIncludes(url, 'security')? 'active' : '' %>"
+            id="vert-tabs-profile-tab"
             href="<%= checkIncludes(url, 'security')? 'javascript:void(0)' : redirectPath.SETTINGS_SECURITY_ADMIN %>"
-            role="tab" aria-controls="vert-tabs-profile" aria-selected="false"><i
-              class="fas fa-shield-alt mr-2"></i>Security and login</a>
-          <a class="nav-link <%= checkIncludes(url, 'password')? 'active' : '' %>" id="vert-tabs-profile-tab"
+            role="tab"
+            aria-controls="vert-tabs-profile"
+            aria-selected="false"
+            ><i class="fas fa-shield-alt mr-2"></i>Security and login</a
+          >
+          <a
+            class="nav-link <%= checkIncludes(url, 'password')? 'active' : '' %>"
+            id="vert-tabs-profile-tab"
             href="<%= checkIncludes(url, 'password')? 'javascript:void(0)' : redirectPath.SETTINGS_PASSWORD_ADMIN %>"
-            role="tab" aria-controls="vert-tabs-profile" aria-selected="false"><i
-              class="fas fa-lock mr-2"></i>Password</a>
+            role="tab"
+            aria-controls="vert-tabs-profile"
+            aria-selected="false"
+            ><i class="fas fa-lock mr-2"></i>Password</a
+          >
         </div>
       </div>
       <div class="col-7 col-sm-8">
         <% if(error?.length) { %>
-          <div class="alert alert-danger">
-            <%= error %>
-          </div>
-          <% }%>
-            <% if(success?.length) { %>
-              <div class="alert alert-success">
-                <%= success %>
-              </div>
-              <% }%>
-                <div class="tab-content" id="vert-tabs-tabContent">
-                  <%- include("./profile.ejs") %>
-                    <%- include("./security.ejs") %>
-                      <%- include("./password.ejs") %>
-                </div>
+        <div class="alert alert-danger"><%= error %></div>
+        <% }%> <% if(success?.length) { %>
+        <div class="alert alert-success"><%= success %></div>
+        <% }%>
+        <div class="tab-content" id="vert-tabs-tabContent">
+          <%- include("./profile.ejs") %> <%- include("./security.ejs") %> <%-
+          include("./password.ejs") %>
+        </div>
       </div>
     </div>
   </div>
@@ -113,7 +132,7 @@
       width: 80%;
     }
 
-    .tab-pane_group+.tab-pane_group {
+    .tab-pane_group + .tab-pane_group {
       margin-top: 24px;
     }
 
@@ -162,17 +181,13 @@
       border-bottom: 1px solid #eaeaea;
     }
 
-    .tab-pane_info {
-      pointer-events: none;
-    }
-
     .btn-social {
       background-color: transparent;
       font-size: 16px;
       font-weight: 600;
       border-radius: 30px;
       border: 1px solid #ccc;
-      width: 90px;
+      width: 100px;
       position: relative;
     }
 
@@ -204,11 +219,14 @@
     }
 
     .fa-google {
-      background: conic-gradient(from -45deg,
+      background: conic-gradient(
+          from -45deg,
           #ea4335 110deg,
           #4285f4 90deg 180deg,
           #34a853 180deg 270deg,
-          #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+          #fbbc05 270deg
+        )
+        73% 55%/150% 150% no-repeat;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -238,6 +256,14 @@
         width: 100%;
       }
 
+      .tab-pane_group {
+        width: 90%;
+      }
+
+      .tab-pane_password {
+        width: 100%;
+      }
+
       #vert-tabs-tab {
         width: 100%;
       }
@@ -246,6 +272,14 @@
     @media (max-width: 426px) {
       .row {
         flex-direction: column;
+      }
+
+      .tab-pane_group {
+        width: 100%;
+      }
+
+      .tab-pane_group .col-9 {
+        max-width: 100%;
       }
 
       .col-6.col-sm-4,
@@ -258,7 +292,13 @@
         padding: 0rem;
       }
 
-      .content-wrapper>.content,
+      .tab-pane_group
+        .d-flex.align-items-center.justify-content-between
+        .btn-social.btn {
+        margin-left: 0 !important;
+      }
+
+      .content-wrapper > .content,
       .container-fluid {
         padding: 0;
       }
