@@ -1,6 +1,5 @@
 const { messageError } = require("../../constants/constants.message");
 const models = require("../../models/index");
-const User = models.User;
 const UserSocial = models.User_Social;
 
 module.exports = {

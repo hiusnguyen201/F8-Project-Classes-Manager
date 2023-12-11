@@ -18,10 +18,27 @@ const redirectPath = {
 
   // Admin
   HOME_ADMIN: "/admin",
+  HOME_ADMIN_USERS: "/admin/users",
+
+  // Setting
   SETTINGS_ADMIN: "/admin/settings",
+  SETTINGS_TEACHER: "/teacher/settings",
+  SETTINGS_STUDENT: "/settings",
+
   SETTINGS_PROFILE_ADMIN: "/admin/settings/profile",
   SETTINGS_SECURITY_ADMIN: "/admin/settings/security",
   SETTINGS_PASSWORD_ADMIN: "/admin/settings/password",
+
+  SETTINGS_PROFILE_TEACHER: "/teacher/settings/profile",
+  SETTINGS_SECURITY_TEACHER: "/teacher/settings/security",
+  SETTINGS_PASSWORD_TEACHER: "/teacher/settings/password",
+
+  SETTINGS_PROFILE_STUDENT: "/settings/profile",
+  SETTINGS_SECURITY_STUDENT: "/settings/security",
+  SETTINGS_PASSWORD_STUDENT: "/settings/password",
+
+  // Error
+  HOME_ERRORS: "/errors",
 };
 
 const renderPath = {
@@ -39,10 +56,17 @@ const renderPath = {
 
   // Admin
   HOME_ADMIN: "admin/home/index",
-  SETTINGS_ADMIN: "admin/settings/index",
+  HOME_ADMIN_USERS: "admin/users/index",
+
+  // Setting
+  HOME_SETTING: "settings/index",
+
+  // Error
+  HOME_ERRORS: "errors/index",
 };
 
 module.exports = {
   redirectPath,
   renderPath,
 };
+//
