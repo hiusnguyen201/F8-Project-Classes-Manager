@@ -6,49 +6,37 @@ const momentUtil = require("../../utils/moment.util");
 const tokenUtil = require("../../utils/token.util");
 const stringUtil = require("../../utils/string.util");
 const sendMailUtil = require("../../utils/sendMail.util");
-const job = require("../../helpers/kue.helper");
 const models = require("../../models/index");
 const tokensService = require("../services/tokens.service");
-const usersService = require("../services/users.service");
 const UserOtp = models.User_Otp;
 
 module.exports = {
   // Done
-  createUserOtp: async (userId) => {
+  createUserOtp: async (user) => {
     try {
+      const { id, email, name } = user;
       // Check Exist Otp
       const existUserOtp = await UserOtp.findOne({
-        where: { user_id: +userId },
+        where: { user_id: +id },
       });
       if (existUserOtp) {
         await existUserOtp.destroy();
       }
 
       // Create new Otp
-      const newOtp = tokenUtil.createOtpTokenByOtplib();
+      const otp = tokenUtil.createOtpTokenByOtplib();
       const userOtp = await UserOtp.create({
-        otp: newOtp,
+        otp,
         expire: momentUtil.createOtpExpire(),
-        user_id: +userId,
-        createdAt: momentUtil.getDateNow(),
-        updatedAt: momentUtil.getDateNow(),
+        user_id: +id,
       });
 
       if (userOtp) {
-        const user = await usersService.getUserById(userOtp.user_id);
         // Get Otp Mail Html
-        const otpMailHtml = stringUtil.getOtpMailHtml(user.name, newOtp);
+        const otpMailHtml = stringUtil.getOtpMailHtml(name, otp);
 
         // Send Email
-        job.createJob(
-          "SendMail",
-          {
-            title: messageInfo.TWO_FA,
-            to: user.email,
-            name: user.name,
-          },
-          sendMailUtil(user.email, messageInfo.TWO_FA, otpMailHtml)
-        );
+        sendMailUtil(email, messageInfo.TWO_FA, otpMailHtml);
 
         return userOtp;
       }
@@ -69,12 +57,6 @@ module.exports = {
         momentUtil.comparisonDate(userOtp.expire, momentUtil.getDateNow()) > 0
       ) {
         await userOtp.destroy();
-        req.logout((err) => {
-          if (err) {
-            console.log(err);
-            return [null, null];
-          }
-        });
         return [null, messageError.OTP_EXPIRE];
       }
 

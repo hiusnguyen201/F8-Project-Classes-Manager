@@ -20,7 +20,7 @@ const githubPassport = require("./helpers/passports/github.passport");
 const facebookPassport = require("./helpers/passports/facebook.passport");
 
 // Middleware
-const TokenMiddleware = require("./http/middlewares/token.middleware");
+const AuthMiddleware = require("./http/middlewares/auth.middleware");
 const TypeMiddleware = require("./http/middlewares/type.middeware");
 
 // Route
@@ -28,6 +28,7 @@ const studentsRouter = require("./routes/students/index");
 const teachersRouter = require("./routes/teachers/index");
 const adminRouter = require("./routes/admin/index");
 const authRouter = require("./routes/auth/index");
+const settingsRouter = require("./routes/settings/index");
 
 var app = express();
 // app.use(helmet());
@@ -86,11 +87,12 @@ app.use(
 
 app.use("/auth", authRouter);
 
-app.use(TokenMiddleware);
+app.use(AuthMiddleware);
 app.use(TypeMiddleware);
 app.use("/", studentsRouter);
 app.use("/teacher", teachersRouter);
 app.use("/admin", adminRouter);
+app.use("/:type/settings", settingsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

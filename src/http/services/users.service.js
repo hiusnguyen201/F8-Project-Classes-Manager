@@ -1,11 +1,11 @@
 const {
   messageError,
   messageInfo,
+  messageSuccess,
 } = require("../../constants/constants.message");
 const { redirectPath } = require("../../constants/constants.path");
 const tokensUtil = require("../../utils/token.util");
 const stringUtil = require("../../utils/string.util");
-const job = require("../../helpers/kue.helper");
 const sendMailUtil = require("../../utils/sendMail.util");
 const models = require("../../models/index");
 const User = models.User;
@@ -39,28 +39,16 @@ module.exports = {
     }
   },
 
-  updatePassword: async (userId, password, type) => {
+  updatePassword: async (userId, password) => {
     try {
       const hash = tokensUtil.createHashByBcrypt(password);
+      const statusUpdated = await User.update(
+        { password: hash, first_login: 1 },
+        { where: { id: +userId } }
+      );
 
-      if (!type) {
-        const statusUpdated = await User.update(
-          { password: hash },
-          { where: { id: +userId } }
-        );
-
-        if (statusUpdated) {
-          return statusUpdated;
-        }
-      } else {
-        const statusUpdated = await User.update(
-          { password: hash, first_login: 1 },
-          { where: { id: +userId } }
-        );
-
-        if (statusUpdated) {
-          return statusUpdated;
-        }
+      if (statusUpdated) {
+        return statusUpdated;
       }
     } catch (err) {
       console.log(err);
@@ -109,21 +97,17 @@ module.exports = {
         token
       );
 
-      job.createJob(
-        "SendMail",
-        {
-          title: messageInfo.RESET_PASS_TITLE,
-          to: user.email,
-          name: user.name,
-        },
-        sendMailUtil(user.email, messageInfo.RESET_PASS_TITLE, resetPassHtml)
-      );
+      sendMailUtil(user.email, messageInfo.RESET_PASS_TITLE, resetPassHtml);
 
-      return [true, messageInfo.SENDED_RESET_PASS];
+      return [true, messageSuccess.SENDED_RESET_PASS];
     } catch (err) {
       console.log(err);
       throw new Error(messageError.SERVER_ERROR);
     }
   },
 };
+<<<<<<< HEAD
 //
+=======
+//
+>>>>>>> feature/16-code-feature-login

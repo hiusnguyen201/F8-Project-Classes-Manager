@@ -1,17 +1,22 @@
-module.exports = (req, res, next) => {
-  const { token: tokenReset } = req.params;
+const tokenUtil = require("../../utils/token.util");
+const { messageError } = require("../../constants/constants.message");
+const { redirectPath } = require("../../constants/constants.path");
 
-  if (!tokenReset) {
+module.exports = (req, res, next) => {
+  const { token } = req.params;
+
+  if (!token) {
     return res.redirect(redirectPath.EMAIL_PASS_RESET);
   }
 
-  const userIdReset = tokenUtil.verifyTokenByJwt(tokenReset);
-  if (req.user && !userIdReset) {
+  const userIdReset = tokenUtil.verifyTokenByJwt(token);
+  if (!userIdReset) {
+    req.flash("error", messageError.JWT_INVALID_TOKEN);
+    return res.redirect(redirectPath.EMAIL_PASS_RESET);
+  } else if (req.user && !userIdReset) {
     req.flash("error", messageError.JWT_INVALID_TOKEN);
     return res.redirect(redirectPath.LOGIN_AUTH);
-  } else if (!userIdReset) {
-    req.flash("error", messageError.JWT_INVALID_TOKEN);
-    return res.redirect(redirectPath.EMAIL_PASS_RESET);
   }
+
   next();
 };

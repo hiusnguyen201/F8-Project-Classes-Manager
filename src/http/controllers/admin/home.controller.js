@@ -11,5 +11,13 @@ module.exports = {
       redirectPath,
     });
   },
+
+  usersIndex: async (req, res) => {
+    return res.render(renderPath.HOME_ADMIN_USERS, {
+      user: req.user,
+      title: `Manage Users - ${process.env.APP_NAME}`,
+      redirectPath,
+    });
+  },
 };
 //

@@ -4,12 +4,10 @@ const {
 } = require("../../../constants/constants.path");
 module.exports = {
   index: (req, res) => {
-    const user = req.user;
-    res.render(renderPath.HOME_TEACHER, {
-      layout: "layouts/main.layout.ejs",
-      user,
+    return res.render(renderPath.HOME_TEACHER, {
+      title: `Home - ${process.env.APP_NAME}`,
+      user: req.user,
       redirectPath,
     });
   },
 };
-//

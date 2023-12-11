@@ -1,6 +1,5 @@
 const { messageError } = require("../../constants/constants.message");
 const tokenUtil = require("../../utils/token.util");
-const momentUtil = require("../../utils/moment.util");
 const models = require("../../models/index");
 const LoginToken = models.Login_Token;
 
@@ -20,8 +19,6 @@ module.exports = {
       const newLoginToken = await LoginToken.create({
         token,
         user_id: userId,
-        createdAt: momentUtil.getDateNow(),
-        updatedAt: momentUtil.getDateNow(),
       });
 
       if (newLoginToken) {

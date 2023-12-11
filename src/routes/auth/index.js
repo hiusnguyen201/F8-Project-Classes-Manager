@@ -3,23 +3,19 @@ var express = require("express");
 var router = express.Router();
 const passport = require("passport");
 
-// Auth
-const AuthController = require("../..//http/controllers/auth/auth.controller");
-const AuthMiddleware = require("../../http/middlewares/auth.middleware");
-const TokenMiddleware = require("../../http/middlewares/token.middleware");
-const GuestMiddleware = require("../../http/middlewares/guest.middleware");
-const JwtTokenMiddleware = require("../../http/middlewares/jwtToken.middleware");
-const OtpMiddleware = require("../../http/middlewares/otp.middleware");
-const csrf = require("../../http/middlewares/csrf.middleware");
-const {
-  validateResetPassword,
-  validateEmailResetPass,
-  validateLoginAccount,
-} = require("../../utils/validator");
+const AuthController = require("../../http/controllers/auth/auth.controller");
+
+const validator = require("../../utils/validator");
 const { redirectPath } = require("../../constants/constants.path");
 
+const AuthMiddleware = require("../../http/middlewares/auth.middleware");
+const GuestMiddleware = require("../../http/middlewares/guest.middleware");
+const OtpMiddleware = require("../../http/middlewares/otp.middleware");
+const csrf = require("../../http/middlewares/csrf.middleware");
+const JwtTokenMiddleware = require("../../http/middlewares/jwtToken.middleware");
+
 // Logout
-router.get("/logout", TokenMiddleware, AuthController.logout);
+router.get("/logout", AuthMiddleware, AuthController.logout);
 
 // Google Login
 router.get("/google/redirect", passport.authenticate("google"));
@@ -45,9 +41,7 @@ router.get(
       });
     })(req, res, next);
   },
-  (req, res) => {
-    AuthController.handleLogin(req, res, "google");
-  }
+  AuthController.handleSocialLogin
 );
 
 // Github Login
@@ -74,9 +68,7 @@ router.get(
       });
     })(req, res, next);
   },
-  (req, res) => {
-    AuthController.handleLogin(req, res, "github");
-  }
+  AuthController.handleSocialLogin
 );
 
 // Facebook Login
@@ -103,9 +95,7 @@ router.get(
       });
     })(req, res, next);
   },
-  (req, res) => {
-    AuthController.handleLogin(req, res, "facebook");
-  }
+  AuthController.handleSocialLogin
 );
 
 router.use(GuestMiddleware);
@@ -114,14 +104,12 @@ router.get("/login", AuthController.login);
 router.post(
   "/login",
   csrf.verify,
-  validateLoginAccount(),
+  validator.validateLoginAndPassword("email", "password"),
   passport.authenticate("local", {
     failureRedirect: redirectPath.LOGIN_AUTH,
     failureFlash: true,
   }),
-  (req, res) => {
-    AuthController.handleLogin(req, res, null);
-  }
+  AuthController.handleLocalLogin
 );
 
 // Password
@@ -129,18 +117,21 @@ router.get("/passwordreset", AuthController.emailResetPass);
 router.post(
   "/passwordreset",
   csrf.verify,
-  validateEmailResetPass(),
+  validator.validateLoginAndPassword("email"),
   AuthController.handleEmailResetPass
 );
-router.get("/passwordreset/:token", AuthController.resetPassword);
+router.get(
+  "/passwordreset/:token",
+  JwtTokenMiddleware,
+  AuthController.resetPassword
+);
 router.patch(
   "/passwordreset/:token",
   csrf.verify,
-  validateResetPassword(),
+  validator.validateLoginAndPassword("newPassword", "confirmPassword"),
   AuthController.handleResetPassword
 );
 
-router.use(AuthMiddleware);
 router.use(OtpMiddleware);
 // Otp
 router.get("/otp", AuthController.otp);

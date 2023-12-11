@@ -44,7 +44,13 @@ body {
   background-color: #fffffe;
 }
 
-.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+[class*="sidebar-dark-"] .nav-sidebar > .nav-item > .nav-link {
+  color: #232946;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+[class*="sidebar-dark-"] .nav-sidebar > .nav-item:hover > .nav-link {
+  transition: 0.3s;
   background-color: #6246ea;
   border-radius: 0;
 }

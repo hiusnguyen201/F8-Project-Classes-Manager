@@ -5,7 +5,7 @@ const {
 } = require("../../../constants/constants.path");
 const {
   messageError,
-  messageInfo,
+  messageSuccess,
 } = require("../../../constants/constants.message");
 const otpsService = require("../../services/otps.service");
 const tokensService = require("../../services/tokens.service");
@@ -17,7 +17,6 @@ module.exports = {
   login: (req, res) => {
     const error = req.flash("error");
     const success = req.flash("success");
-
     if (error[0] === "Missing credentials") {
       error[0] = messageError.MISSING_CREDENTIALS;
     }
@@ -32,28 +31,36 @@ module.exports = {
     });
   },
 
-  handleLogin: async (req, res, social = null) => {
-    const userId = req.user;
-    const token = req.cookies.token;
-    if (social) {
-      if (token) {
-        req.flash("success", messageInfo.LINK_ACCOUNT_SOCIAL_SUCCESS);
-      } else {
-        res.clearCookie("token");
-        const loginToken = await tokensService.createLoginToken(userId);
-        res.cookie("token", loginToken.token);
-      }
-      return res.send("<script>window.close()</script>");
-    } else {
-      const user = await usersService.getUserById(req.user);
-      if (!user.first_login) {
-        const tokenReset = tokenUtil.createTokenByJwt(user.id);
-        return res.redirect(`${redirectPath.EMAIL_PASS_RESET}/${tokenReset}`);
-      }
-      await otpsService.createUserOtp(userId);
-      req.flash("success", messageInfo.SENDED_OTP);
-      return res.redirect(redirectPath.OTP_AUTH);
+  handleLocalLogin: async (req, res) => {
+    const { errors } = validationResult(req);
+    if (errors?.length) {
+      req.flash("error", errors[0].msg);
+      return res.redirect(redirectPath.LOGIN_AUTH);
     }
+
+    const userId = req.user;
+    const user = await usersService.getUserById(userId);
+    if (!user.first_login) {
+      const tokenReset = tokenUtil.createTokenByJwt(userId);
+      return res.redirect(`${redirectPath.EMAIL_PASS_RESET}/${tokenReset}`);
+    }
+    await otpsService.createUserOtp(user);
+    req.flash("success", messageSuccess.SENDED_OTP);
+    return res.redirect(redirectPath.OTP_AUTH);
+  },
+
+  handleSocialLogin: async (req, res) => {
+    const token = req.cookies.token;
+    const userId = req.user;
+    if (token) {
+      req.flash("success", messageSuccess.LINK_ACCOUNT_SOCIAL_SUCCESS);
+    } else {
+      res.clearCookie("token");
+      const loginToken = await tokensService.createLoginToken(userId);
+      res.cookie("token", loginToken.token);
+    }
+
+    return res.send("<script>window.close()</script>");
   },
 
   otp: (req, res) => {
@@ -119,15 +126,13 @@ module.exports = {
   },
 
   handleEmailResetPass: async (req, res) => {
-    let { errors } = validationResult(req);
-    if (errors[0]?.msg === "Invalid value") {
-      errors = [];
-    }
+    const { errors } = validationResult(req);
 
     if (errors?.length) {
       req.flash("error", errors[0].msg);
       return res.redirect(redirectPath.EMAIL_PASS_RESET);
     }
+
     const { email } = req.body;
     const [status, message] = await usersService.sendResetPassLink(email);
     if (!status) {
@@ -139,21 +144,6 @@ module.exports = {
   },
 
   resetPassword: async (req, res) => {
-    const { token: tokenReset } = req.params;
-
-    if (!tokenReset) {
-      return res.redirect(redirectPath.EMAIL_PASS_RESET);
-    }
-
-    const userIdReset = tokenUtil.verifyTokenByJwt(tokenReset);
-    if (req.user && !userIdReset) {
-      req.flash("error", messageError.JWT_INVALID_TOKEN);
-      return res.redirect(redirectPath.LOGIN_AUTH);
-    } else if (!userIdReset) {
-      req.flash("error", messageError.JWT_INVALID_TOKEN);
-      return res.redirect(redirectPath.EMAIL_PASS_RESET);
-    }
-
     const error = req.flash("error");
 
     return res.render(renderPath.RESET_PASSWORD_LINK, {
@@ -166,38 +156,22 @@ module.exports = {
   },
 
   handleResetPassword: async (req, res) => {
-    const { token: tokenReset } = req.params;
-
-    if (!tokenReset) {
-      return res.redirect(redirectPath.EMAIL_PASS_RESET);
-    }
-
-    const userIdReset = tokenUtil.verifyTokenByJwt(tokenReset);
-    if (req.user && !userIdReset) {
-      req.flash("error", messageError.JWT_INVALID_TOKEN);
-      return res.redirect(redirectPath.LOGIN_AUTH);
-    } else if (!userIdReset) {
-      req.flash("error", messageError.JWT_INVALID_TOKEN);
-      return res.redirect(redirectPath.EMAIL_PASS_RESET);
-    }
+    const { token } = req.params;
+    const userIdReset = tokenUtil.verifyTokenByJwt(token);
 
     let { errors } = validationResult(req);
     if (errors[0]?.msg === "Invalid value") {
       errors = [];
     }
 
-    if (!errors?.length) {
-      const { confirmPassword } = req.body;
-      if (req.user) {
-        usersService.updatePassword(userIdReset, confirmPassword, "active");
-      } else {
-        usersService.updatePassword(userIdReset, confirmPassword);
-      }
-      req.flash("success", messageInfo.CHANGE_PASS_SUCCESS);
-      return res.redirect(redirectPath.LOGIN_AUTH);
-    } else {
+    if (errors?.length) {
       req.flash("error", errors[0].msg);
       return res.redirect(redirectPath.RESET_PASSWORD_LINK);
     }
+
+    const { confirmPassword } = req.body;
+    await usersService.updatePassword(userIdReset, confirmPassword);
+    req.flash("success", messageSuccess.CHANGE_PASS_SUCCESS);
+    return res.redirect(redirectPath.LOGIN_AUTH);
   },
 };

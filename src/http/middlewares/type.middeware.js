@@ -3,10 +3,6 @@ const { redirectPath } = require("../../constants/constants.path");
 module.exports = async (req, res, next) => {
   const url = req.path;
   const user = req.user;
-  if (!user) {
-    return res.redirect(redirectPath.LOGIN_AUTH);
-  }
-
   if (user.type_id === 1) {
     if (!url.includes(redirectPath.HOME_ADMIN)) {
       return res.redirect(redirectPath.HOME_ADMIN);
