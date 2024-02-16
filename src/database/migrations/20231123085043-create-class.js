@@ -16,19 +16,19 @@ module.exports = {
       quantity: {
         type: Sequelize.INTEGER,
       },
-      start_date: {
+      startDate: {
         type: Sequelize.DATE,
       },
-      end_date: {
+      endDate: {
         type: Sequelize.DATE,
       },
       schedule: {
-        type: Sequelize.TINYINT(1),
+        type: Sequelize.TINYINT,
       },
-      time_learn: {
+      timeLearn: {
         type: Sequelize.STRING(50),
       },
-      course_id: {
+      courseId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -51,4 +51,4 @@ module.exports = {
     await queryInterface.dropTable("Classes");
   },
 };
-// 
+//

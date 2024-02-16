@@ -18,7 +18,7 @@ module.exports = {
       attachment: {
         type: Sequelize.STRING(200),
       },
-      class_id: {
+      classId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -27,7 +27,7 @@ module.exports = {
           key: "id",
         },
       },
-      parent_id: {
+      parentId: {
         type: Sequelize.INTEGER,
       },
       createdAt: {

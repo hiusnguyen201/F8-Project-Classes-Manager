@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Submit_Exercise.belongsTo(models.User, { foreignKey: "student_id" });
-      Submit_Exercise.belongsTo(models.Exercise, { foreignKey: "exercise_id" });
+      Submit_Exercise.belongsTo(models.User, { foreignKey: "studentId" });
+      Submit_Exercise.belongsTo(models.Exercise, { foreignKey: "exerciseId" });
     }
   }
   Submit_Exercise.init(
@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       content: DataTypes.TEXT,
       attachment: DataTypes.STRING(200),
-      student_id: DataTypes.INTEGER,
-      exercise_id: DataTypes.INTEGER,
+      studentId: DataTypes.INTEGER,
+      exerciseId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },

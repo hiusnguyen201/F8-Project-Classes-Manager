@@ -1,8 +1,5 @@
 <div
-  class="tab-pane fade <%= checkIncludes(url, 'security')? 'text-left show active' : '' %>"
-  id="vert-tabs-profile"
-  role="tabpanel"
-  aria-labelledby="vert-tabs-profile-tab"
+  class="tab-pane fade <%= currPage === 'security'? 'text-left show active' : '' %>"
 >
   <div class="group-field">
     <h5>Link Social Account To Login</h5>
@@ -18,7 +15,7 @@
         </div>
         <div class="col-5">
           <% if(userGoogle) {%>
-          <form action="" method="post">
+          <form action="" method="post" class="form-unlink-social">
             <input
               type="hidden"
               name="userSocialId"
@@ -35,20 +32,20 @@
               value="<%= csrf.createToken() %>"
             />
             <input type="hidden" name="_method" value="DELETE" />
-            <button
-              type="submit"
-              class="ml-5 d-flex align-items-center justify-content-center btn-social btn active"
+            <label
+              class="switch active mb-0"
+              onclick="this.parentNode.classList.add('active')"
+              data-toggle="modal"
+              data-target="#modal-default"
             >
-              <%= (userGoogle)? "ON" : "OFF" %>
-            </button>
+              <span class="slider round"></span>
+            </label>
           </form>
           <% } else {%>
-          <a
-            onclick="socialLogin('google')"
-            href="javascript:void(0)"
-            class="ml-5 btn d-flex align-items-center justify-content-center btn-social"
-            >OFF</a
-          >
+          <label class="switch mb-0" onclick="socialLogin('google')">
+            <input type="checkbox" />
+            <span class="slider round"></span>
+          </label>
           <% } %>
         </div>
       </div>
@@ -65,7 +62,7 @@
         </div>
         <div class="col-5">
           <% if(userGithub) {%>
-          <form action="" method="post">
+          <form action="" method="post" class="form-unlink-social">
             <input
               type="hidden"
               name="userSocialId"
@@ -82,20 +79,20 @@
               value="<%= csrf.createToken() %>"
             />
             <input type="hidden" name="_method" value="DELETE" />
-            <button
-              type="submit"
-              class="ml-5 d-flex align-items-center justify-content-center btn-social btn active"
+            <label
+              class="switch active mb-0"
+              data-toggle="modal"
+              data-target="#modal-default"
+              onclick="this.parentNode.classList.add('active')"
             >
-              <%= (userGithub)? "ON" : "OFF" %>
-            </button>
+              <span class="slider round"></span>
+            </label>
           </form>
           <% } else {%>
-          <a
-            onclick="socialLogin('github')"
-            href="javascript:void(0)"
-            class="ml-5 btn d-flex align-items-center justify-content-center btn-social"
-            >OFF</a
-          >
+          <label class="switch mb-0" onclick="socialLogin('github')">
+            <input type="checkbox" />
+            <span class="slider round"></span>
+          </label>
           <% } %>
         </div>
       </div>
@@ -112,7 +109,7 @@
         </div>
         <div class="col-5">
           <% if(userFacebook) {%>
-          <form action="" method="post">
+          <form action="" method="post" class="form-unlink-social">
             <input
               type="hidden"
               name="userSocialId"
@@ -129,23 +126,123 @@
               value="<%= csrf.createToken() %>"
             />
             <input type="hidden" name="_method" value="DELETE" />
-            <button
-              type="submit"
-              class="ml-5 d-flex align-items-center justify-content-center btn-social btn active"
+            <label
+              class="switch active mb-0"
+              data-toggle="modal"
+              data-target="#modal-default"
+              onclick="this.parentNode.classList.add('active')"
             >
-              <%= (userFacebook)? "ON" : "OFF" %>
-            </button>
+              <span class="slider round"></span>
+            </label>
           </form>
           <% } else {%>
-          <a
-            onclick="socialLogin('facebook')"
-            href="javascript:void(0)"
-            class="ml-5 btn d-flex align-items-center justify-content-center btn-social"
-            >OFF</a
-          >
+          <label class="switch mb-0" onclick="socialLogin('facebook')">
+            <input type="checkbox" />
+            <span class="slider round"></span>
+          </label>
           <% } %>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modal-default">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div
+        class="line"
+        style="
+          width: 100%;
+          height: 5px;
+          background-color: #6246ea;
+          border-top-right-radius: 0.3rem;
+          border-top-left-radius: 0.3rem;
+        "
+      ></div>
+      <div class="modal-header">
+        <h5 class="modal-title" style="border: none; font-size: 20px">
+          Are you sure to remove link social account ?
+        </h5>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          No
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="submitRemove('.form-unlink-social.active')"
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+
+  .switch.active .slider {
+    background-color: #6246ea;
+    box-shadow: 0 0 1px #6246ea;
+  }
+
+  .switch.active .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+</style>
+
+<script>
+  const submitRemove = (formId) => {
+    const form = document.querySelector(formId);
+    form.submit();
+  };
+</script>

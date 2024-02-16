@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.STRING(200),
         unique: true,
       },
-      course_id: {
+      courseId: {
         type: Sequelize.INTEGER,
         references: {
           model: {

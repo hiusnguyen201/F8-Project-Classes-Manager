@@ -10,14 +10,13 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       name: {
-        type: Sequelize.STRING(200),
-        unique: true,
+        type: Sequelize.STRING(250),
       },
       price: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
-      teacher_id: {
+      teacherId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -26,7 +25,7 @@ module.exports = {
         },
         key: "id",
       },
-      try_learn: {
+      tryLearn: {
         type: Sequelize.TINYINT,
         defaultValue: 0,
       },
@@ -50,4 +49,4 @@ module.exports = {
     await queryInterface.dropTable("Courses");
   },
 };
-// 
+//

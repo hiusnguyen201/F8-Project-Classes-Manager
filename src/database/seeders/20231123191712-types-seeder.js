@@ -1,5 +1,5 @@
 "use strict";
-const momentUtil = require("../../utils/moment.util");
+const momentUtil = require("../../utils/moment");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -18,6 +18,11 @@ module.exports = {
         },
         {
           name: "student",
+          createdAt: momentUtil.getDateNow(),
+          updatedAt: momentUtil.getDateNow(),
+        },
+        {
+          name: "assistant",
           createdAt: momentUtil.getDateNow(),
           updatedAt: momentUtil.getDateNow(),
         },

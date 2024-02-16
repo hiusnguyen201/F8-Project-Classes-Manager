@@ -9,10 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      schedule_date: {
+      scheduleDate: {
         type: Sequelize.DATE,
       },
-      teacher_id: {
+      teacherId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -21,7 +21,7 @@ module.exports = {
           key: "id",
         },
       },
-      class_id: {
+      classId: {
         type: Sequelize.INTEGER,
         references: {
           model: {

@@ -1,8 +1,10 @@
 const LocalStrategy = require("passport-local").Strategy;
 const { validationResult } = require("express-validator");
-const usersService = require("../../http/services/users.service");
-const tokenUtil = require("../../utils/token.util");
-const { messageError } = require("../../constants/constants.message");
+const models = require("../../models/index");
+const User = models.User;
+const Type = models.Type;
+const tokenUtil = require("../../utils/token");
+const { MESSAGE_ERROR } = require("../../constants/message.constant");
 
 module.exports = new LocalStrategy(
   {
@@ -13,24 +15,38 @@ module.exports = new LocalStrategy(
   async (req, email, password, done) => {
     const { errors } = validationResult(req);
     if (errors?.length) {
-      return done(null, false, {
-        message: errors[0].msg,
-      });
+      if (errors[0].msg !== "Invalid value") {
+        return done(null, false, {
+          message: errors[0].msg,
+        });
+      }
     }
 
-    const user = await usersService.getUserByEmail(email);
-    if (!user) {
-      return done(null, false, {
-        message: messageError.INVALID_ACCOUNT,
+    try {
+      const user = await User.findOne({
+        where: { email },
+        include: Type,
       });
-    }
 
-    if (!tokenUtil.compareHashByBcrypt(password, user.password)) {
-      return done(null, false, {
-        message: messageError.INVALID_ACCOUNT,
-      });
-    }
+      if (!user) {
+        return done(null, false, {
+          message: MESSAGE_ERROR.USER.INVALID_ACCOUNT,
+        });
+      }
 
-    done(null, user.id);
+      if (!tokenUtil.compareHashByBcrypt(password, user.password)) {
+        return done(null, false, {
+          message: MESSAGE_ERROR.USER.INVALID_ACCOUNT,
+        });
+      }
+
+      delete user.dataValues.password;
+      delete user._previousDataValues.password;
+
+      done(null, user);
+    } catch (err) {
+      console.log(err);
+      return done(null, false, { message: MESSAGE_ERROR.USER.LOGIN_FAILED });
+    }
   }
 );

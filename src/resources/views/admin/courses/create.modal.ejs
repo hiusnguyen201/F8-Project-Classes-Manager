@@ -1,0 +1,82 @@
+<form action="" method="post">
+  <div class="pl-0 modal fade modal-edit <%= modalCreate? 'show activeModal' : '' %>" id="modal-createChildren" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header align-items-center">
+          <h5 class="modal-title">
+            <i class="fas fa-times mr-3 icon-operation" data-dismiss="modal"></i>
+            <i class="fas fa-book mr-2"></i><span>Course</span>
+          </h5>
+          <button type="submit" class="btn btn-success py-2">Create</button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body mx-auto">
+            <div class="card">
+              <!-- Row 1 -->
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" placeholder="Name..." autocomplete="off" name="name" value="<%= oldValues.name %>" />
+                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'name') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="mb-3">
+                <label class="form-label">Price</label>
+                <input type="number" class="form-control" placeholder="Price..." autocomplete="off" name="price" value="<%= oldValues.price %>" />
+                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'price') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="mb-3">
+                <label class="form-label">Teacher</label>
+                <select class="form-control" name="teacherId">
+                  <option value="0" selected>--- Select a Teacher ---</option>
+                  <% if(teachers?.length) {%> <% teachers.forEach(({id, email}) => { %>
+                  <option <%= +oldValues.teacherId === +id? 'selected' : '' %> value="<%= id %>"><%= email %></option>
+                  <% }) %> <% } %>
+                </select>
+                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'teacherId') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 4 -->
+              <div class="mb-3">
+                <label class="form-label">Try Learn</label>
+                <input type="number" name="tryLearn" class="form-control" placeholder="Try Learn..." autocomplete="off" value="<%= oldValues.tryLearn %>" />
+                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'tryLearn') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 5 -->
+              <div class="mb-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" name="quantity" class="form-control" placeholder="Quantity..." autocomplete="off" value="<%= oldValues.quantity %>" />
+                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'quantity') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 6 -->
+              <div class="mb-3">
+                <label class="form-label">Duration</label>
+                <input type="number" name="duration" class="form-control" placeholder="Duration..." autocomplete="off" value="<%= oldValues.duration %>" />
+                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'duration') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <input type="hidden" name="_method" value="POST">
+              <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

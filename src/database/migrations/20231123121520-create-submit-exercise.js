@@ -15,7 +15,7 @@ module.exports = {
       attachment: {
         type: Sequelize.STRING(200),
       },
-      student_id: {
+      studentId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -24,7 +24,7 @@ module.exports = {
           key: "id",
         },
       },
-      exercise_id: {
+      exerciseId: {
         type: Sequelize.INTEGER,
         references: {
           model: {

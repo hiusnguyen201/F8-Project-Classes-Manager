@@ -16,7 +16,7 @@ module.exports = {
       expire: {
         type: Sequelize.DATE,
       },
-      user_id: {
+      userId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -39,4 +39,4 @@ module.exports = {
     await queryInterface.dropTable("User_Otps");
   },
 };
-// 
+//

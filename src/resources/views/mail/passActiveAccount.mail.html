@@ -1,0 +1,61 @@
+<div
+  style="
+    font-family: Helvetica, Arial, sans-serif;
+    min-width: 1000px;
+    overflow: auto;
+    line-height: 2;
+  "
+>
+  <div style="margin: 50px auto; width: 70%; padding: 20px 0">
+    <div style="border-bottom: 1px solid #eee">
+      <a
+        href=""
+        style="
+          font-size: 24px;
+          color: #6246ea;
+          text-decoration: none;
+          font-weight: 600;
+        "
+        >{{brand}}</a
+      >
+    </div>
+    <p style="font-size: 18px">Hi {{email}},</p>
+    <p style="font-size: 18px">
+      Here is your password to active {{brand}} account:
+    </p>
+    <div class="d-grid justify-content-center align-items-center">
+      <span
+        style="
+          background: #6246ea;
+          display: block;
+          margin: 0 auto;
+          width: max-content;
+          padding: 6px 24px;
+          color: #fff;
+          border-radius: 4px;
+          font-size: 18px;
+          text-align: center;
+          text-decoration: none;
+        "
+        href="{{website}}{{linkReset}}/{{token}}"
+      >
+        {{password}}
+      </span>
+    </div>
+    <p style="font-size: 16px">Regards,<br />{{brand}}</p>
+    <hr style="border: none; border-top: 1px solid #eee" />
+    <div
+      style="
+        float: right;
+        padding: 8px 0;
+        color: #aaa;
+        font-size: 0.8em;
+        line-height: 1;
+        font-weight: 300;
+      "
+    >
+      <p style="font-size: 16px">{{brand}} Inc</p>
+      <p style="font-size: 16px">Viet Nam</p>
+    </div>
+  </div>
+</div>

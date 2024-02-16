@@ -1,5 +1,5 @@
 "use strict";
-// 
+//
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -10,7 +10,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      user_id: {
+      userId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -19,11 +19,11 @@ module.exports = {
           key: "id",
         },
       },
-      feature_name: {
+      featureName: {
         type: Sequelize.STRING(100),
       },
       status: {
-        type: Sequelize.TINYINT(1),
+        type: Sequelize.TINYINT,
       },
       position: {
         type: Sequelize.INTEGER,

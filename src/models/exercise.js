@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically./
      */
     static associate(models) {
-      Exercise.belongsTo(models.Class, { foreignKey: "class_id" });
-      Exercise.belongsTo(models.User, { foreignKey: "teacher_id" });
+      Exercise.belongsTo(models.Class, { foreignKey: "classId" });
+      Exercise.belongsTo(models.User, { foreignKey: "teacherId" });
       Exercise.hasMany(models.Submit_Exercise, { foreignKey: "id" });
     }
   }
@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING(200),
       attachment: DataTypes.STRING(200),
       content: DataTypes.TEXT,
-      class_id: DataTypes.INTEGER,
-      teacher_id: DataTypes.INTEGER,
+      classId: DataTypes.INTEGER,
+      teacherId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },

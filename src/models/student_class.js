@@ -8,10 +8,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Student_Class.belongsTo(models.User, { foreignKey: "student_id" });
-      Student_Class.belongsTo(models.Class, { foreignKey: "class_id" });
+      Student_Class.belongsTo(models.User, { foreignKey: "studentId" });
+      Student_Class.belongsTo(models.Class, { foreignKey: "classId" });
       Student_Class.belongsTo(models.Learning_Status, {
-        foreignKey: "status_id",
+        foreignKey: "statusId",
       });
     }
   }
@@ -22,13 +22,13 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      student_id: DataTypes.INTEGER,
-      class_id: DataTypes.INTEGER,
-      status_id: DataTypes.INTEGER,
+      studentId: DataTypes.INTEGER,
+      classId: DataTypes.INTEGER,
+      statusId: DataTypes.INTEGER,
       reason: DataTypes.STRING(100),
-      complete_date: DataTypes.DATE,
-      dropout_date: DataTypes.DATE,
-      recover_date: DataTypes.DATE,
+      completeDate: DataTypes.DATE,
+      dropoutDate: DataTypes.DATE,
+      recoverDate: DataTypes.DATE,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },

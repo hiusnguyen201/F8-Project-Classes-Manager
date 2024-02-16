@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically./
      */
     static associate(models) {
-      Comment.belongsTo(models.Class, { foreignKey: "class_id" });
+      Comment.belongsTo(models.Class, { foreignKey: "classId" });
     }
   }
   Comment.init(
@@ -21,8 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING(200),
       content: DataTypes.TEXT,
       attachment: DataTypes.STRING(200),
-      class_id: DataTypes.INTEGER,
-      parent_id: DataTypes.INTEGER,
+      classId: DataTypes.INTEGER,
+      parentId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },

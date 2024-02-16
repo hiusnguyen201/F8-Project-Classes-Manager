@@ -9,10 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      opt_key: {
+      optKey: {
         type: Sequelize.STRING(100),
       },
-      opt_value: {
+      optValue: {
         type: Sequelize.TEXT,
       },
       createdAt: {
@@ -29,4 +29,3 @@ module.exports = {
     await queryInterface.dropTable("Settings");
   },
 };
-//

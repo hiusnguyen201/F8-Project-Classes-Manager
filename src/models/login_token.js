@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically./
      */
     static associate(models) {
-      Login_Token.belongsTo(models.User, { foreignKey: "user_id" });
+      Login_Token.belongsTo(models.User, { foreignKey: "userId" });
     }
   }
   Login_Token.init(
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       token: DataTypes.STRING(100),
-      user_id: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },

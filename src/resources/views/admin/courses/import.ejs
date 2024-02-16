@@ -1,0 +1,56 @@
+<div class="card py-1 mx-2">
+  <div class="row align-items-center">
+    <div class="col-6">
+      <h3 class="mb-0 ml-3"><%= title.split("-")[0] %></h3>
+    </div>
+    <div class="col-6">
+      <ol class="breadcrumb float-sm-right mb-0">
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.HOME_ADMIN %>">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.COURSES_ADMIN %>">Courses</a>
+        </li>
+        <li class="breadcrumb-item active">Import</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="card-body mx-auto">
+  <% if(error?.length) { %>
+  <input
+    type="hidden"
+    disabled
+    class="toastMessageError"
+    value="<%= error %>"
+  />
+  <% } %> <% if(success?.length) { %>
+  <input
+    type="hidden"
+    disabled
+    class="toastMessageSuccess"
+    value="<%= success %>"
+  />
+  <% } %>
+
+  <div class="tab-custom-content d-flex align-items-center">
+    <button class="btnImport btn btn-success mx-2 mb-0" disabled>
+      Import file
+    </button>
+  </div>
+  <div class="tab-content">
+    <div class="card px-3 py-3">
+      <form action="" method="post" enctype="multipart/form-data">
+        <label for="importFile" id="drop-area" class="mb-0">
+          <input hidden type="file" name="file" id="importFile" />
+          <div class="upload-block">
+            <img src="/assets/img/uploadIcon.png" alt="" />
+            <p>Drag and drop or click here<br />to upload file</p>
+            <span class="upload-block_span">Upload any file from desktop</span>
+          </div>
+        </label>
+      </form>
+    </div>
+  </div>
+</div>

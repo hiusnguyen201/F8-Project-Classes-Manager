@@ -11,8 +11,6 @@ const session = require("express-session");
 var methodOverride = require("method-override");
 var helmet = require("helmet");
 
-const models = require("./models/index");
-
 // Passport
 const localPassport = require("./helpers/passports/local.passport");
 const googlePassport = require("./helpers/passports/google.passport");
@@ -20,48 +18,23 @@ const githubPassport = require("./helpers/passports/github.passport");
 const facebookPassport = require("./helpers/passports/facebook.passport");
 
 // Middleware
-const AuthMiddleware = require("./http/middlewares/auth.middleware");
-const TypeMiddleware = require("./http/middlewares/type.middeware");
+const AuthMiddleware = require("./http/middlewares/web/auth.middleware");
 
-// Route
-const studentsRouter = require("./routes/students/index");
-const teachersRouter = require("./routes/teachers/index");
-const adminRouter = require("./routes/admin/index");
-const authRouter = require("./routes/auth/index");
-const settingsRouter = require("./routes/settings/index");
+// Route Web
+const studentsRouter = require("./routes/web/students/index");
+const teachersRouter = require("./routes/web/teachers/index");
+const adminRouter = require("./routes/web/admin/index");
+const authRouter = require("./routes/web/auth/index");
+
+// Route Api
+
+// Service
+const userService = require("./http/services/user.service");
 
 var app = express();
 // app.use(helmet());
-app.disable("x-powered-by");
-
+// app.disable("x-powered-by");
 app.use(flash());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: true,
-    resave: true,
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.serializeUser((id, done) => {
-  done(null, id);
-});
-passport.deserializeUser(async (id, done) => {
-  const user = await models.User.findByPk(id, {
-    attributes: {
-      exclude: ["password"],
-    },
-    include: models.Type,
-  });
-  done(null, user);
-});
-
-passport.use("local", localPassport);
-passport.use("google", googlePassport);
-passport.use("github", githubPassport);
-passport.use("facebook", facebookPassport);
 
 // view engine setup
 app.set("views", path.join(__dirname, "resources/views"));
@@ -76,6 +49,36 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: true,
+    resave: true,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+passport.deserializeUser(async (id, done) => {
+  const [user] = await userService.getUser(
+    {
+      id: +id,
+    },
+    false,
+    ["password"]
+  );
+
+  done(null, user);
+});
+
+passport.use("local", localPassport);
+passport.use("google", googlePassport);
+passport.use("github", githubPassport);
+passport.use("facebook", facebookPassport);
+
+app.use(
   methodOverride(function (req, res) {
     if (req.body && typeof req.body === "object" && "_method" in req.body) {
       var method = req.body._method;
@@ -85,14 +88,13 @@ app.use(
   })
 );
 
+// Path Web
 app.use("/auth", authRouter);
 
 app.use(AuthMiddleware);
-app.use(TypeMiddleware);
 app.use("/", studentsRouter);
 app.use("/teacher", teachersRouter);
 app.use("/admin", adminRouter);
-app.use("/:type/settings", settingsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -107,7 +109,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.render("error", { layout: false });
 });
 
 module.exports = app;

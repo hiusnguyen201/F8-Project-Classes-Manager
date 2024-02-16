@@ -1,7 +1,7 @@
-<aside class="main-sidebar sidebar-dark-primary">
+<aside class="main-sidebar sidebar-dark-primary sidebar-no-expand">
   <!-- Brand Logo -->
   <a
-    href="<%= redirectPath.HOME_ADMIN %>"
+    href="<%= REDIRECT_PATH.HOME_ADMIN %>"
     class="brand-link d-flex align-items-center justify-content-center"
   >
     <span class="brand-text">ORBIT</span>
@@ -10,7 +10,7 @@
   <!-- Sidebar -->
   <div class="sidebar px-0">
     <!-- Sidebar Menu -->
-    <nav style="margin-top: 1px; width: 232px">
+    <nav>
       <ul
         class="nav nav-pills nav-sidebar flex-column"
         data-widget="treeview"
@@ -20,15 +20,57 @@
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
         <li class="nav-item">
-          <a href="<%= redirectPath.HOME_ADMIN %>" class="nav-link">
+          <a
+            href="<%= REDIRECT_PATH.HOME_ADMIN %>"
+            class="nav-link <%= currPage === 'dashboard'? 'active': '' %>"
+          >
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="<%= redirectPath.HOME_ADMIN_USERS %>" class="nav-link">
+          <a
+            href="<%= REDIRECT_PATH.USERS_ADMIN %>"
+            class="nav-link <%= currPage === 'users'? 'active': '' %>"
+          >
             <i class="nav-icon fas fa-users"></i>
             <p>Users</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="<%= REDIRECT_PATH.COURSES_ADMIN %>"
+            class="nav-link <%= currPage === 'courses'? 'active': '' %>"
+          >
+            <i class="nav-icon fas fa-book"></i>
+            <p>Courses</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="<%= REDIRECT_PATH.TEACHERS_ADMIN %>"
+            class="nav-link <%= currPage === 'teachers'? 'active': '' %>"
+          >
+            <i class="nav-icon fas fa-users"></i>
+            <p>Teachers</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="<%= REDIRECT_PATH.STUDENTS_ADMIN %>"
+            class="nav-link <%= currPage === 'students'? 'active': '' %>"
+          >
+            <i class="nav-icon fas fa-users"></i>
+            <p>Students</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            href="<%= REDIRECT_PATH.CLASSES_ADMIN %>"
+            class="nav-link <%= currPage === 'classes'? 'active': '' %>"
+          >
+            <i class="nav-icon fas fa-chalkboard-teacher"></i>
+            <p>Classes</p>
           </a>
         </li>
       </ul>

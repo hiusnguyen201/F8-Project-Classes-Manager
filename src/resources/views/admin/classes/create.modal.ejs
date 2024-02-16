@@ -1,0 +1,216 @@
+<form action="" method="post">
+  <div
+    class="pl-0 modal fade modal-edit <%= modalCreate? 'show activeModal' : '' %>"
+    id="modal-createChildren"
+    tabindex="-1"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header align-items-center">
+          <h5 class="modal-title">
+            <i
+              class="fas fa-times mr-3 icon-operation"
+              data-dismiss="modal"
+            ></i>
+            <i class="fas fa-chalkboard-teacher mr-2"></i><span>Class</span>
+          </h5>
+          <button type="submit" class="btn btn-success py-2">Create</button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body mx-auto">
+            <div class="card">
+              <!-- Row 1 -->
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Name..."
+                  autocomplete="off"
+                  name="name"
+                  value="<%= oldValues.name %>"
+                />
+                <% if(errorsValidate?.length){ for(var i = 0; i <
+                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
+                'name') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="mb-3">
+                <label class="form-label">Quantity</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  class="form-control"
+                  placeholder="Quantity..."
+                  autocomplete="off"
+                  value="<%= oldValues.quantity %>"
+                />
+                <% if(errorsValidate?.length){ for(var i = 0; i <
+                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
+                'quantity') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="mb-3">
+                <label class="form-label">Start Date</label>
+                <div class="input-group date">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    name="startDate"
+                    class="form-control datetimepicker-input"
+                    id="startDatePicker"
+                    value="<%= oldValues.startDate %>"
+                  />
+                </div>
+
+                <% if(errorsValidate?.length){ for(var i = 0; i <
+                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
+                'startDate') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 4 -->
+              <div class="mb-3">
+                <label class="form-label">Schedule</label>
+                <select
+                  class="select2 form-control"
+                  name="schedule"
+                  multiple="multiple"
+                  data-placeholder="--- Select a Schedule ---"
+                  style="width: 100%"
+                >
+                  <% if(daysOfWeek?.length) { daysOfWeek.forEach((day, index) =>
+                  { %>
+                  <option <%= stringUtil.checkInclude(oldValues.schedule, index)? 'selected' : '' %>  value="<%= index %>"><%= day %></option>
+                  <% })} %>
+                </select>
+
+                <% if(errorsValidate?.length){ for(var i = 0; i <
+                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
+                'schedule') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 5 -->
+              <div class="mb-3">
+                <label class="form-label">Time Learn</label>
+                <div class="row align-items-center">
+                  <div class="col-5 align-items-center d-flex">
+                    <label class="form-label mr-1 mb-0" style="font-size: 15px"
+                      >Start:</label
+                    >
+                    <div class="input-group">
+                      <div class="input-group-prepend" style="border-right: 0">
+                        <div class="input-group-text">
+                          <i class="far fa-clock"></i>
+                        </div>
+                      </div>
+                      <input
+                        type="text"
+                        name="timeLearnStart"
+                        class="form-control datetimepicker-input"
+                        id="timeLearnStart"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-2"></div>
+                  <div class="col-5 align-items-center d-flex">
+                    <label class="form-label mr-1 mb-0" style="font-size: 15px"
+                      >End:</label
+                    >
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">
+                          <i class="far fa-clock"></i>
+                        </div>
+                      </div>
+                      <input
+                        type="text"
+                        name="timeLearnEnd"
+                        class="form-control datetimepicker-input"
+                        id="timeLearnEnd"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <% if(errorsValidate?.length){ for(var i = 0; i <
+                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
+                'timeLearnStart' || errorsValidate[i]?.path === 'timeLearnEnd')
+                {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 6 -->
+              <div class="mb-3">
+                <label class="form-label">Course</label>
+                <select name="courseId" class="form-control">
+                  <option value="0">--- Select a Course ---</option>
+                  <% if(courses?.length) {courses.forEach(({id, name, User}) =>
+                  { %>
+                  <option value="<%= id %>">
+                    <%= name %> - <%= User.email%>
+                  </option>
+                  <% })} %>
+                </select>
+
+                <% if(errorsValidate?.length){ for(var i = 0; i <
+                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
+                'courseId') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <!-- Row 7 -->
+              <div class="mb-3">
+                <label class="form-label"
+                  ><span>Assistant</span
+                  ><span class="optional-text">(optional)</span></label
+                >
+                <select
+                  class="select2 form-control"
+                  name="assistantId"
+                  multiple="multiple"
+                  data-placeholder="--- Select a Assistant ---"
+                  style="width: 100%"
+                >
+                  <option value=""></option>
+                  <% if(assistants?.length) {assistants.forEach(({id, email}) =>
+                  { %>
+                  <option value="<%= id %>"><%= email %></option>
+                  <% })} %>
+                </select>
+
+                <% if(errorsValidate?.length){ for(var i = 0; i <
+                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
+                'assistantId') {%>
+                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
+                <% break;}}} %>
+              </div>
+
+              <input type="hidden" name="_method" value="POST" />
+              <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= csrf.createToken() %>"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

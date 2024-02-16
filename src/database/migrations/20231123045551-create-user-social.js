@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      user_id: {
+      userId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -38,4 +38,4 @@ module.exports = {
     await queryInterface.dropTable("User_Socials");
   },
 };
-// 
+//

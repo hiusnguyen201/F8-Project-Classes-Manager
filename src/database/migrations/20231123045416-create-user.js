@@ -25,15 +25,15 @@ module.exports = {
       address: {
         type: Sequelize.STRING(200),
       },
-      first_login: {
-        type: Sequelize.TINYINT(1),
+      firstLogin: {
+        type: Sequelize.TINYINT,
         defaultValue: 0,
       },
-      type_id: {
+      typeId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: "types",
+            tableName: "Types",
           },
           key: "id",
         },

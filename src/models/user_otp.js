@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User_Otp.belongsTo(models.User, { foreignKey: "user_id" });
+      User_Otp.belongsTo(models.User, { foreignKey: "userId" });
     }
   }
   User_Otp.init(
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       otp: DataTypes.STRING(10),
       expire: DataTypes.DATE,
-      user_id: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },

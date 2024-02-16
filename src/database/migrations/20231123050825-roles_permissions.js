@@ -10,7 +10,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      role_id: {
+      roleId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -19,7 +19,7 @@ module.exports = {
           key: "id",
         },
       },
-      permission_id: {
+      permissionId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -42,4 +42,4 @@ module.exports = {
     return queryInterface.dropTable("roles_permissions");
   },
 };
-// 
+//

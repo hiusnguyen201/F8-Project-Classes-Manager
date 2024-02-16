@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User_Column.belongsTo(models.User, { foreignKey: "user_id" });
+      User_Column.belongsTo(models.User, { foreignKey: "userId" });
     }
   }
   User_Column.init(
@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      user_id: DataTypes.INTEGER,
-      feature_name: DataTypes.STRING(100),
-      status: DataTypes.TINYINT(1),
+      userId: DataTypes.INTEGER,
+      featureName: DataTypes.STRING(100),
+      status: DataTypes.TINYINT,
       position: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,

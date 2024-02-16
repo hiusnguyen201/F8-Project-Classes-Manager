@@ -8,17 +8,17 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.belongsTo(models.Type, { foreignKey: "type_id" });
+      User.belongsTo(models.Type, { foreignKey: "typeId" });
       User.hasOne(models.Login_Token, { foreignKey: "id" });
       User.hasOne(models.User_Otp, { foreignKey: "id" });
       User.hasMany(models.User_Social, { foreignKey: "id" });
       User.hasMany(models.User_Column, { foreignKey: "id" });
       User.belongsToMany(models.Role, {
-        foreignKey: "user_id",
+        foreignKey: "userId",
         through: "users_roles",
       });
       User.belongsToMany(models.Permission, {
-        foreignKey: "user_id",
+        foreignKey: "userId",
         through: "users_permissions",
       });
 
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.Student_Class, { foreignKey: "id" });
       User.hasOne(models.Teacher_Calender, { foreignKey: "id" });
       User.belongsToMany(models.Class, {
-        foreignKey: "teacher_id",
+        foreignKey: "teacherId",
         through: "classes_teachers",
       });
       User.hasMany(models.Student_Attendance, { foreignKey: "id" });
@@ -46,14 +46,18 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING(100),
       phone: DataTypes.STRING(15),
       address: DataTypes.STRING(200),
-      first_login: DataTypes.TINYINT(1),
-      type_id: DataTypes.INTEGER,
+      firstLogin: DataTypes.TINYINT,
+      typeId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
+      deletedAt: {
+        type: DataTypes.DATE,
+      },
     },
     {
       sequelize,
       modelName: "User",
+      paranoid: true,
     }
   );
   return User;

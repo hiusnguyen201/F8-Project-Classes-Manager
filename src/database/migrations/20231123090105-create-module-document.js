@@ -9,10 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      path_name: {
+      pathName: {
         type: Sequelize.STRING(200),
       },
-      module_id: {
+      moduleId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -35,4 +35,4 @@ module.exports = {
     await queryInterface.dropTable("Module_Documents");
   },
 };
-// 
+//

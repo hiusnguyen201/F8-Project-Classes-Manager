@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      student_id: {
+      studentId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -18,7 +18,7 @@ module.exports = {
           key: "id",
         },
       },
-      class_id: {
+      classId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -27,7 +27,7 @@ module.exports = {
           key: "id",
         },
       },
-      status_id: {
+      statusId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -39,13 +39,13 @@ module.exports = {
       reason: {
         type: Sequelize.STRING(100),
       },
-      complete_date: {
+      completeDate: {
         type: Sequelize.DATE,
       },
-      dropout_date: {
+      dropoutDate: {
         type: Sequelize.DATE,
       },
-      recover_date: {
+      recoverDate: {
         type: Sequelize.DATE,
       },
       createdAt: {
@@ -62,4 +62,4 @@ module.exports = {
     await queryInterface.dropTable("Student_Classes");
   },
 };
-// 
+//

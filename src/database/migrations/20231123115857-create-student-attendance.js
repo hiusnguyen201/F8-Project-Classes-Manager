@@ -9,13 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      date_learning: {
+      dateLearning: {
         type: Sequelize.DATE,
       },
       status: {
-        type: Sequelize.TINYINT(1),
+        type: Sequelize.TINYINT,
       },
-      student_id: {
+      studentId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -24,7 +24,7 @@ module.exports = {
           key: "id",
         },
       },
-      class_id: {
+      classId: {
         type: Sequelize.INTEGER,
         references: {
           model: {

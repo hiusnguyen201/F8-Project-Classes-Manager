@@ -14251,7 +14251,7 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
   }
   .sidebar-mini.sidebar-collapse .main-sidebar, .sidebar-mini.sidebar-collapse .main-sidebar::before {
     margin-left: 0;
-    width: 4.6rem;
+    width: 3.6rem;
   }
   .sidebar-mini.sidebar-collapse .main-sidebar .user-panel .image {
     float: none;
@@ -14519,7 +14519,7 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 
 .sidebar-mini-xs.sidebar-collapse .main-sidebar, .sidebar-mini-xs.sidebar-collapse .main-sidebar::before {
   margin-left: 0;
-  width: 4.6rem;
+  width: 3.6rem;
 }
 
 .sidebar-mini-xs.sidebar-collapse .main-sidebar .user-panel .image {

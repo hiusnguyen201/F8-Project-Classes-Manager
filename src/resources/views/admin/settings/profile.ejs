@@ -1,8 +1,5 @@
 <div
-  class="tab-pane fade <%= checkIncludes(url, 'profile')? 'text-left show active' : '' %>"
-  id="vert-tabs-profile"
-  role="tabpanel"
-  aria-labelledby="vert-tabs-profile-tab"
+  class="tab-pane fade <%= currPage === 'profile'? 'text-left show active' : '' %>"
 >
   <div class="group-field">
     <h5>User Profile</h5>
@@ -15,6 +12,7 @@
               class="tab-pane_password"
               name="name"
               type="text"
+              autocomplete="off"
               value="<%= user.name %>"
             />
           </div>
@@ -28,6 +26,7 @@
               class="tab-pane_password"
               name="email"
               type="email"
+              autocomplete="off"
               value="<%= user.email %>"
             />
           </div>
@@ -41,6 +40,7 @@
               class="tab-pane_password"
               name="phone"
               type="tel"
+              autocomplete="off"
               value="<%= user.phone %>"
             />
           </div>
@@ -54,6 +54,7 @@
               class="tab-pane_password"
               name="address"
               type="text"
+              autocomplete="off"
               value="<%= user.address %>"
             />
           </div>

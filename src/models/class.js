@@ -8,12 +8,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically./
      */
     static associate(models) {
-      Class.belongsTo(models.Course, { foreignKey: "course_id" });
+      Class.belongsTo(models.Course, { foreignKey: "courseId" });
       Class.hasMany(models.Comment, { foreignKey: "id" });
       Class.hasOne(models.Student_Class, { foreignKey: "id" });
       Class.hasOne(models.Teacher_Calender, { foreignKey: "id" });
       Class.belongsToMany(models.User, {
-        foreignKey: "class_id",
+        foreignKey: "classId",
         through: "classes_teachers",
       });
       Class.hasMany(models.Student_Attendance, { foreignKey: "id" });
@@ -29,17 +29,21 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: DataTypes.STRING(200),
       quantity: DataTypes.INTEGER,
-      start_date: DataTypes.DATE,
-      end_date: DataTypes.DATE,
-      schedule: DataTypes.TINYINT(1),
-      time_learn: DataTypes.STRING(50),
-      course_id: DataTypes.INTEGER,
+      startDate: DataTypes.DATE,
+      endDate: DataTypes.DATE,
+      schedule: DataTypes.TINYINT,
+      timeLearn: DataTypes.STRING(50),
+      courseId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
+      deletedAt: {
+        type: DataTypes.DATE,
+      },
     },
     {
       sequelize,
       modelName: "Class",
+      paranoid: true,
     }
   );
   return Class;

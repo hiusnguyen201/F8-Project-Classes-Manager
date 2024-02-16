@@ -1,6 +1,6 @@
 const FacebookStrategy = require("passport-facebook").Strategy;
-const socialsService = require("../../http/services/socials.service");
-const { messageError } = require("../../constants/constants.message");
+const socialService = require("../../http/services/social.service");
+const { MESSAGE_ERROR } = require("../../constants/message.constant");
 
 module.exports = new FacebookStrategy(
   {
@@ -10,34 +10,39 @@ module.exports = new FacebookStrategy(
     passReqToCallback: true,
   },
   async (req, accessToken, refreshToken, profile, done) => {
-    const userSocial = await socialsService.getUserSocialByProvider(
-      profile.provider,
-      profile.id
-    );
+    const [userSocial] = await socialService.getUserSocial({
+      provider: profile.provider,
+      provider_id: profile.id,
+    });
 
-    if (!req.cookies.token) {
+    if (!req.isAuthenticated()) {
       // Login Page
       if (!userSocial) {
-        return done(null, false, { message: messageError.ACCOUNT_NOT_LINKED });
+        return done(null, false, {
+          message: MESSAGE_ERROR.SOCIAL.ACCOUNT_NOT_LINKED,
+        });
       }
-      return done(null, userSocial.user_id);
+
+      const { User } = userSocial;
+      return done(null, User);
     } else {
       // Social Link page
       if (userSocial) {
         return done(null, false, {
-          message: messageError.INVALID_LINK_ACCOUNT,
+          message: MESSAGE_ERROR.SOCIAL.INVALID_LINK_ACCOUNT,
         });
       }
 
+      const user = req.user;
       const [newUserSocial] =
-        await socialsService.findOrCreateUserSocialProvider(
+        await socialService.findOrCreateUserSocialProvider(
           profile.provider,
           profile.id,
-          req.user.id
+          +user.id
         );
 
       if (newUserSocial) {
-        return done(null, newUserSocial.user_id);
+        return done(null, user);
       }
     }
   }
