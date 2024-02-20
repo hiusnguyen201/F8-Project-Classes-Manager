@@ -1,11 +1,22 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
 <form action="" method="post">
-  <div class="pl-0 modal fade modal-edit <%= +modalUpdate === +courses[i].id? 'show activeModal' : '' %>" id="modal-editChildren-<%= courses[i].id %>" tabindex="-1">
+  <div class="pl-0 modal fade modal-edit show activeModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header align-items-center">
           <h5 class="modal-title">
-            <i class="fas fa-times mr-3 icon-operation" data-dismiss="modal"></i>
-            <i class="fas fa-book mr-2"></i><span>Course</span>
+            <a href="<%= REDIRECT_PATH.HOME_CLASSES_ADMIN %>"><i class="fas fa-times mr-3 icon-operation"></i></a>
+            <i class="fas fa-book mr-2"></i><span>Class</span>
           </h5>
           <button type="submit" class="btn btn-success py-2">Save</button>
         </div>
@@ -73,7 +84,7 @@
 
               <input type="hidden" name="_method" value="PATCH" />
               <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
-              <input type="hidden" name="courseId" value="<%= courses[i].id %>" />
+              <input type="hidden" name="classId" value="<%= courses[i].id %>" />
             </div>
           </div>
         </div>
@@ -81,3 +92,9 @@
     </div>
   </div>
 </form>
+
+<style>
+  html {
+    overflow: hidden;
+  }
+</style>

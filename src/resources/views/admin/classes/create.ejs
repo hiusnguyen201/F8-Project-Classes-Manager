@@ -1,17 +1,26 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
 <form action="" method="post">
   <div
-    class="pl-0 modal fade modal-edit <%= modalCreate? 'show activeModal' : '' %>"
-    id="modal-createChildren"
+    class="pl-0 modal fade modal-edit show activeModal"
     tabindex="-1"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header align-items-center">
           <h5 class="modal-title">
-            <i
+            <a href="<%= REDIRECT_PATH.HOME_CLASSES_ADMIN %>"><i
               class="fas fa-times mr-3 icon-operation"
-              data-dismiss="modal"
-            ></i>
+            ></i></a>
             <i class="fas fa-chalkboard-teacher mr-2"></i><span>Class</span>
           </h5>
           <button type="submit" class="btn btn-success py-2">Create</button>
@@ -214,3 +223,9 @@
     </div>
   </div>
 </form>
+
+<style>
+  html {
+    overflow: hidden;
+  }
+</style>

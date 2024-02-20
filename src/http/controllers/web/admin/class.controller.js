@@ -63,13 +63,9 @@ module.exports = {
 
     const oldValues = req.flash("oldValues");
     const errorsValidate = req.flash("errors");
-    const modalCreate = req.flash("modalCreate")[0];
-    const modalUpdate = req.flash("modalUpdate")[0];
 
-    return res.render(RENDER_PATH.HOME_ADMIN_CLASSES, {
+    return res.render(RENDER_PATH.HOME_CLASSES_ADMIN, {
       req,
-      modalCreate,
-      modalUpdate,
       daysOfWeek,
       user: req.user,
       page,
@@ -95,10 +91,9 @@ module.exports = {
   handleCreateClass: async (req, res) => {
     // const { errors } = validationResult(req);
     // if (errors?.length) {
-    //   req.flash("modalCreate", true);
     //   req.flash("oldValues", req.body);
     //   req.flash("errors", errors);
-    //   return res.redirect(REDIRECT_PATH.CLASSES_ADMIN);
+    //   return res.redirect(REDIRECT_PATH.HOME_CLASSES_ADMIN);
     // }
     // const {
     //   name,
@@ -120,10 +115,10 @@ module.exports = {
     //   courseId,
     //   assistantId
     // );
-    // return res.redirect(REDIRECT_PATH.CLASSES_ADMIN);
+    // return res.redirect(REDIRECT_PATH.HOME_CLASSES_ADMIN);
   },
 
-  handleUpdateClass: async (req, res) => {},
+  handleEditClass: async (req, res) => {},
   handleDeleteClasses: async (req, res) => {},
   importClassesPage: async (req, res) => {},
   handleImportClasses: async (req, res) => {},

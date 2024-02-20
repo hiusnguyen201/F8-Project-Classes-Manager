@@ -13,7 +13,7 @@
           </h5>
         </div>
         <div class="modal-body text-center">
-          <span style="font-size: 24px"><b> <%= users[i].name %> </b></span>
+          <span style="font-size: 24px"><b> <%= users[i].email %> </b></span>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -25,7 +25,7 @@
             name="csrfToken"
             value="<%= csrf.createToken() %>"
           />
-          <input type="hidden" name="userId" value="<%= users[i].id %>" />
+          <input type="hidden" name="id" value="<%= users[i].id %>" />
           <button type="submit" class="btn btn-danger">Yes</button>
         </div>
       </div>

@@ -44,6 +44,17 @@ module.exports = {
     const sheet = workbook.addWorksheet("Sheet 1");
 
     sheet.columns = headers;
+    for (var i = 1; i <= sheet.actualColumnCount; i++) {
+      sheet.getRow(1).getCell(i).font = {
+        color: { argb: "FFFFFFFF" },
+        bold: true,
+      };
+      sheet.getRow(1).getCell(i).fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF008000" },
+      };
+    }
 
     executeFunc(sheet);
 

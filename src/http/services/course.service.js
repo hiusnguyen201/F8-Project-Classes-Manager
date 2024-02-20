@@ -17,11 +17,14 @@ const User = model.User;
 module.exports = {
   countAllCourse: async (filters) => {
     try {
-      const { count } = await Course.findAndCountAll({
+      const { count, rows } = await Course.findAndCountAll({
         where: filters,
+        include: {
+          model: User,
+        },
       });
 
-      return [count, null];
+      return [{ count, rows }, null];
     } catch (err) {
       console.log(err);
     }
@@ -150,13 +153,13 @@ module.exports = {
       });
 
       if (statusUpdated) {
-        return [true, MESSAGE_SUCCESS.COURSE.UPDATE_COURSE_SUCCESS];
+        return [true, MESSAGE_SUCCESS.COURSE.EDIT_COURSE_SUCCESS];
       }
     } catch (err) {
       console.log(err);
     }
 
-    return [false, MESSAGE_ERROR.COURSE.UPDATE_COURSE_FAILED];
+    return [false, MESSAGE_ERROR.COURSE.EDIT_COURSE_FAILED];
   },
 
   removeCourses: async (courseIdList) => {

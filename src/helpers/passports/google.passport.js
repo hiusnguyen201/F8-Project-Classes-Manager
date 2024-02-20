@@ -16,7 +16,7 @@ module.exports = new GoogleStrategy(
       provider_id: profile.id,
     });
 
-    if (!req.isAuthenticated()) {
+    if (!req.cookies.token) {
       // Login Page
       if (!userSocial) {
         return done(null, false, {
@@ -34,12 +34,11 @@ module.exports = new GoogleStrategy(
       }
       // Social Link page
       const user = req.user;
-      const [newUserSocial] =
-        await socialService.findOrCreateUserSocialProvider(
-          profile.provider,
-          profile.id,
-          +user.id
-        );
+      const [newUserSocial] = await socialService.createUserSocial(
+        profile.provider,
+        profile.id,
+        +user.id
+      );
 
       if (newUserSocial) {
         return done(null, user);

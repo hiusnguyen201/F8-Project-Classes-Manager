@@ -1,4 +1,3 @@
-//
 var express = require("express");
 var router = express.Router();
 const passport = require("passport");
@@ -21,26 +20,10 @@ router.get("/logout", AuthMiddleware, AuthController.logout);
 router.get("/google/redirect", passport.authenticate("google"));
 router.get(
   "/google/callback",
-  (req, res, next) => {
-    passport.authenticate("google", (err, user, info, status) => {
-      if (err) {
-        return next(err);
-      }
-
-      if (!user) {
-        req.flash("error", info.message);
-        return res.send("<script>window.close()</script>");
-      }
-
-      req.logIn(user, function (err) {
-        if (err) {
-          return next(err);
-        }
-
-        next();
-      });
-    })(req, res, next);
-  },
+  passport.authenticate("google", {
+    failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
+    failureMessage: true,
+  }),
   AuthController.handleSocialLogin
 );
 
@@ -48,26 +31,10 @@ router.get(
 router.get("/github/redirect", passport.authenticate("github"));
 router.get(
   "/github/callback",
-  (req, res, next) => {
-    passport.authenticate("github", (err, user, info, status) => {
-      if (err) {
-        return next(err);
-      }
-
-      if (!user) {
-        req.flash("error", info.message);
-        return res.send("<script>window.close()</script>");
-      }
-
-      req.logIn(user, function (err) {
-        if (err) {
-          return next(err);
-        }
-
-        next();
-      });
-    })(req, res, next);
-  },
+  passport.authenticate("github", {
+    failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
+    failureMessage: true,
+  }),
   AuthController.handleSocialLogin
 );
 
@@ -75,30 +42,18 @@ router.get(
 router.get("/facebook/redirect", passport.authenticate("facebook"));
 router.get(
   "/facebook/callback",
-  (req, res, next) => {
-    passport.authenticate("facebook", (err, user, info, status) => {
-      if (err) {
-        return next(err);
-      }
-
-      if (!user) {
-        req.flash("error", info.message);
-        return res.send("<script>window.close()</script>");
-      }
-
-      req.logIn(user, function (err) {
-        if (err) {
-          return next(err);
-        }
-
-        next();
-      });
-    })(req, res, next);
-  },
+  passport.authenticate("facebook", {
+    failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
+    failureMessage: true,
+  }),
   AuthController.handleSocialLogin
 );
 
 router.use(GuestMiddleware);
+// Otp
+router.get("/otp", OtpMiddleware, AuthController.otp);
+router.post("/otp", OtpMiddleware, csrf.verify, AuthController.handleOtp);
+
 // Password
 router.get("/passwordreset", AuthController.emailResetPass);
 router.post("/passwordreset", csrf.verify, AuthController.handleEmailResetPass);
@@ -124,10 +79,5 @@ router.post(
   }),
   AuthController.handleLocalLogin
 );
-
-router.use(OtpMiddleware);
-// Otp
-router.get("/otp", AuthController.otp);
-router.post("/otp", csrf.verify, AuthController.handleOtp);
 
 module.exports = router;

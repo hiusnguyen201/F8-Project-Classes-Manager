@@ -2,13 +2,12 @@ const MESSAGE_ERROR = {
   USER: {
     // Login
     MISSING_CREDENTIALS: "Please Complete Information",
-    INVALID_EMAIL: "Invalid email",
     INVALID_ACCOUNT: "Incorrect email or password",
     LOGOUT_FAILED: "Log out error",
 
     // Feature
     CREATE_USER_FAILED: "Create user failed",
-    UPDATE_USER_FAILED: "Update user information failed",
+    EDIT_USER_FAILED: "Edit user information failed",
     CHANGE_PASS_FAILED: "Change password failed",
     DELETE_USER_FAILED: "Delete user failed",
     CHANGE_PASS_FAILED: "Change password user failed",
@@ -17,22 +16,24 @@ const MESSAGE_ERROR = {
     SEND_RESET_PASS: "Send password reset failed",
     COUNT_USER_FAILED: "Count user failed",
 
-    // Validate
-    USER_NOT_FOUND: "User not found",
-    REQUIRED_NAME: "",
+    // Validate create user
+    REQUIRED_NAME: "Name is required",
+    INVALID_NAME: "Name must be string",
     REQUIRED_EMAIL: "Email is required",
-    REQUIRED_USER: "User is required",
-    EMAIL_REGISTERD: "Email was registered",
-    EMAIL_NOT_EXIST: "Email isn't exist",
-    INVALID_PHONE: "Invalid phone",
+    INVALID_EMAIL: "Invalid email",
+    EMAIL_REGISTERED: "Email was registered",
+    REQUIRED_PHONE: "Phone is required",
+    INVALID_PHONE: "Phone must be Vietnam phone number",
+    INVALID_USER: "Invalid user",
     REQUIRED_TYPE: "Type is required",
     INVALID_TYPE: "Invalid type",
-    INVALID_USER: "Invalid user",
-    TYPE_NOT_FOUND: "Type is not found",
+
+    USER_NOT_FOUND: "User not found",
+    EMAIL_NOT_EXIST: "Email isn't exist",
     INVALID_OLD_PASS: "Old password isn't valid",
     NEW_PASS_NOT_STRONG:
       "New password at least 6 characters including a number and a lowercase letter",
-    INVALID_CONFIRM_PASS: "Confirm passwod isn't match new password",
+    INVALID_CONFIRM_PASS: "Confirm password isn't match new password",
 
     USERS_EMPTY: "Users is empty",
   },
@@ -74,10 +75,11 @@ const MESSAGE_ERROR = {
 
   COURSE: {
     // Validate
-    REQUIRED_TEACHER: "Teacher is required",
     REQUIRED_NAME: "Name is required",
+    INVALID_NAME: "Name must be string",
     REQUIRED_PRICE: "Price is required",
     INVALID_PRICE: "Invalid price",
+    REQUIRED_TEACHER: "Teacher is required",
     INVALID_TEACHER: "Invalid teacher",
     REQUIRED_TRYLEARN: "Try Learn is required",
     INVALID_TRYLEARN: "Invalid try learn",
@@ -93,7 +95,7 @@ const MESSAGE_ERROR = {
     COURSES_EMPTY: "Courses is empty",
     // Feature
     CREATE_COURSE_FAILED: "Create course failed",
-    UPDATE_COURSE_FAILED: "Update course information failed",
+    EDIT_COURSE_FAILED: "Edit course information failed",
     DELETE_COURSE_FAILED: "Delete course failed",
     FIND_COURSE_FAILED: "Find course failed",
     COUNT_COURSE_FAILED: "Count course failed",
@@ -121,7 +123,7 @@ const MESSAGE_ERROR = {
 
     // Feature
     CREATE_CLASS_FAILED: "Create class failed",
-    UPDATE_CLASS_FAILED: "Update class information failed",
+    EDIT_CLASS_FAILED: "Edit class information failed",
     DELETE_CLASS_FAILED: "Delete class failed",
     FIND_CLASS_FAILED: "Find class failed",
     COUNT_CLASS_FAILED: "Count class failed",
@@ -172,7 +174,7 @@ const MESSAGE_SUCCESS = {
   USER: {
     SENDED_RESET_PASS: "Check your email for a link to reset your password",
     CREATE_USER_SUCCESS: "Create user successfully",
-    UPDATE_USER_SUCCESS: "Update user information successfully",
+    EDIT_USER_SUCCESS: "Edit user information successfully",
     DELETE_USER_SUCCESS: "Delete user successfully",
     CHANGE_PASS_SUCCESS: "Change password successfully",
   },
@@ -192,7 +194,7 @@ const MESSAGE_SUCCESS = {
 
   COURSE: {
     CREATE_COURSE_SUCCESS: "Create course successfully",
-    UPDATE_COURSE_SUCCESS: "Update course successfully",
+    EDIT_COURSE_SUCCESS: "Edit course successfully",
     DELETE_COURSE_SUCCESS: "Delete course successfully",
   },
 };

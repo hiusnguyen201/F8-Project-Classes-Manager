@@ -9,7 +9,6 @@ const fileExcel = require("../../utils/fileExcel");
 const momentUtil = require("../../utils/moment");
 
 const courseService = require("./course.service");
-const stringUtil = require("../../utils/string");
 const model = require("../../models/index");
 const Class = model.Class;
 
@@ -76,8 +75,6 @@ module.exports = {
     //   if (!course) {
     //     return [null, message];
     //   }
-    //   const teachers = stringUtil.convertDataToArr(course.User.id, assistantId);
-    //   const schedules = stringUtil.convertDataToArr(schedule);
     //   const totalWeeks =
     //     course.duration % schedules.length === 0
     //       ? course.duration / schedules.length

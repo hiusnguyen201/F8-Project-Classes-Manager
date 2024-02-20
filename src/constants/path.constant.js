@@ -19,23 +19,33 @@ const REDIRECT_PATH = {
   // Admin
   HOME_ADMIN: "/admin",
 
-  USERS_ADMIN: "/admin/users",
+  HOME_USERS_ADMIN: "/admin/users",
+  CREATE_USER: "/admin/users/create",
+  EDIT_USER: "/admin/users/edit",
   IMPORT_USERS: "/admin/users/import",
   EXPORT_USERS: "/admin/users/export",
 
-  COURSES_ADMIN: "/admin/courses",
+  HOME_COURSES_ADMIN: "/admin/courses",
+  CREATE_COURSE: "/admin/courses/create",
+  EDIT_COURSE: "/admin/courses/edit",
   IMPORT_COURSES: "/admin/courses/import",
   EXPORT_COURSES: "/admin/courses/export",
 
-  TEACHERS_ADMIN: "/admin/teachers",
+  HOME_TEACHERS_ADMIN: "/admin/teachers",
+  CREATE_TEACHER: "/admin/teachers/create",
+  EDIT_TEACHER: "/admin/teachers/edit",
   IMPORT_TEACHERS: "/admin/teachers/import",
   EXPORT_TEACHERS: "/admin/teachers/export",
 
-  STUDENTS_ADMIN: "/admin/students",
+  HOME_STUDENTS_ADMIN: "/admin/students",
+  CREATE_STUDENT: "/admin/students/create",
+  EDIT_STUDENT: "/admin/students/edit",
   IMPORT_STUDENTS: "/admin/students/import",
   EXPORT_STUDENTS: "/admin/students/export",
 
-  CLASSES_ADMIN: "/admin/classes",
+  HOME_CLASSES_ADMIN: "/admin/classes",
+  CREATE_CLASS: "/admin/classes/create",
+  EDIT_CLASS: "/admin/classes/edit",
   IMPORT_CLASSES: "/admin/classes/import",
   EXPORT_CLASSES: "/admin/classes/export",
 
@@ -57,7 +67,6 @@ const REDIRECT_PATH = {
   SETTINGS_PASSWORD_STUDENT: "/settings/password",
 
   // Error
-  HOME_ERRORS: "/errors",
 };
 
 const RENDER_PATH = {
@@ -76,25 +85,35 @@ const RENDER_PATH = {
   // Admin
   HOME_ADMIN: "admin/dashboard/index",
 
-  HOME_ADMIN_SETTING: "admin/settings/index",
+  HOME_SETTING_ADMIN: "admin/settings/index",
 
-  HOME_ADMIN_USERS: "admin/users/index",
-  ADMIN_IMPORT_USERS: "admin/users/import",
+  HOME_USERS_ADMIN: "admin/users/index",
+  CREATE_USER: "admin/users/create",
+  EDIT_USER: "admin/users/edit",
+  IMPORT_USERS: "admin/users/import",
 
-  HOME_ADMIN_COURSES: "admin/courses/index",
-  ADMIN_IMPORT_COURSES: "admin/courses/import",
+  HOME_COURSES_ADMIN: "admin/courses/index",
+  CREATE_COURSE: "admin/courses/create",
+  EDIT_COURSE: "admin/courses/edit",
+  IMPORT_COURSES: "admin/courses/import",
 
-  HOME_ADMIN_TEACHERS: "admin/teachers/index",
-  ADMIN_IMPORT_TEACHERS: "admin/teachers/import",
+  HOME_TEACHERS_ADMIN: "admin/teachers/index",
+  CREATE_TEACHER: "admin/teachers/create",
+  EDIT_TEACHER: "admin/teachers/edit",
+  IMPORT_TEACHERS: "admin/teachers/import",
 
-  HOME_ADMIN_STUDENTS: "admin/students/index",
-  ADMIN_IMPORT_STUDENTS: "admin/students/import",
+  HOME_STUDENTS_ADMIN: "admin/students/index",
+  CREATE_STUDENT: "admin/students/create",
+  EDIT_STUDENT: "admin/students/edit",
+  IMPORT_STUDENTS: "admin/students/import",
 
-  HOME_ADMIN_CLASSES: "admin/classes/index",
-  ADMIN_IMPORT_CLASSES: "admin/classes/import",
+  HOME_CLASSES_ADMIN: "admin/classes/index",
+  CREATE_CLASS: "admin/classes/create",
+  EDIT_CLASS: "admin/classes/edit",
+  IMPORT_CLASSES: "admin/classes/import",
 
   // Error
-  HOME_ERRORS: "errors/index",
+  NOT_FOUND_PAGE: "errors/404",
 };
 
 module.exports = {

@@ -1,0 +1,113 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
+<form action="" method="post">
+  <div class="pl-0 modal fade modal-edit show activeModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header align-items-center">
+          <h5 class="modal-title">
+            <a href="<%= REDIRECT_PATH.HOME_COURSES_ADMIN %>"
+              ><i class="fas fa-times mr-3 icon-operation"></i
+            ></a>
+            <i class="fas fa-book mr-2"></i><span>Course</span>
+          </h5>
+          <button type="submit" class="btn btn-success py-2">Save</button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body mx-auto">
+            <div class="card">
+              <!-- Row 1 -->
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" placeholder="Name..." value="<%= oldValues.name %>" autocomplete="off" name="name" />
+                <% if(errorsValidate['name']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['name'] %>
+                </span>
+                <% } %>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="mb-3">
+                <label class="form-label">Price</label>
+                <input type="number" class="form-control" placeholder="Price..." value="<%= oldValues.price %>" autocomplete="off" name="price" />
+                <% if(errorsValidate['price']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['price'] %>
+                </span>
+                <% } %>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="mb-3">
+                <label class="form-label">Teacher</label>
+                <select class="form-control" name="teacherId">
+                  <option value="">--- Select a Teacher ---</option>
+                  <% if(teachers?.length) {%> <% teachers.forEach(({id, email}) => { %>
+                  <option <%= +oldValues.teacherId === +id? 'selected' : '' %> value="<%= id %>"><%= email %></option>
+                  <% }) %> <% } %>
+                </select>
+                <% if(errorsValidate['teacherId']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['teacherId'] %>
+                </span>
+                <% } %>
+              </div>
+
+              <!-- Row 4 -->
+              <div class="mb-3">
+                <label class="form-label">Try Learn</label>
+                <input type="number" name="tryLearn" class="form-control" value="<%= oldValues.tryLearn %>" placeholder="Try Learn..." autocomplete="off" />
+                <% if(errorsValidate['tryLearn']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['tryLearn'] %>
+                </span>
+                <% } %>
+              </div>
+
+              <!-- Row 5 -->
+              <div class="mb-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" name="quantity" class="form-control" placeholder="Quantity..." value="<%= oldValues.quantity %>" autocomplete="off" />
+                <% if(errorsValidate['quantity']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['quantity'] %>
+                </span>
+                <% } %>
+              </div>
+
+              <!-- Row 6 -->
+              <div class="mb-3">
+                <label class="form-label">Duration</label>
+                <input type="number" name="duration" class="form-control" placeholder="Duration..." value="<%= oldValues.duration %>" autocomplete="off" />
+                <% if(errorsValidate['duration']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['duration'] %>
+                </span>
+                <% } %>
+              </div>
+
+              <input type="hidden" name="_method" value="PATCH" />
+              <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<style>
+  html {
+    overflow: hidden;
+  }
+</style>

@@ -30,6 +30,7 @@ const authRouter = require("./routes/web/auth/index");
 
 // Service
 const userService = require("./http/services/user.service");
+const { RENDER_PATH } = require("./constants/path.constant");
 
 var app = express();
 // app.use(helmet());

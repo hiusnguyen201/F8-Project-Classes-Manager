@@ -1,18 +1,24 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
 <form action="" method="post">
-  <div
-    class="pl-0 modal fade modal-edit <%= modalCreate? 'show activeModal' : '' %>"
-    id="modal-createChildren"
-    tabindex="-1"
-  >
+  <div class="pl-0 modal fade modal-edit show activeModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header align-items-center">
           <h5 class="modal-title">
-            <i
-              class="fas fa-times mr-3 icon-operation"
-              data-dismiss="modal"
-            ></i>
-            <i class="fas fa-user mr-2"></i><span>Student</span>
+            <a href="<%= REDIRECT_PATH.HOME_TEACHERS_ADMIN %>"
+              ><i class="fas fa-times mr-3 icon-operation"></i
+            ></a>
+            <i class="fas fa-user mr-2"></i><span>Teacher</span>
           </h5>
           <button type="submit" class="btn btn-success py-2">Create</button>
         </div>
@@ -30,11 +36,9 @@
                   name="name"
                   value="<%= oldValues.name %>"
                 />
-                <% if(errorsValidate?.length){ for(var i = 0; i <
-                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
-                'name') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <% if(errorsValidate['name']){ %>
+                <span class="text-danger"> <%= errorsValidate['name'] %> </span>
+                <% } %>
               </div>
 
               <!-- Row 2 -->
@@ -48,19 +52,16 @@
                   name="email"
                   value="<%= oldValues.email %>"
                 />
-                <% if(errorsValidate?.length){ for(var i = 0; i <
-                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
-                'email') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <% if(errorsValidate['email']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['email'] %>
+                </span>
+                <% } %>
               </div>
 
-              <!-- Row 4 -->
+              <!-- Row 3 -->
               <div class="mb-3">
-                <label class="form-label"
-                  ><span>Phone</span
-                  ><span class="optional-text">(optional)</span></label
-                >
+                <label class="form-label"><span>Phone</span></label>
                 <input
                   type="tel"
                   name="phone"
@@ -69,14 +70,14 @@
                   autocomplete="off"
                   value="<%= oldValues.phone %>"
                 />
-                <% if(errorsValidate?.length){ for(var i = 0; i <
-                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
-                'phone') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <% if(errorsValidate['phone']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['phone'] %>
+                </span>
+                <% } %>
               </div>
 
-              <!-- Row 5 -->
+              <!-- Row 4 -->
               <div class="mb-3">
                 <label class="form-label"
                   ><span>Address</span
@@ -90,11 +91,23 @@
                   autocomplete="off"
                   value="<%= oldValues.address %>"
                 />
-                <% if(errorsValidate?.length){ for(var i = 0; i <
-                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
-                'address') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+              </div>
+
+              <!-- Row 5 -->
+              <div class="mb-3">
+                <label class="form-label">Type</label>
+                <select name="typeId" class="form-control">
+                  <option value="">--- Select a Type ---</option>
+                  <% if(types?.length) { %> <% types.forEach(({id, name}) => {
+                  %>
+                  <option <%= +oldValues.typeId === +id? 'selected' : '' %> value="<%= id %>"><%= name %></option>
+                  <% }) %> <% } %>
+                </select>
+                <% if(errorsValidate['typeId']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['typeId'] %>
+                </span>
+                <% } %>
               </div>
 
               <input type="hidden" name="_method" value="POST" />
@@ -110,3 +123,9 @@
     </div>
   </div>
 </form>
+
+<style>
+  html {
+    overflow: hidden;
+  }
+</style>

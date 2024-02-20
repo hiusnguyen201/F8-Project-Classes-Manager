@@ -1,11 +1,20 @@
+const { Op } = require("sequelize");
 const { MESSAGE_ERROR } = require("../../constants/message.constant");
 const models = require("../../models/index");
 const Type = models.Type;
 
 module.exports = {
-  getAllType: async () => {
+  getAllType: async (names) => {
     try {
-      const types = await Type.findAll();
+      const filters = {};
+      if (names)
+        filters.name = {
+          [Op.in]: names,
+        };
+
+      const types = await Type.findAll({
+        where: filters,
+      });
 
       if (types?.length) {
         return [types, null];

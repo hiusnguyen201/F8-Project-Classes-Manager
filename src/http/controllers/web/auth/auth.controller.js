@@ -106,23 +106,25 @@ module.exports = {
     const tokenCookie = req.cookies.token;
     if (tokenCookie) {
       req.flash("success", MESSAGE_SUCCESS.SOCIAL.LINK_ACCOUNT_SOCIAL_SUCCESS);
-    } else {
-      const userId = req.user.id;
-
-      if (!Number.isInteger(+userId)) {
-        return res.send("<script>window.close()</script>");
-      }
-
-      const [loginToken, message] = await tokenService.createLoginToken(userId);
-      if (!loginToken) {
-        req.flash("error", message);
-        return res.send("<script>window.close()</script>");
-      }
-
-      res.cookie("token", loginToken.token);
+      return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
     }
 
-    return res.send("<script>window.close()</script>");
+    const user = req.user;
+    const [loginToken, message] = await tokenService.createLoginToken(user.id);
+    if (!loginToken) {
+      req.flash("error", message);
+      return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+    }
+
+    res.cookie("token", loginToken.token);
+    const { Type } = user;
+    if (Type.name === "admin") {
+      return res.redirect(REDIRECT_PATH.HOME_ADMIN);
+    } else if (Type.name === "teacher") {
+      return res.redirect(REDIRECT_PATH.HOME_TEACHER);
+    } else {
+      return res.redirect(REDIRECT_PATH.HOME_STUDENT);
+    }
   },
 
   logout: async (req, res) => {
@@ -144,9 +146,8 @@ module.exports = {
       return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
     } else {
       req.flash("error", message);
+      return res.redirect(req.url);
     }
-
-    return res.redirect(req.url);
   },
 
   emailResetPass: (req, res) => {

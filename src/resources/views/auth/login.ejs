@@ -52,26 +52,17 @@
       <span>Or login with</span>
       <div class="row socials-login">
         <div class="col-4">
-          <a
-            onclick="socialLogin('google')"
-            href="javascript:void(0)"
-            class="social-link"
+          <a href="<%= REDIRECT_PATH.LOGIN_GOOGLE %>" class="social-link"
             ><i class="fa-brands fa-google fa-lg"></i
           ></a>
         </div>
         <div class="col-4">
-          <a
-            onclick="socialLogin('facebook')"
-            href="javascript:void(0)"
-            class="social-link"
+          <a href="<%= REDIRECT_PATH.LOGIN_FACEBOOK %>" class="social-link"
             ><i class="fa-brands fa-facebook fa-lg"></i
           ></a>
         </div>
         <div class="col-4">
-          <a
-            onclick="socialLogin('github')"
-            href="javascript:void(0)"
-            class="social-link"
+          <a href="<%= REDIRECT_PATH.LOGIN_GITHUB %>" class="social-link"
             ><i class="fa-brands fa-github fa-lg"></i
           ></a>
         </div>
@@ -79,20 +70,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  const socialLogin = (provider) => {
-    var socialWindow = window.open(
-      `/auth/${provider}/redirect`,
-      `${provider}`,
-      "height=600,width=800"
-    );
-
-    const timerSocial = setInterval(() => {
-      if (socialWindow.closed) {
-        window.location.reload();
-        clearInterval(timerSocial);
-      }
-    });
-  };
-</script>

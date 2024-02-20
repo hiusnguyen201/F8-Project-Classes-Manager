@@ -114,7 +114,7 @@ body {
 
 .brand-link {
   background-color: #001529;
-  height: 63px;
+  max-height: 56px;
 }
 
 .header-submenu_item:hover {
@@ -132,7 +132,7 @@ body {
 .brand-text {
   text-align: center;
   font-weight: 800;
-  font-size: 32px;
+  font-size: 30px;
   letter-spacing: 8px;
   text-transform: uppercase;
   color: #f7515e;

@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
   if (!userIdReset) {
     req.flash("error", MESSAGE_ERROR.OTHER.JWT_INVALID_TOKEN);
     return res.redirect(REDIRECT_PATH.EMAIL_PASS_RESET);
-  } else if (req.isAuthenticated() && !userIdReset) {
+  } else if (req.cookies.token && !userIdReset) {
     req.flash("error", MESSAGE_ERROR.OTHER.JWT_INVALID_TOKEN);
     return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
   }

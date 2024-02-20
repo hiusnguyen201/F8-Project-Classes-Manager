@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const { validationResult } = require("express-validator");
 const { Op } = require("sequelize");
 const {
@@ -18,10 +19,7 @@ const userService = require("../../../services/user.service");
 const typeService = require("../../../services/type.service");
 
 module.exports = {
-  // Page
   index: async (req, res) => {
-    const error = req.flash("error");
-    const success = req.flash("success");
     let { page, limit, keyword } = req.query;
     const filters = {};
 
@@ -50,10 +48,9 @@ module.exports = {
       ];
     }
 
-    const [totalCount] = await userService.countAllUserByType(
-      filters,
-      "student"
-    );
+    const [{ count, rows }] = await userService.countAllUserByType(filters, [
+      "student",
+    ]);
 
     if (!limit) {
       limit = 10;
@@ -65,7 +62,7 @@ module.exports = {
       }
     }
 
-    const totalPage = Math.ceil(totalCount / limit);
+    const totalPage = Math.ceil(count / limit);
     if (page < 1 || !page) {
       page = 1;
     } else if (page > totalPage) {
@@ -73,63 +70,47 @@ module.exports = {
     }
 
     const offset = (page - 1) * +limit;
-    const [students] = await userService.getAllUser(
-      ["student"],
-      filters,
-      +offset,
-      +limit
-    );
 
-    const oldValues = req.flash("oldValues");
-    const errorsValidate = req.flash("errors");
-    const modalCreate = req.flash("modalCreate")[0];
-    const modalUpdate = req.flash("modalUpdate")[0];
-
-    return res.render(RENDER_PATH.HOME_ADMIN_STUDENTS, {
+    return res.render(RENDER_PATH.HOME_STUDENTS_ADMIN, {
       req,
       user: req.user,
-      modalCreate,
-      modalUpdate,
-      students: students ?? [],
       page,
-      oldValues: oldValues[0] ?? {},
-      errorsValidate,
       title: `Manage Students - ${process.env.APP_NAME}`,
       REDIRECT_PATH,
-      totalCount,
-      currPage: "students",
+      totalCount: count,
       offset,
       limit,
+      currPage: "students",
+      students: rows.slice(+offset, +offset + limit) ?? [],
       totalPage,
-      success,
-      error,
+      success: req.flash("success"),
+      error: req.flash("error"),
+      csrf,
       stringUtil,
+    });
+  },
+
+  create: async (req, res) => {
+    return res.render(RENDER_PATH.CREATE_STUDENT, {
+      req,
+      user: req.user,
+      oldValues: req.flash("oldValues")[0] ?? {},
+      errorsValidate: stringUtil.extractErr(req.flash("errors")),
+      title: `Create Student - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      currPage: "students",
+      success: req.flash("success"),
+      error: req.flash("error"),
       csrf,
     });
   },
 
-  importStudentsPage: async (req, res) => {
-    const error = req.flash("error");
-    const success = req.flash("success");
-
-    return res.render(RENDER_PATH.ADMIN_IMPORT_STUDENTS, {
-      title: `Import Students - ${process.env.APP_NAME}`,
-      user: req.user,
-      REDIRECT_PATH,
-      currPage: "students",
-      error,
-      success,
-    });
-  },
-
-  // Handle
   handleCreateStudent: async (req, res) => {
     const { errors } = validationResult(req);
     if (errors?.length) {
-      req.flash("modalCreate", true);
       req.flash("oldValues", req.body);
       req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.STUDENTS_ADMIN);
+      return res.redirect(REDIRECT_PATH.CREATE_STUDENT);
     }
 
     const { name, email, phone, address } = req.body;
@@ -139,7 +120,7 @@ module.exports = {
 
     if (!type) {
       req.flash("error", messageType);
-      return res.redirect(REDIRECT_PATH.STUDENTS_ADMIN);
+      return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
     }
 
     const [status, messageUser] = await userService.createUser(
@@ -156,21 +137,51 @@ module.exports = {
       req.flash("success", messageUser);
     }
 
-    return res.redirect(REDIRECT_PATH.STUDENTS_ADMIN);
+    return res.redirect(REDIRECT_PATH.CREATE_STUDENT);
   },
 
-  handleUpdateStudent: async (req, res) => {
-    const { userId } = req.body;
+  edit: async (req, res, next) => {
+    const { id } = req.params;
+
     const { errors } = validationResult(req);
     if (errors?.length) {
-      req.flash("modalUpdate", userId);
+      return next(createHttpError(404));
+    }
+
+    const [studentEdit] = await userService.getUser({
+      id,
+    });
+
+    const oldValues = req.flash("oldValues")[0] ?? studentEdit ?? {};
+
+    return res.render(RENDER_PATH.EDIT_STUDENT, {
+      req,
+      user,
+      oldValues,
+      errorsValidate: stringUtil.extractErr(req.flash("errors")),
+      title: `Edit Student - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      currPage: "students",
+      success: req.flash("success"),
+      error: req.flash("error"),
+      stringUtil,
+      csrf,
+    });
+  },
+
+  handleEditStudent: async (req, res) => {
+    const { id } = req.body;
+
+    const { errors } = validationResult(req);
+    if (errors?.length) {
       req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.STUDENTS_ADMIN);
+      req.flash("oldValues", req.body);
+      return res.redirect(REDIRECT_PATH.EDIT_STUDENT + `/${id}`);
     }
 
     const { name, email, phone, address } = req.body;
-    const [status, message] = await userService.updateUser(
-      +userId,
+    const [status, message] = await userService.editUser(
+      +id,
       name,
       email,
       phone,
@@ -183,22 +194,39 @@ module.exports = {
       req.flash("success", message);
     }
 
-    return res.redirect(REDIRECT_PATH.STUDENTS_ADMIN);
+    return res.redirect(REDIRECT_PATH.EDIT_STUDENT + `/${id}`);
   },
 
   handleDeleteStudents: async (req, res) => {
-    const { userId } = req.body;
-    let arrId = userId.split(",");
-    arrId = arrId.map((id) => parseInt(id));
+    const { id } = req.body;
 
-    const [status, message] = await userService.removeUsers(arrId);
+    const { errors } = validationResult(req);
+    if (errors?.length) {
+      req.flash("error", errors[0].msg);
+      return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
+    }
+
+    const [status, message] = await userService.removeUsers(
+      Array.isArray(id) ? id : [id]
+    );
     if (status) {
       req.flash("success", message);
     } else {
       req.flash("error", message);
     }
 
-    return res.redirect(REDIRECT_PATH.STUDENTS_ADMIN);
+    return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
+  },
+
+  importStudentsPage: async (req, res) => {
+    return res.render(RENDER_PATH.IMPORT_STUDENTS, {
+      title: `Import Students - ${process.env.APP_NAME}`,
+      user: req.user,
+      REDIRECT_PATH,
+      currPage: "students",
+      error: req.flash("error"),
+      success: req.flash("success"),
+    });
   },
 
   handleImportStudents: async (req, res) => {
@@ -227,10 +255,10 @@ module.exports = {
 
     if (!users) {
       req.flash("error", message);
-      return res.redirect(REDIRECT_PATH.STUDENTS_ADMIN);
+      return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
     }
 
-    fileExcel.handleExportFile(
+    fileExcel.writeFile(
       res,
       SHEET_HEADERS_EXPORT.HEADERS_STUDENT,
       FILE_NAME_EXPORT.STUDENT,

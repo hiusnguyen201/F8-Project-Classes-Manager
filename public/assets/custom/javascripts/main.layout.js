@@ -9,7 +9,7 @@ const btnConfirmDeleteAllChildren = document.querySelector(
 const btnHiddenColumn = document.querySelector(".btn-hidden-column-group>.btn");
 
 let count = 0;
-let arrObjId = [];
+let arrId = [];
 if (btnCheckboxParent) {
   btnCheckboxParent.addEventListener("change", (e) => {
     if (e.target.checked) {
@@ -18,7 +18,7 @@ if (btnCheckboxParent) {
           child.checked = true;
           count = listBtnChild.length;
           btnDeleteAllChildrenSelected.disabled = false;
-          arrObjId.push(child.value);
+          arrId.push(child.value);
         }
       });
     } else {
@@ -30,7 +30,7 @@ if (btnCheckboxParent) {
         }
       });
 
-      arrObjId = [];
+      arrId = [];
     }
   });
 }
@@ -43,13 +43,13 @@ if (listBtnChild) {
         if (count === listBtnChild.length) {
           btnCheckboxParent.checked = true;
         }
-        arrObjId.push(child.value);
+        arrId.push(child.value);
 
         btnDeleteAllChildrenSelected.disabled = false;
       } else {
         count--;
         btnCheckboxParent.checked = false;
-        arrObjId.pop(child.value);
+        arrId.pop(child.value);
 
         if (!count) {
           btnDeleteAllChildrenSelected.disabled = true;
@@ -62,8 +62,13 @@ if (btnConfirmDeleteAllChildren) {
   btnConfirmDeleteAllChildren.addEventListener("click", () => {
     if (count > 0 && !btnDeleteAllChildrenSelected.disabled) {
       const formParent = btnConfirmDeleteAllChildren.parentNode;
-      const input = formParent.querySelector("input#deleteInputBox");
-      input.value = arrObjId;
+      arrId.forEach((id) => {
+        const input = document.createElement("input");
+        input.name = "id";
+        input.value = id;
+        input.hidden = true;
+        formParent.appendChild(input);
+      });
       formParent.submit();
     }
   });
@@ -77,26 +82,6 @@ if (btnHiddenColumn) {
     menu.classList.toggle("active");
     btnHiddenColumn.classList.toggle("active");
   });
-}
-
-const modalOpened = document.querySelector("div.modal-edit.show.activeModal");
-if (modalOpened) {
-  const btnClose = modalOpened.querySelector("i.fas.fa-times");
-  btnClose.addEventListener("click", (e) => closeModal());
-
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeModal();
-    }
-  });
-
-  const closeModal = () => {
-    modalOpened.classList.remove("show");
-    setTimeout(() => {
-      modalOpened.style.display = "none";
-      modalOpened.classList.remove("active");
-    }, 100);
-  };
 }
 
 const dropArea = document.querySelector("label#drop-area");

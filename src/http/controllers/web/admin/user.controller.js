@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const { validationResult } = require("express-validator");
 const { Op } = require("sequelize");
 const {
@@ -18,11 +19,9 @@ const userService = require("../../../services/user.service");
 const typeService = require("../../../services/type.service");
 
 module.exports = {
-  // Page
   index: async (req, res) => {
     const error = req.flash("error");
     const success = req.flash("success");
-    const user = req.user;
     let { page, limit, keyword } = req.query;
     const filters = {};
 
@@ -51,7 +50,9 @@ module.exports = {
       ];
     }
 
-    const [totalCount] = await userService.countAllUserByType(filters, "admin");
+    const [{ count, rows }] = await userService.countAllUserByType(filters, [
+      "admin",
+    ]);
 
     if (!limit) {
       limit = 10;
@@ -63,7 +64,7 @@ module.exports = {
       }
     }
 
-    const totalPage = Math.ceil(totalCount / limit);
+    const totalPage = Math.ceil(count / limit);
     if (page < 1 || !page) {
       page = 1;
     } else if (page > totalPage) {
@@ -71,63 +72,47 @@ module.exports = {
     }
 
     const offset = (page - 1) * +limit;
-    const [users] = await userService.getAllUser(
-      ["admin"],
-      filters,
-      +offset,
-      +limit
-    );
 
-    const oldValues = req.flash("oldValues")[0] ?? {};
-    const errorsValidate = req.flash("errors");
-    const modalCreate = req.flash("modalCreate")[0];
-    const modalUpdate = req.flash("modalUpdate")[0];
-
-    return res.render(RENDER_PATH.HOME_ADMIN_USERS, {
+    return res.render(RENDER_PATH.HOME_USERS_ADMIN, {
       req,
-      user,
-      oldValues,
-      errorsValidate,
-      modalCreate,
-      modalUpdate,
+      user: req.user,
       page,
       title: `Manage Users - ${process.env.APP_NAME}`,
       REDIRECT_PATH,
-      totalCount,
+      totalCount: count,
       offset,
       limit,
       currPage: "users",
-      users: users ?? [],
+      users: rows.slice(+offset, +offset + limit) ?? [],
       totalPage,
       success,
       error,
+      csrf,
       stringUtil,
+    });
+  },
+
+  create: async (req, res) => {
+    return res.render(RENDER_PATH.CREATE_USER, {
+      req,
+      user: req.user,
+      oldValues: req.flash("oldValues")[0] ?? {},
+      errorsValidate: stringUtil.extractErr(req.flash("errors")),
+      title: `Create User - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      currPage: "users",
+      success: req.flash("success"),
+      error: req.flash("error"),
       csrf,
     });
   },
 
-  importUsersPage: async (req, res) => {
-    const error = req.flash("error");
-    const success = req.flash("success");
-
-    return res.render(RENDER_PATH.ADMIN_IMPORT_USERS, {
-      title: `Import Users - ${process.env.APP_NAME}`,
-      user: req.user,
-      REDIRECT_PATH,
-      currPage: "users",
-      error,
-      success,
-    });
-  },
-
-  // Handle
   handleCreateUser: async (req, res) => {
     const { errors } = validationResult(req);
     if (errors?.length) {
-      req.flash("modalCreate", true);
       req.flash("oldValues", req.body);
       req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.USERS_ADMIN);
+      return res.redirect(REDIRECT_PATH.CREATE_USER);
     }
 
     const { name, email, phone, address } = req.body;
@@ -137,7 +122,7 @@ module.exports = {
 
     if (!type) {
       req.flash("error", messageType);
-      return res.redirect(REDIRECT_PATH.USERS_ADMIN);
+      return res.redirect(REDIRECT_PATH.HOME_USERS_ADMIN);
     }
 
     const [status, messageUser] = await userService.createUser(
@@ -154,21 +139,48 @@ module.exports = {
       req.flash("success", messageUser);
     }
 
-    return res.redirect(REDIRECT_PATH.USERS_ADMIN);
+    return res.redirect(REDIRECT_PATH.CREATE_USER);
   },
 
-  handleUpdateUser: async (req, res) => {
-    const { userId } = req.body;
+  edit: async (req, res, next) => {
+    const { id } = req.params;
+
     const { errors } = validationResult(req);
     if (errors?.length) {
-      req.flash("modalUpdate", userId);
+      return next(createHttpError(404));
+    }
+
+    const [userEdit] = await userService.getUser({
+      id,
+    });
+
+    return res.render(RENDER_PATH.EDIT_USER, {
+      req,
+      user: req.user,
+      oldValues: req.flash("oldValues")[0] ?? userEdit ?? {},
+      errorsValidate: stringUtil.extractErr(req.flash("errors")),
+      title: `Edit User - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      currPage: "users",
+      success: req.flash("success"),
+      error: req.flash("error"),
+      csrf,
+    });
+  },
+
+  handleEditUser: async (req, res) => {
+    const { id } = req.params;
+
+    const { errors } = validationResult(req);
+    if (errors?.length) {
       req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.USERS_ADMIN);
+      req.flash("oldValues", req.body);
+      return res.redirect(REDIRECT_PATH.EDIT_USER + `/${id}`);
     }
 
     const { name, email, phone, address } = req.body;
-    const [status, message] = await userService.updateUser(
-      +userId,
+    const [status, message] = await userService.editUser(
+      +id,
       name,
       email,
       phone,
@@ -181,26 +193,44 @@ module.exports = {
       req.flash("success", message);
     }
 
-    return res.redirect(REDIRECT_PATH.USERS_ADMIN);
+    return res.redirect(REDIRECT_PATH.EDIT_USER + `/${id}`);
   },
 
   handleDeleteUsers: async (req, res) => {
-    const { userId } = req.body;
-    let arrId = userId.split(",");
-    arrId = arrId.map((id) => parseInt(id));
+    const { id } = req.body;
 
-    const [status, message] = await userService.removeUsers(arrId);
+    const { errors } = validationResult(req);
+    if (errors?.length) {
+      req.flash("error", errors[0].msg);
+      return res.redirect(REDIRECT_PATH.HOME_USERS_ADMIN);
+    }
+
+    const [status, message] = await userService.removeUsers(
+      Array.isArray(id) ? id : [id]
+    );
     if (status) {
       req.flash("success", message);
     } else {
       req.flash("error", message);
     }
 
-    return res.redirect(REDIRECT_PATH.USERS_ADMIN);
+    return res.redirect(REDIRECT_PATH.HOME_USERS_ADMIN);
+  },
+
+  importUsersPage: async (req, res) => {
+    return res.render(RENDER_PATH.IMPORT_USERS, {
+      title: `Import Users - ${process.env.APP_NAME}`,
+      user: req.user,
+      REDIRECT_PATH,
+      currPage: "users",
+      error: req.flash("error"),
+      success: req.flash("success"),
+    });
   },
 
   handleImportUsers: async (req, res) => {
     const { errors } = validationResult(req);
+
     if (errors?.length) {
       req.flash("error", errors[0].msg);
       return res.redirect(REDIRECT_PATH.IMPORT_USERS);
@@ -211,6 +241,7 @@ module.exports = {
       req.file,
       FIELDS_IMPORT.USER_FIELDS
     );
+
     if (status) {
       req.flash("success", message);
     } else {
@@ -225,10 +256,10 @@ module.exports = {
 
     if (!users) {
       req.flash("error", message);
-      return res.redirect(REDIRECT_PATH.USERS_ADMIN);
+      return res.redirect(REDIRECT_PATH.HOME_USERS_ADMIN);
     }
 
-    fileExcel.handleExportFile(
+    fileExcel.writeFile(
       res,
       SHEET_HEADERS_EXPORT.HEADERS_USER,
       FILE_NAME_EXPORT.USER,

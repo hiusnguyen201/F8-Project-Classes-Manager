@@ -1,17 +1,23 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
 <form action="" method="post">
-  <div
-    class="pl-0 modal fade modal-edit <%= +modalUpdate === +users[i].id? 'show activeModal' : '' %>"
-    id="modal-editChildren-<%= users[i].id %>"
-    tabindex="-1"
-  >
+  <div class="pl-0 modal fade modal-edit show activeModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header align-items-center">
           <h5 class="modal-title">
-            <i
-              class="fas fa-times mr-3 icon-operation"
-              data-dismiss="modal"
-            ></i>
+            <a href="<%= REDIRECT_PATH.HOME_USERS_ADMIN %>"
+              ><i class="fas fa-times mr-3 icon-operation"></i
+            ></a>
             <i class="fas fa-book mr-2"></i><span>User</span>
           </h5>
           <button type="submit" class="btn btn-success py-2">Save</button>
@@ -28,13 +34,11 @@
                   placeholder="Name..."
                   autocomplete="off"
                   name="name"
-                  value="<%= users[i].name %>"
+                  value="<%= oldValues.name %>"
                 />
-                <% if(errorsValidate?.length){ for(var i = 0; i <
-                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
-                'name') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <% if(errorsValidate['name']){ %>
+                <span class="text-danger"> <%= errorsValidate['name'] %> </span>
+                <% } %>
               </div>
 
               <!-- Row 2 -->
@@ -46,37 +50,34 @@
                   placeholder="Email..."
                   autocomplete="off"
                   name="email"
-                  value="<%= users[i].email %>"
+                  value="<%= oldValues.email %>"
                 />
-                <% if(errorsValidate?.length){ for(var i = 0; i <
-                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
-                'email') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <% if(errorsValidate['email']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['email'] %>
+                </span>
+                <% } %>
               </div>
 
-              <!-- Row 4 -->
+              <!-- Row 3 -->
               <div class="mb-3">
-                <label class="form-label"
-                  ><span>Phone</span
-                  ><span class="optional-text">(optional)</span></label
-                >
+                <label class="form-label"><span>Phone</span></label>
                 <input
                   type="tel"
                   name="phone"
                   class="form-control"
                   placeholder="Phone..."
                   autocomplete="off"
-                  value="<%= users[i].phone %>"
+                  value="<%= oldValues.phone %>"
                 />
-                <% if(errorsValidate?.length){ for(var i = 0; i <
-                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
-                'phone') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <% if(errorsValidate['phone']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['phone'] %>
+                </span>
+                <% } %>
               </div>
 
-              <!-- Row 5 -->
+              <!-- Row 4 -->
               <div class="mb-3">
                 <label class="form-label"
                   ><span>Address</span
@@ -88,13 +89,8 @@
                   class="form-control"
                   placeholder="Address..."
                   autocomplete="off"
-                  value="<%= users[i].address %>"
+                  value="<%= oldValues.address %>"
                 />
-                <% if(errorsValidate?.length){ for(var i = 0; i <
-                errorsValidate.length; i++) { if(errorsValidate[i]?.path ===
-                'address') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
               </div>
 
               <input
@@ -103,7 +99,6 @@
                 value="<%= csrf.createToken() %>"
               />
               <input type="hidden" name="_method" value="PATCH" />
-              <input type="hidden" name="userId" value="<%= users[i].id %>" />
             </div>
           </div>
         </div>
@@ -111,3 +106,9 @@
     </div>
   </div>
 </form>
+
+<style>
+  html {
+    overflow: hidden;
+  }
+</style>

@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const { validationResult } = require("express-validator");
 const {
   RENDER_PATH,
@@ -17,10 +18,7 @@ const courseService = require("../../../services/course.service");
 const userService = require("../../../services/user.service");
 
 module.exports = {
-  // Page
   index: async (req, res) => {
-    const error = req.flash("error");
-    const success = req.flash("success");
     let { keyword, page, limit = 10 } = req.query;
 
     const filters = {};
@@ -34,7 +32,7 @@ module.exports = {
       ];
     }
 
-    const [totalCount] = await courseService.countAllCourse(filters);
+    const [{ count, rows }] = await courseService.countAllCourse(filters);
 
     if (!limit) {
       limit = 10;
@@ -46,7 +44,7 @@ module.exports = {
       }
     }
 
-    const totalPage = Math.ceil(totalCount / limit);
+    const totalPage = Math.ceil(count / limit);
     if (page < 1 || !page) {
       page = 1;
     } else if (page > totalPage) {
@@ -54,65 +52,49 @@ module.exports = {
     }
     const offset = (page - 1) * +limit;
 
-    const [courses] = await courseService.getAllCourse(
-      filters,
-      null,
-      offset,
-      limit
-    );
-    const [teachers] = await userService.getAllUser(["teacher"]);
-
-    const oldValues = req.flash("oldValues");
-    const errorsValidate = req.flash("errors");
-    const modalCreate = req.flash("modalCreate")[0];
-    const modalUpdate = req.flash("modalUpdate")[0];
-
-    return res.render(RENDER_PATH.HOME_ADMIN_COURSES, {
+    return res.render(RENDER_PATH.HOME_COURSES_ADMIN, {
       req,
-      modalCreate,
-      modalUpdate,
       user: req.user,
       page,
-      teachers,
-      oldValues: oldValues[0] ?? {},
-      errorsValidate,
       title: `Manage Courses - ${process.env.APP_NAME}`,
       REDIRECT_PATH,
-      totalCount,
+      totalCount: count,
       currPage: "courses",
       offset,
       limit,
-      courses: courses ?? [],
+      courses: rows.slice(+offset, +offset + limit) ?? [],
       totalPage,
-      success,
-      error,
+      success: req.flash("success"),
+      error: req.flash("error"),
+      csrf,
       stringUtil,
+    });
+  },
+
+  create: async (req, res) => {
+    const [teachers] = await userService.getAllUser(["teacher"]);
+
+    return res.render(RENDER_PATH.CREATE_COURSE, {
+      req,
+      user: req.user,
+      teachers,
+      oldValues: req.flash("oldValues")[0] ?? {},
+      errorsValidate: stringUtil.extractErr(req.flash("errors")),
+      title: `Create course - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      currPage: "courses",
+      success: req.flash("success"),
+      error: req.flash("error"),
       csrf,
     });
   },
 
-  importCoursesPage: async (req, res) => {
-    const error = req.flash("error");
-    const success = req.flash("success");
-
-    return res.render(RENDER_PATH.ADMIN_IMPORT_COURSES, {
-      title: `Import Courses - ${process.env.APP_NAME}`,
-      user: req.user,
-      REDIRECT_PATH,
-      currPage: "courses",
-      error,
-      success,
-    });
-  },
-
-  // Handle
   handleCreateCourse: async (req, res) => {
     const { errors } = validationResult(req);
     if (errors?.length) {
-      req.flash("modalCreate", true);
       req.flash("oldValues", req.body);
       req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.COURSES_ADMIN);
+      return res.redirect(REDIRECT_PATH.CREATE_COURSE);
     }
 
     const { name, price, teacherId, tryLearn, quantity, duration } = req.body;
@@ -132,21 +114,51 @@ module.exports = {
       req.flash("success", message);
     }
 
-    return res.redirect(REDIRECT_PATH.COURSES_ADMIN);
+    return res.redirect(REDIRECT_PATH.CREATE_COURSE);
   },
 
-  handleUpdateCourse: async (req, res) => {
-    const { courseId } = req.body;
+  edit: async (req, res, next) => {
+    const { id } = req.params;
+
+    const [teachers] = await userService.getAllUser(["teacher"]);
+
     const { errors } = validationResult(req);
     if (errors?.length) {
-      req.flash("modalUpdate", courseId);
+      return next(createHttpError(404));
+    }
+
+    const [courseEdit] = await courseService.getCourse({
+      id,
+    });
+
+    return res.render(RENDER_PATH.EDIT_COURSE, {
+      req,
+      user: req.user,
+      teachers,
+      oldValues: req.flash("oldValues")[0] ?? courseEdit ?? {},
+      errorsValidate: stringUtil.extractErr(req.flash("errors")),
+      title: `Edit course - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      currPage: "courses",
+      success: req.flash("success"),
+      error: req.flash("error"),
+      csrf,
+    });
+  },
+
+  handleEditCourse: async (req, res) => {
+    const { id } = req.params;
+
+    const { errors } = validationResult(req);
+    if (errors?.length) {
       req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.COURSES_ADMIN);
+      req.flash("oldValues", req.body);
+      return res.redirect(REDIRECT_PATH.EDIT_COURSE + `/${id}`);
     }
 
     const { name, price, teacherId, tryLearn, quantity, duration } = req.body;
     const [status, message] = await courseService.updateCourse(
-      +courseId,
+      +id,
       name,
       price,
       teacherId,
@@ -161,22 +173,39 @@ module.exports = {
       req.flash("success", message);
     }
 
-    return res.redirect(REDIRECT_PATH.COURSES_ADMIN);
+    return res.redirect(REDIRECT_PATH.EDIT_COURSE + `/${id}`);
   },
 
   handleDeleteCourses: async (req, res) => {
-    const { courseId } = req.body;
-    let arrId = courseId.split(",");
-    arrId = arrId.map((id) => parseInt(id));
+    const { id } = req.body;
 
-    const [status, message] = await courseService.removeCourses(arrId);
+    const { errors } = validationResult(req);
+    if (errors?.length) {
+      req.flash("error", errors[0].msg);
+      return res.redirect(REDIRECT_PATH.HOME_COURSES_ADMIN);
+    }
+
+    const [status, message] = await courseService.removeCourses(
+      Array.isArray(id) ? id : [id]
+    );
     if (!status) {
       req.flash("error", message);
     } else {
       req.flash("success", message);
     }
 
-    return res.redirect(REDIRECT_PATH.COURSES_ADMIN);
+    return res.redirect(REDIRECT_PATH.HOME_COURSES_ADMIN);
+  },
+
+  importCoursesPage: async (req, res) => {
+    return res.render(RENDER_PATH.IMPORT_COURSES, {
+      title: `Import Courses - ${process.env.APP_NAME}`,
+      user: req.user,
+      REDIRECT_PATH,
+      currPage: "courses",
+      error: req.flash("error"),
+      success: req.flash("success"),
+    });
   },
 
   handleImportCourses: async (req, res) => {
@@ -200,10 +229,10 @@ module.exports = {
     const [courses, message] = await courseService.getAllCourse();
     if (!courses) {
       req.flash("error", message);
-      return res.redirect(REDIRECT_PATH.COURSES_ADMIN);
+      return res.redirect(REDIRECT_PATH.HOME_COURSES_ADMIN);
     }
 
-    fileExcel.handleExportFile(
+    fileExcel.writeFile(
       res,
       SHEET_HEADERS_EXPORT.HEADERS_COURSE,
       FILE_NAME_EXPORT.COURSE,

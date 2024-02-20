@@ -121,17 +121,17 @@ module.exports = {
     return newArr.includes(`${value}`);
   },
 
-  convertDataToArr: (...params) => {
-    let arr = [];
-    params.forEach((param) => {
-      if (!param?.length || !param) {
-        return;
-      }
+  extractErr: (errors) => {
+    const obj = {};
 
-      arr.push(param);
-    });
+    if (errors?.length) {
+      errors.map((err) => {
+        if (!obj[err.path]) {
+          obj[err.path] = err.msg;
+        }
+      });
+    }
 
-    arr = arr.flat();
-    return arr;
+    return obj;
   },
 };

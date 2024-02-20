@@ -16,7 +16,7 @@
 
 <div class="card-body mx-auto">
   <div class="tab-custom-content d-flex align-items-center">
-    <button class="btn btn-success mx-2" type="button" data-toggle="modal" data-target="#modal-createChildren">Create student</button>
+    <a href="<%= REDIRECT_PATH.CREATE_STUDENT %>" class="btn btn-success mx-2">Create student</a>
     <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected" class="btn btn-danger mx-2" disabled>Delete selected</button>
     <a href="<%= REDIRECT_PATH.IMPORT_STUDENTS %>" class="btn btn-primary mx-2">Import students</a>
     <a href="<%= REDIRECT_PATH.EXPORT_STUDENTS %>" class="btn btn-primary mx-2">Export students (Excel)</a>
@@ -131,16 +131,13 @@
                 </td>
                 <td width="1%">
                   <div class="d-flex align-items-center justify-content-center">
-                    <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-editChildren-<%= students[i].id %>">
-                      <i class="fas fa-pen fa-xs"></i>
-                    </button>
+                    <a class="mx-1 icon-operation" href="<%= REDIRECT_PATH.EDIT_STUDENT + `/${students[i].id}` %>"><i class="fas fa-pen fa-xs"></i></a>
                     <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-deleteChildren-<%= students[i].id %>">
                       <i class="fas fa-trash fa-xs"></i>
                     </button>
                   </div>
                 </td>
               </tr>
-              <%- include("../../admin/students/edit.modal.ejs", {i}) %>
               <%- include("../../admin/students/delete.modal.ejs", {i}) %>
               <% }} %>
             </tbody>
@@ -216,9 +213,6 @@
       </div>
   </div>
 </div>
-
-<%- include("../../admin/students/create.modal.ejs") %>
-
 
 <div class="modal fade" id="btnDeleteAllChildrenSelected" tabindex="-1">
   <div class="modal-dialog">

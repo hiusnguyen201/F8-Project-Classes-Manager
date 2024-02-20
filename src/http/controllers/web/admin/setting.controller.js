@@ -6,7 +6,6 @@ const {
 const socialService = require("../../../services/social.service");
 const userService = require("../../../services/user.service");
 const csrf = require("../../../middlewares/web/csrf.middleware");
-const stringUtil = require("../../../../utils/string");
 
 module.exports = {
   settings: async (req, res) => {
@@ -36,7 +35,7 @@ module.exports = {
       provider: "facebook",
     });
 
-    return res.render(RENDER_PATH.HOME_ADMIN_SETTING, {
+    return res.render(RENDER_PATH.HOME_SETTING_ADMIN, {
       title: `Settings - ${process.env.APP_NAME}`,
       req,
       user,
@@ -48,7 +47,6 @@ module.exports = {
       csrf,
       error,
       success,
-      stringUtil,
     });
   },
 
@@ -61,7 +59,7 @@ module.exports = {
 
     const userId = req.user.id;
     const { name, email, phone, address } = req.body;
-    const [status, message] = await userService.updateUser(
+    const [status, message] = await userService.editUser(
       +userId,
       name,
       email,

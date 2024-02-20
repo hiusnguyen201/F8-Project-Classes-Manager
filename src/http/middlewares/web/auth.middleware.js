@@ -3,10 +3,13 @@ const { REDIRECT_PATH } = require("../../../constants/path.constant");
 const { MESSAGE_ERROR } = require("../../../constants/message.constant");
 
 module.exports = async (req, res, next) => {
-  const tokenCookie = req.cookies?.token;
-
-  if (!tokenCookie || !req.isAuthenticated()) {
+  if (!req.user) {
     res.clearCookie("token");
+    return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+  }
+
+  const tokenCookie = req.cookies?.token;
+  if (!tokenCookie) {
     return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
   }
 

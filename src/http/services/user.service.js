@@ -21,12 +21,14 @@ const Type = models.Type;
 module.exports = {
   countAllUserByType: async (filters, types) => {
     try {
-      const { count } = await User.findAndCountAll({
+      const { count, rows } = await User.findAndCountAll({
         where: filters,
         include: {
           model: Type,
           where: {
-            name: types,
+            name: {
+              [Op.in]: types,
+            },
           },
         },
         attributes: {
@@ -34,7 +36,7 @@ module.exports = {
         },
       });
 
-      return [count, null];
+      return [{ count, rows }, null];
     } catch (err) {
       console.log(err);
     }
@@ -44,24 +46,13 @@ module.exports = {
 
   createUser: async (name, email, phone, address, typeId) => {
     try {
-      const userExist = await User.findOne({
-        where: {
-          email,
-        },
-        paranoid: false,
-      });
-
-      if (userExist) {
-        return [false, MESSAGE_ERROR.USER.EMAIL_REGISTERD];
-      }
-
       const passRandom = tokenUtil.generatePasswordRandom();
 
       const user = await User.create({
         name,
         email,
         password: tokenUtil.createHashByBcrypt(passRandom),
-        phone: phone ? phone : null,
+        phone,
         address: address ? address : null,
         typeId,
       });
@@ -92,29 +83,32 @@ module.exports = {
     }
   },
 
-  updateUser: async (id, name, email, phone, address) => {
+  editUser: async (id, name, email, phone, address, typeId) => {
     try {
-      const user = await User.findByPk(id);
-      if (!user) {
-        return [false, MESSAGE_ERROR.USER.USER_NOT_FOUND];
-      }
-
-      const statusUpdated = await user.update({
-        name,
-        email,
-        phone: phone ? phone : null,
-        address: address ? address : null,
-        updatedAt: momentUtil.getDateNow(),
-      });
+      const statusUpdated = await User.update(
+        {
+          name,
+          email,
+          phone: phone,
+          address: address ? address : null,
+          updatedAt: momentUtil.getDateNow(),
+          typeId,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
 
       if (statusUpdated) {
-        return [true, MESSAGE_SUCCESS.USER.UPDATE_USER_SUCCESS];
+        return [true, MESSAGE_SUCCESS.USER.EDIT_USER_SUCCESS];
       }
     } catch (err) {
       console.log(err);
     }
 
-    return [false, MESSAGE_ERROR.USER.UPDATE_USER_FAILED];
+    return [false, MESSAGE_ERROR.USER.EDIT_USER_FAILED];
   },
 
   removeUsers: async (userIdList) => {

@@ -5,6 +5,7 @@ const {
 const models = require("../../models/index");
 const UserSocial = models.User_Social;
 const User = models.User;
+const Type = models.Type;
 
 module.exports = {
   getUserSocial: async (filters) => {
@@ -16,13 +17,12 @@ module.exports = {
           attributes: {
             exclude: ["password"],
           },
+          include: Type,
         },
       });
 
       if (userSocial) {
         return [userSocial, null];
-      } else {
-        return [null, MESSAGE_ERROR.SOCIAL.ACCOUNT_NOT_LINKED];
       }
     } catch (err) {
       console.log(err);
@@ -31,33 +31,22 @@ module.exports = {
     return [null, MESSAGE_ERROR.SOCIAL.FIND_SOCIAL_FAILED];
   },
 
-  findOrCreateUserSocial: async (provider, provider_id, userId) => {
+  createUserSocial: async (provider, provider_id, userId) => {
     try {
-      const [userSocial, created] = await UserSocial.findOrCreate({
-        where: {
-          provider,
-          provider_id,
-          userId,
-        },
-        default: {
-          provider,
-          provider_id,
-          userId,
-        },
+      const [userSocial] = await UserSocial.create({
+        provider,
+        provider_id,
+        userId,
       });
 
       if (userSocial) {
         return [userSocial, null];
       } else {
-        if (created) {
-          return [null, MESSAGE_ERROR.SOCIAL.CREATE_SOCIAL_FAILED];
-        } else {
-          return [null, MESSAGE_ERROR.SOCIAL.ACCOUNT_NOT_LINKED];
-        }
       }
     } catch (err) {
       console.log(err);
     }
+    return [null, MESSAGE_ERROR.SOCIAL.CREATE_SOCIAL_FAILED];
   },
 
   // Setting Page
