@@ -1,213 +1,142 @@
 const createHttpError = require("http-errors");
-const { validationResult } = require("express-validator");
-const { Op } = require("sequelize");
+const {
+  MESSAGE_ERROR,
+  MESSAGE_SUCCESS,
+  MESSAGE_INFO,
+} = require("../../../../constants/message.constant");
 const {
   RENDER_PATH,
   REDIRECT_PATH,
 } = require("../../../../constants/path.constant");
+const { STATUS_CODE } = require("../../../../constants/status.constant");
 const {
   FIELDS_IMPORT,
   FILE_NAME_EXPORT,
   SHEET_HEADERS_EXPORT,
 } = require("../../../../constants/fileExcel.constant");
 
-const stringUtil = require("../../../../utils/string");
-const fileExcel = require("../../../../utils/fileExcel");
-
 const csrf = require("../../../middlewares/web/csrf.middleware");
-const userService = require("../../../services/user.service");
-const typeService = require("../../../services/type.service");
+
+const stringUtil = require("../../../../utils/string");
+const { writeFile } = require("../../../../utils/fileExcel");
+
+const UserService = require("../../../services/user.service");
+const userService = new UserService();
+const TypeService = require("../../../services/type.service");
+const typeService = new TypeService();
 
 module.exports = {
   index: async (req, res) => {
-    let { page, limit, keyword } = req.query;
-    const filters = {};
+    try {
+      const { meta, data: teachers } =
+        await userService.findAllWithTypesAndSearchAndPaginate(req.query, [
+          "teacher",
+          "assistant",
+        ]);
 
-    if (keyword) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          phone: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          address: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
+      return res.render(RENDER_PATH.HOME_TEACHERS_ADMIN, {
+        req,
+        user: req.user,
+        page: meta.page,
+        title: `Manage Teachers - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        totalCount: meta.count,
+        offset: meta.offset,
+        limit: meta.limit,
+        currPage: "teachers",
+        teachers,
+        totalPage: meta.totalPage,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
     }
-
-    const [{ count, rows }] = await userService.countAllUserByType(filters, [
-      "teacher",
-      "assistant",
-    ]);
-
-    if (!limit) {
-      limit = 10;
-    } else {
-      if (+limit === 25 || limit === 50 || limit === 100) {
-        limit = limit;
-      } else {
-        limit = 10;
-      }
-    }
-
-    const totalPage = Math.ceil(count / limit);
-    if (page < 1 || !page) {
-      page = 1;
-    } else if (page > totalPage) {
-      page = totalPage;
-    }
-
-    const offset = (page - 1) * limit;
-
-    return res.render(RENDER_PATH.HOME_TEACHERS_ADMIN, {
-      req,
-      user: req.user,
-      teachers: rows.slice(+offset, +offset + limit) ?? [],
-      page,
-      title: `Manage Teachers - ${process.env.APP_NAME}`,
-      REDIRECT_PATH,
-      totalCount: count,
-      currPage: "teachers",
-      offset,
-      limit,
-      totalPage,
-      success: req.flash("success"),
-      error: req.flash("error"),
-      csrf,
-      stringUtil,
-    });
   },
 
   create: async (req, res) => {
-    const [types] = await typeService.getAllType(["teacher", "assistant"]);
-    return res.render(RENDER_PATH.CREATE_TEACHER, {
-      req,
-      types,
-      user: req.user,
-      oldValues: req.flash("oldValues")[0] ?? {},
-      errorsValidate: stringUtil.extractErr(req.flash("errors")),
-      title: `Create User - ${process.env.APP_NAME}`,
-      REDIRECT_PATH,
-      currPage: "users",
-      success: req.flash("success"),
-      error: req.flash("error"),
-      csrf,
-    });
+    try {
+      const types = await typeService.findAllByTypes(["teacher", "assistant"]);
+
+      return res.render(RENDER_PATH.CREATE_TEACHER, {
+        req,
+        user: req.user,
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        title: `Create Teacher - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "teachers",
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        types,
+      });
+    } catch (err) {
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
   },
 
   handleCreateTeacher: async (req, res) => {
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("oldValues", req.body);
-      req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.CREATE_TEACHER);
-    }
-
-    const { name, email, phone, address, typeId } = req.body;
-
-    const [status, messageUser] = await userService.createUser(
-      name,
-      email,
-      phone,
-      address,
-      typeId
-    );
-
-    if (!status) {
-      req.flash("error", messageUser);
-    } else {
-      req.flash("success", messageUser);
+    try {
+      await userService.create(req.body, typeId);
+      req.flash("success", MESSAGE_SUCCESS.USER.CREATE_USER_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.USER.CREATE_USER_FAILED);
     }
 
     return res.redirect(REDIRECT_PATH.CREATE_TEACHER);
   },
 
   edit: async (req, res, next) => {
-    const { id } = req.params;
-    const [types] = await typeService.getAllType(["teacher", "assistant"]);
-
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      return next(createHttpError(404));
+    try {
+      const teacherEdit = await userService.findById(req.params.id);
+      if (!teacherEdit) throw new Error(MESSAGE_ERROR.USER.USER_NOT_FOUND);
+      const types = await typeService.findAllByTypes(["teacher", "assistant"]);
+      return res.render(RENDER_PATH.EDIT_TEACHER, {
+        req,
+        types,
+        user: req.user,
+        oldValues: req.flash("oldValues")[0] || teacherEdit || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        title: `Edit Teacher - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "teachers",
+        success: req.flash("success"),
+        error: req.flash("error"),
+        stringUtil,
+        csrf,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.NOT_FOUND));
     }
-
-    const [teacherEdit] = await userService.getUser({
-      id,
-    });
-
-    return res.render(RENDER_PATH.EDIT_TEACHER, {
-      req,
-      types,
-      user: req.user,
-      oldValues: req.flash("oldValues")[0] ?? teacherEdit ?? {},
-      errorsValidate: stringUtil.extractErr(req.flash("errors")),
-      title: `Edit User - ${process.env.APP_NAME}`,
-      REDIRECT_PATH,
-      currPage: "users",
-      success: req.flash("success"),
-      error: req.flash("error"),
-      stringUtil,
-      csrf,
-    });
   },
 
   handleEditTeacher: async (req, res) => {
     const { id } = req.params;
-
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.EDIT_TEACHER + `/${id}`);
-    }
-
-    const { name, email, phone, address, typeId } = req.body;
-    const [status, message] = await userService.editUser(
-      +id,
-      name,
-      email,
-      phone,
-      address,
-      typeId
-    );
-
-    if (!status) {
-      req.flash("error", message);
-    } else {
-      req.flash("success", message);
+    try {
+      await userService.update(req.body, id);
+      req.flash("success", MESSAGE_SUCCESS.USER.EDIT_USER_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.USER.EDIT_USER_FAILED);
     }
 
     return res.redirect(REDIRECT_PATH.EDIT_TEACHER + `/${id}`);
   },
 
   handleDeleteTeachers: async (req, res) => {
-    const { id } = req.body;
-
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("error", errors[0].msg);
-      return res.redirect(REDIRECT_PATH.HOME_TEACHERS_ADMIN);
-    }
-
-    const [status, message] = await userService.removeUsers(
-      Array.isArray(id) ? id : [id]
-    );
-    if (status) {
-      req.flash("success", message);
-    } else {
-      req.flash("error", message);
+    try {
+      const { id } = req.body;
+      await userService.removeUsers(Array.isArray(id) ? id : [id]);
+      req.flash("success", MESSAGE_SUCCESS.USER.DELETE_USER_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.USER.DELETE_USER_FAILED);
     }
 
     return res.redirect(REDIRECT_PATH.HOME_TEACHERS_ADMIN);
@@ -225,53 +154,51 @@ module.exports = {
   },
 
   handleImportTeachers: async (req, res) => {
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("error", errors[0].msg);
-      return res.redirect(REDIRECT_PATH.IMPORT_TEACHERS);
-    }
+    try {
+      await userService.importUsers(
+        null,
+        req.file,
+        FIELDS_IMPORT.TEACHER_FIELDS
+      );
 
-    const [status, message] = await userService.importUsers(
-      null,
-      req.file,
-      FIELDS_IMPORT.TEACHER_FIELDS
-    );
-
-    if (status) {
-      req.flash("success", message);
-    } else {
-      req.flash("error", message);
+      req.flash("success", MESSAGE_SUCCESS.FILE.IMPORT_USERS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.FILE.IMPORT_USERS_FAILED);
     }
 
     return res.redirect(REDIRECT_PATH.IMPORT_TEACHERS);
   },
 
   handleExportTeachers: async (req, res) => {
-    const [users, message] = await userService.getAllUser([
-      "teacher",
-      "assistant",
-    ]);
+    try {
+      const teachers = await userService.findAllWithTypes([
+        "teacher",
+        "assistant",
+      ]);
 
-    if (!users) {
-      req.flash("error", message);
+      if (!teachers?.length) throw new Error(MESSAGE_INFO.FILE.NOTHING_EXPORT);
+
+      writeFile(
+        res,
+        SHEET_HEADERS_EXPORT.HEADERS_TEACHER,
+        FILE_NAME_EXPORT.TEACHER,
+        (sheet) => {
+          teachers.forEach(({ name, email, phone, address, Type }) => {
+            sheet.addRow({
+              name,
+              email,
+              phone,
+              address,
+              type: Type.name,
+            });
+          });
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.FILE.EXPORT_USERS_FAILED);
       return res.redirect(REDIRECT_PATH.HOME_TEACHERS_ADMIN);
     }
-
-    fileExcel.writeFile(
-      res,
-      SHEET_HEADERS_EXPORT.HEADERS_TEACHER,
-      FILE_NAME_EXPORT.TEACHER,
-      (sheet) => {
-        users.forEach(({ name, email, phone, address, Type }) => {
-          sheet.addRow({
-            name,
-            email,
-            phone,
-            address,
-            type: Type.name,
-          });
-        });
-      }
-    );
   },
 };

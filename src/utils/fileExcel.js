@@ -8,7 +8,6 @@ module.exports = {
     const workbook = new excelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
     const worksheet = workbook.getWorksheet(1);
-
     if (worksheet.actualColumnCount !== fieldsArr.length) {
       return [
         null,
@@ -22,7 +21,6 @@ module.exports = {
     worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
       const rows = row.values;
       let dataObj = {};
-
       rows.forEach((value, index) => {
         if (Object.prototype.toString.call(value) === "[object Object]") {
           dataObj[fieldsArr[index - 1]] = value.text;

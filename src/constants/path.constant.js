@@ -54,9 +54,9 @@ const REDIRECT_PATH = {
   SETTINGS_TEACHER: "/teacher/settings",
   SETTINGS_STUDENT: "/settings",
 
-  SETTINGS_PROFILE_ADMIN: "/admin/settings/profile",
-  SETTINGS_SECURITY_ADMIN: "/admin/settings/security",
-  SETTINGS_PASSWORD_ADMIN: "/admin/settings/password",
+  PROFILE_SETTINGS_ADMIN: "/admin/settings/profile",
+  SECURITY_SETTING_ADMIN: "/admin/settings/security",
+  PASSWORD_SETTING_ADMIN: "/admin/settings/password",
 
   SETTINGS_PROFILE_TEACHER: "/teacher/settings/profile",
   SETTINGS_SECURITY_TEACHER: "/teacher/settings/security",
@@ -85,8 +85,6 @@ const RENDER_PATH = {
   // Admin
   HOME_ADMIN: "admin/dashboard/index",
 
-  HOME_SETTING_ADMIN: "admin/settings/index",
-
   HOME_USERS_ADMIN: "admin/users/index",
   CREATE_USER: "admin/users/create",
   EDIT_USER: "admin/users/edit",
@@ -111,6 +109,10 @@ const RENDER_PATH = {
   CREATE_CLASS: "admin/classes/create",
   EDIT_CLASS: "admin/classes/edit",
   IMPORT_CLASSES: "admin/classes/import",
+
+  PROFILE_SETTING_ADMIN: "admin/settings/profile",
+  SECURITY_SETTING_ADMIN: "admin/settings/security",
+  PASSWORD_SETTING_ADMIN: "admin/settings/password",
 
   // Error
   NOT_FOUND_PAGE: "errors/404",

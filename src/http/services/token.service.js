@@ -1,65 +1,56 @@
 const tokenUtil = require("../../utils/token");
 const { MESSAGE_ERROR } = require("../../constants/message.constant");
 const models = require("../../models/index");
-const LoginToken = models.Login_Token;
 
-module.exports = {
-  createLoginToken: async function (userId) {
-    try {
-      const loginToken = await LoginToken.findOne({
-        where: { userId: +userId },
-      });
+class TokenService {
+  constructor() {
+    this.LoginToken = models.Login_Token;
+    this.User = models.User;
+  }
 
-      if (loginToken) {
-        await loginToken.destroy();
-      }
+  async findByToken(token) {
+    const loginToken = await this.LoginToken.findOne({
+      where: { token },
+      include: this.User,
+    });
 
-      const token = tokenUtil.createTokenByMd5();
-      const newLoginToken = await LoginToken.create({
-        token,
-        userId: userId,
-      });
+    return loginToken ? loginToken : null;
+  }
 
-      if (newLoginToken) {
-        return [newLoginToken, null];
-      }
-    } catch (err) {
-      console.log(err);
+  async findByUserId(userId) {
+    const loginToken = await this.LoginToken.findOne({
+      where: { userId },
+    });
+
+    return loginToken ? loginToken : null;
+  }
+
+  async create(userId) {
+    const loginToken = await this.findByUserId(userId);
+
+    if (loginToken) {
+      await loginToken.destroy();
     }
 
-    return [null, MESSAGE_ERROR.TOKEN.CREATE_TOKEN_FAILED];
-  },
+    const token = tokenUtil.createTokenByMd5();
+    const newLoginToken = await this.LoginToken.create({
+      token,
+      userId: userId,
+    });
 
-  getLoginToken: async (filters) => {
-    try {
-      const loginToken = await LoginToken.findOne({
-        where: filters,
-      });
+    return newLoginToken;
+  }
 
-      if (loginToken) {
-        return [loginToken, null];
-      } else {
-        return [null, MESSAGE_ERROR.TOKEN.LOGIN_TOKEN_NOT_FOUND];
-      }
-    } catch (err) {
-      console.log(err);
+  async remove(token) {
+    const loginToken = await this.findByToken(token);
+
+    if (!loginToken) {
+      throw new Error(MESSAGE_ERROR.TOKEN.LOGIN_TOKEN_NOT_FOUND);
     }
 
-    return [null, MESSAGE_ERROR.TOKEN.FIND_TOKEN_FAILED];
-  },
+    const status = await loginToken.destroy();
+    return status;
+  }
+}
 
-  removeLoginToken: async (filters) => {
-    try {
-      const statusDestroy = await LoginToken.destroy({
-        where: filters,
-      });
-
-      if (statusDestroy) {
-        return [true, null];
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    return [false, MESSAGE_ERROR.TOKEN.REMOVE_TOKEN_FAILED];
-  },
-};
+module.exports = TokenService;

@@ -1,79 +1,144 @@
-//Initial references
-const input = document.querySelectorAll(".input");
-const inputField = document.querySelector(".inputfield");
-const submitButton = document.getElementById("submit");
-const btnReset = document.querySelector("button.btn-reset-form");
+var BACKSPACE_KEY = 8;
+var ENTER_KEY = 13;
+var TAB_KEY = 9;
+var LEFT_KEY = 37;
+var RIGHT_KEY = 39;
+var ZERO_KEY = 48;
+var NINE_KEY = 57;
 
-let inputCount = 0;
+function otp(elementId) {
+  var inputs = document.querySelectorAll(".js-otp-input");
+  var callback = null;
 
-//Update input
-const updateInputConfig = (element, disabledStatus) => {
-  if (!disabledStatus) {
-    element.focus();
-  } else {
-    element.blur();
+  function init(completeCallback) {
+    callback = completeCallback;
+    for (i = 0; i < inputs.length; i++) {
+      registerEvents(i, inputs[i]);
+    }
   }
-};
 
-input.forEach((element) => {
-  element.addEventListener("keyup", (e) => {
-    e.target.value = e.target.value.replace(/[^0-9]/g, "");
-    let { value } = e.target;
+  function destroy() {
+    for (i = 0; i < inputs.length; i++) {
+      registerEvents(i, inputs[i]);
+    }
+  }
 
-    if (value.length == 1) {
-      updateInputConfig(e.target, true);
-      inputCount += 1;
-      if (inputCount <= 5 && e.key != "Backspace") {
-        if (inputCount <= 5) {
-          if (e.target.nextElementSibling) {
-            updateInputConfig(e.target.nextElementSibling, false);
+  function registerEvents(index, element) {
+    element.addEventListener("input", function (ev) {
+      onInput(index, ev);
+    });
+    element.addEventListener("paste", function (ev) {
+      onPaste(index, ev);
+    });
+    element.addEventListener("keydown", function (ev) {
+      onKeyDown(index, ev);
+    });
+  }
+
+  function onPaste(index, ev) {
+    ev.preventDefault();
+    var curIndex = index;
+    var clipboardData = ev.clipboardData || window.clipboardData;
+    var pastedData = clipboardData.getData("Text");
+    for (i = 0; i < pastedData.length; i++) {
+      if (i < inputs.length) {
+        if (!isDigit(pastedData[i])) break;
+        inputs[curIndex].value = pastedData[i];
+        curIndex++;
+      }
+    }
+    if (curIndex == inputs.length) {
+      inputs[curIndex - 1].focus();
+      callback(retrieveOTP());
+    } else {
+      inputs[curIndex].focus();
+    }
+  }
+
+  function onKeyDown(index, ev) {
+    var key = ev.keyCode || ev.which;
+    if (key == LEFT_KEY && index > 0) {
+      ev.preventDefault(); // prevent cursor to move before digit in input
+      inputs[index - 1].focus();
+    }
+    if (key == RIGHT_KEY && index + 1 < inputs.length) {
+      ev.preventDefault();
+      inputs[index + 1].focus();
+    }
+    if (key == BACKSPACE_KEY && index > 0) {
+      if (inputs[index].value == "") {
+        // Empty and focus previous input and current input is empty
+        inputs[index - 1].value = "";
+        inputs[index - 1].focus();
+      } else {
+        inputs[index].value = "";
+      }
+    }
+    if (key == ENTER_KEY) {
+      // force submit if enter is pressed
+      ev.preventDefault();
+      if (isOTPComplete()) {
+        callback(retrieveOTP());
+      }
+    }
+    if (key == TAB_KEY && index == inputs.length - 1) {
+      // force submit if tab pressed on last input
+      ev.preventDefault();
+      if (isOTPComplete()) {
+        callback(retrieveOTP());
+      }
+    }
+  }
+
+  function onInput(index, ev) {
+    var value = ev.data || ev.target.value;
+    var curIndex = index;
+    for (i = 0; i < value.length; i++) {
+      if (i < inputs.length) {
+        if (!isDigit(value[i])) {
+          inputs[curIndex].value = "";
+          break;
+        }
+        inputs[curIndex++].value = value[i];
+        if (curIndex == inputs.length) {
+          if (isOTPComplete()) {
+            callback(retrieveOTP());
           }
+        } else {
+          inputs[curIndex].focus();
         }
       }
-    } else if (value.length == 0 || e.key == "Backspace") {
-      if (inputCount == 0) {
-        updateInputConfig(e.target, false);
-        return false;
-      }
-      inputCount -= 1;
-      updateInputConfig(e.target, true);
-      if (e.target.previousElementSibling) {
-        e.target.previousElementSibling.value = "";
-        updateInputConfig(e.target.previousElementSibling, false);
-      }
-    } else if (value.length > 1) {
-      e.target.value = value.split("")[0];
     }
-  });
-});
+  }
 
-//Start
-const startInput = () => {
-  inputCount = 0;
-  input.forEach((element) => {
-    element.value = "";
-  });
-  updateInputConfig(inputField.firstElementChild, false);
-};
+  function retrieveOTP() {
+    var otp = "";
+    for (i = 0; i < inputs.length; i++) {
+      otp += inputs[i].value;
+    }
+    return otp;
+  }
 
-window.onload = startInput();
+  function isDigit(d) {
+    return d >= "0" && d <= "9";
+  }
 
-btnReset.onclick = () => {
-  input.forEach((element) => {
-    element.value = "";
-    element.disabled = false;
-  });
+  function isOTPComplete() {
+    var isComplete = true;
+    var i = 0;
+    while (i < inputs.length && isComplete) {
+      if (inputs[i].value == "") {
+        isComplete = false;
+      }
+      i++;
+    }
+    return isComplete;
+  }
 
-  inputCount = 0;
-};
+  return {
+    init: init,
+  };
+}
 
-const btnSubmit = document.querySelector("button.btn-submit-otp");
-
-btnReset.onclick = () => {
-  input.forEach((element) => {
-    element.value = "";
-    element.disabled = false;
-  });
-
-  inputCount = 0;
-};
+var otpModule = otp("otp-inputs");
+otpModule.init(function (passcode) {});

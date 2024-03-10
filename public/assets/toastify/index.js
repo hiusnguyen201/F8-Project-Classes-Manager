@@ -9,7 +9,7 @@ window.addEventListener("load", () => {
   if (toastError) {
     Toastify({
       text: toastError.value,
-      duration: 10000,
+      duration: 1000,
       newWindow: true,
       close: true,
       gravity: "top",
@@ -26,7 +26,7 @@ window.addEventListener("load", () => {
   if (toastSuccess) {
     Toastify({
       text: toastSuccess.value,
-      duration: 10000,
+      duration: 1000,
       newWindow: true,
       close: true,
       gravity: "top",

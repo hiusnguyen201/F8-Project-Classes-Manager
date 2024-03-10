@@ -1,6 +1,9 @@
 const FacebookStrategy = require("passport-facebook").Strategy;
-const socialService = require("../../http/services/social.service");
 const { MESSAGE_ERROR } = require("../../constants/message.constant");
+const SocialService = require("../../http/services/social.service");
+const userSocialService = new SocialService();
+const TokenService = require("../../http/services/token.service");
+const tokenService = new TokenService();
 
 module.exports = new FacebookStrategy(
   {
@@ -10,12 +13,13 @@ module.exports = new FacebookStrategy(
     passReqToCallback: true,
   },
   async (req, accessToken, refreshToken, profile, done) => {
-    const [userSocial] = await socialService.getUserSocial({
-      provider: profile.provider,
-      provider_id: profile.id,
-    });
+    const userSocial = await userSocialService.findByProviderId(
+      profile.id,
+      profile.provider
+    );
 
-    if (!req.cookies.token) {
+    const loginToken = await tokenService.findByToken(req.cookies?.token);
+    if (!loginToken) {
       // Login Page
       if (!userSocial) {
         return done(null, false, {
@@ -23,27 +27,14 @@ module.exports = new FacebookStrategy(
         });
       }
 
-      const { User } = userSocial;
-
-      return done(null, User);
-    } else {
-      // Social Link page
-      if (userSocial) {
-        return done(null, false, {
-          message: MESSAGE_ERROR.SOCIAL.INVALID_LINK_ACCOUNT,
-        });
-      }
-
-      const user = req.user;
-      const [newUserSocial] = await socialService.createUserSocial(
-        profile.provider,
-        profile.id,
-        +user.id
-      );
-
-      if (newUserSocial) {
-        return done(null, user);
-      }
+      return done(null, userSocial.User);
     }
+
+    req.cookies.profile = {
+      provider: profile.provider,
+      providerId: profile.id,
+    };
+
+    return done(null, loginToken.User);
   }
 );

@@ -5,27 +5,65 @@
     <div class="card card-verify-otp">
       <p class="text-center fw-bold form-title mb-3">VERIFY OTP</p>
 
-      <% if(success?.length) {%>
-      <div class="alert alert-success mb-4"><%= success %></div>
-      <% } %> <% if(error?.length) {%>
+      <% if(error) {%>
       <div class="alert alert-danger mb-4"><%= error %></div>
       <% } %>
-      <form action="" method="post" class="mt-3">
-        <div class="inputfield">
-          <input name="otp" type="number" maxlength="1" class="input" />
-          <input name="otp" type="number" maxlength="1" class="input" />
-          <input name="otp" type="number" maxlength="1" class="input" />
-          <input name="otp" type="number" maxlength="1" class="input" />
-          <input name="otp" type="number" maxlength="1" class="input" />
-          <input name="otp" type="number" maxlength="1" class="input" />
-          <input
-            type="hidden"
-            name="csrfToken"
-            value="<%= csrf.createToken() %>"
-          />
-        </div>
-        <div class="d-grid mt-4">
-          <button type="submit" class="btn btn-submit btn-submit-otp">
+
+      <form method="post">
+        <fieldset>
+          <div class="d-flex align-items-center justify-content-center">
+            <input
+              type="text"
+              class="form-control form-control--otp js-otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="one-time-code"
+              name="otp"
+            />
+            <input
+              type="text"
+              class="form-control form-control--otp js-otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              name="otp"
+            />
+            <input
+              type="text"
+              class="form-control form-control--otp js-otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              name="otp"
+            />
+            <input
+              type="text"
+              class="form-control form-control--otp js-otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              name="otp"
+            />
+            <input
+              type="text"
+              class="form-control form-control--otp js-otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              name="otp"
+            />
+            <input
+              type="text"
+              class="form-control form-control--otp js-otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              name="otp"
+            />
+            <input
+              type="hidden"
+              name="csrfToken"
+              value="<%= csrf.createToken() %>"
+            />
+          </div>
+        </fieldset>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-submit w-100 btn-success">
             Submit
           </button>
         </div>
@@ -46,5 +84,47 @@
     </div>
   </div>
 </div>
+
+<style>
+  .form-control--otp {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    line-height: 2.5;
+    height: 3.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .form-control--otp + .form-control--otp {
+    margin-left: 5px;
+  }
+
+  @media (min-width: 375px) {
+    .form-control--otp + .form-control--otp {
+      margin-left: 15px;
+    }
+
+    .form-control--otp {
+      line-height: 3;
+      height: 4.5rem;
+      font-size: 1.7rem;
+      font-weight: bold;
+      text-align: center;
+      max-width: 4rem;
+    }
+  }
+
+  .input-group-seperator {
+    width: 2rem;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    height: 0.3rem;
+    background: #ced4da;
+    border-radius: 0.1rem;
+  }
+</style>
 
 <script src="/assets/custom/javascripts/otp.js"></script>

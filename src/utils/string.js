@@ -71,38 +71,9 @@ module.exports = {
     }
   },
 
-  getPaginateUserUrl: (req, page, limit) => {
+  getPaginateUrl: (req, page = 1, limit = 10) => {
     const query = req.query;
-    if (+limit === +query.limit) {
-      query.page = page;
-    } else {
-      query.page = 1;
-    }
-
-    query.limit = limit;
-    return new URLSearchParams(query).toString();
-  },
-
-  getPaginateCourseUrl: (req, page, limit) => {
-    const query = req.query;
-    if (+limit === +query.limit) {
-      query.page = page;
-    } else {
-      query.page = 1;
-    }
-
-    query.limit = limit;
-    return new URLSearchParams(query).toString();
-  },
-
-  getPaginateClassUrl: (req, page, limit) => {
-    const query = req.query;
-    if (+limit === +query.limit) {
-      query.page = page;
-    } else {
-      query.page = 1;
-    }
-
+    query.page = page;
     query.limit = limit;
     return new URLSearchParams(query).toString();
   },
@@ -114,17 +85,10 @@ module.exports = {
     }).format(string);
   },
 
-  checkInclude: (arr, value) => {
-    if (!arr) return false;
-    let newArr = [];
-    newArr = newArr.flat(newArr.push(arr));
-    return newArr.includes(`${value}`);
-  },
-
   extractErr: (errors) => {
     const obj = {};
 
-    if (errors?.length) {
+    if (errors && errors?.length) {
       errors.map((err) => {
         if (!obj[err.path]) {
           obj[err.path] = err.msg;
@@ -133,5 +97,9 @@ module.exports = {
     }
 
     return obj;
+  },
+
+  findProvider: (userSocials, provider) => {
+    return userSocials.find((social) => social.provider === provider);
   },
 };

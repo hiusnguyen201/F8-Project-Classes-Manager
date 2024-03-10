@@ -1,28 +1,26 @@
 const { REDIRECT_PATH } = require("../../../constants/path.constant");
-const tokenService = require("../../services/token.service");
+const TokenService = require("../../services/token.service");
+const tokenService = new TokenService();
+const classifyRedirect = require("../../../utils/classifyRedirect");
 
 module.exports = async (req, res, next) => {
   const tokenCookie = req.cookies?.token;
 
-  if (tokenCookie) {
-    const [tokenValid] = await tokenService.getLoginToken({
-      token: tokenCookie,
-    });
-
-    if (!tokenValid) {
-      res.clearCookie("token");
-      return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
-    }
-
-    const { Type } = req.user;
-    if (Type.name === "admin") {
-      return res.redirect(REDIRECT_PATH.HOME_ADMIN);
-    } else if (Type.name === "teacher") {
-      return res.redirect(REDIRECT_PATH.HOME_TEACHER);
-    } else {
-      return res.redirect(REDIRECT_PATH.HOME_STUDENT);
-    }
+  if (!tokenCookie || req.session.firstLogin) {
+    return next();
   }
 
-  next();
+  const tokenValid = await tokenService.findByToken(tokenCookie);
+  if (!tokenValid) {
+    res.clearCookie("token");
+    return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+  }
+
+  return res.redirect(
+    classifyRedirect(req.user.Type.name, [
+      REDIRECT_PATH.HOME_ADMIN,
+      REDIRECT_PATH.HOME_TEACHER,
+      REDIRECT_PATH.HOME_STUDENT,
+    ])
+  );
 };

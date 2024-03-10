@@ -93,7 +93,7 @@
       >
         <a
           href="<% if(user.Type.name === 'admin') { %>
-            <%= REDIRECT_PATH.SETTINGS_PROFILE_ADMIN %> 
+            <%= REDIRECT_PATH.PROFILE_SETTINGS_ADMIN %> 
           <% } else if (user.Type.name === 'teacher'){ %>
             <%= REDIRECT_PATH.SETTINGS_PROFILE_TEACHER %> 
           <% } else if (user.Type.name === 'student') { %> 

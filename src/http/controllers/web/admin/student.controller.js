@@ -1,101 +1,68 @@
 const createHttpError = require("http-errors");
-const { validationResult } = require("express-validator");
-const { Op } = require("sequelize");
+const {
+  MESSAGE_ERROR,
+  MESSAGE_SUCCESS,
+  MESSAGE_INFO,
+} = require("../../../../constants/message.constant");
 const {
   RENDER_PATH,
   REDIRECT_PATH,
 } = require("../../../../constants/path.constant");
+const { STATUS_CODE } = require("../../../../constants/status.constant");
 const {
   FIELDS_IMPORT,
   FILE_NAME_EXPORT,
   SHEET_HEADERS_EXPORT,
 } = require("../../../../constants/fileExcel.constant");
 
-const stringUtil = require("../../../../utils/string");
-const fileExcel = require("../../../../utils/fileExcel");
-
 const csrf = require("../../../middlewares/web/csrf.middleware");
-const userService = require("../../../services/user.service");
-const typeService = require("../../../services/type.service");
+
+const stringUtil = require("../../../../utils/string");
+const { writeFile } = require("../../../../utils/fileExcel");
+
+const UserService = require("../../../services/user.service");
+const userService = new UserService();
+const TypeService = require("../../../services/type.service");
+const typeService = new TypeService();
 
 module.exports = {
   index: async (req, res) => {
-    let { page, limit, keyword } = req.query;
-    const filters = {};
+    try {
+      const { meta, data: students } =
+        await userService.findAllWithTypesAndSearchAndPaginate(
+          req.query,
+          "student"
+        );
 
-    if (keyword) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          phone: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          address: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
+      return res.render(RENDER_PATH.HOME_STUDENTS_ADMIN, {
+        req,
+        user: req.user,
+        page: meta.page,
+        title: `Manage Students - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        totalCount: meta.count,
+        offset: meta.offset,
+        limit: meta.limit,
+        currPage: "students",
+        students,
+        totalPage: meta.totalPage,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
     }
-
-    const [{ count, rows }] = await userService.countAllUserByType(filters, [
-      "student",
-    ]);
-
-    if (!limit) {
-      limit = 10;
-    } else {
-      if (+limit === 25 || +limit === 50 || +limit === 100) {
-        limit = +limit;
-      } else {
-        limit = 10;
-      }
-    }
-
-    const totalPage = Math.ceil(count / limit);
-    if (page < 1 || !page) {
-      page = 1;
-    } else if (page > totalPage) {
-      page = totalPage;
-    }
-
-    const offset = (page - 1) * +limit;
-
-    return res.render(RENDER_PATH.HOME_STUDENTS_ADMIN, {
-      req,
-      user: req.user,
-      page,
-      title: `Manage Students - ${process.env.APP_NAME}`,
-      REDIRECT_PATH,
-      totalCount: count,
-      offset,
-      limit,
-      currPage: "students",
-      students: rows.slice(+offset, +offset + limit) ?? [],
-      totalPage,
-      success: req.flash("success"),
-      error: req.flash("error"),
-      csrf,
-      stringUtil,
-    });
   },
 
   create: async (req, res) => {
     return res.render(RENDER_PATH.CREATE_STUDENT, {
       req,
       user: req.user,
-      oldValues: req.flash("oldValues")[0] ?? {},
-      errorsValidate: stringUtil.extractErr(req.flash("errors")),
+      oldValues: req.flash("oldValues")[0] || {},
+      errorsValidate: req.flash("errors")[0] || {},
       title: `Create Student - ${process.env.APP_NAME}`,
       REDIRECT_PATH,
       currPage: "students",
@@ -106,113 +73,64 @@ module.exports = {
   },
 
   handleCreateStudent: async (req, res) => {
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("oldValues", req.body);
-      req.flash("errors", errors);
-      return res.redirect(REDIRECT_PATH.CREATE_STUDENT);
-    }
+    try {
+      const type = await typeService.findByName("student");
+      if (!type) {
+        throw new Error(MESSAGE_ERROR.TYPE.TYPE_NOT_FOUND);
+      }
+      await userService.create(req.body, +type.id);
 
-    const { name, email, phone, address } = req.body;
-    const [type, messageType] = await typeService.getType({
-      name: "student",
-    });
-
-    if (!type) {
-      req.flash("error", messageType);
-      return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
-    }
-
-    const [status, messageUser] = await userService.createUser(
-      name,
-      email,
-      phone,
-      address,
-      +type.id
-    );
-
-    if (!status) {
-      req.flash("error", messageUser);
-    } else {
-      req.flash("success", messageUser);
+      req.flash("success", MESSAGE_SUCCESS.USER.CREATE_USER_SUCCESS);
+    } catch (error) {
+      req.flash("error", error);
     }
 
     return res.redirect(REDIRECT_PATH.CREATE_STUDENT);
   },
 
   edit: async (req, res, next) => {
-    const { id } = req.params;
-
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      return next(createHttpError(404));
+    try {
+      const studentEdit = await userService.findById(req.params.id);
+      if (!studentEdit) throw new Error(MESSAGE_ERROR.USER.USER_NOT_FOUND);
+      return res.render(RENDER_PATH.EDIT_USER, {
+        req,
+        user: req.user,
+        oldValues: req.flash("oldValues")[0] || studentEdit || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        title: `Edit Student - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "students",
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.NOT_FOUND));
     }
-
-    const [studentEdit] = await userService.getUser({
-      id,
-    });
-
-    const oldValues = req.flash("oldValues")[0] ?? studentEdit ?? {};
-
-    return res.render(RENDER_PATH.EDIT_STUDENT, {
-      req,
-      user,
-      oldValues,
-      errorsValidate: stringUtil.extractErr(req.flash("errors")),
-      title: `Edit Student - ${process.env.APP_NAME}`,
-      REDIRECT_PATH,
-      currPage: "students",
-      success: req.flash("success"),
-      error: req.flash("error"),
-      stringUtil,
-      csrf,
-    });
   },
 
   handleEditStudent: async (req, res) => {
-    const { id } = req.body;
-
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("errors", errors);
-      req.flash("oldValues", req.body);
-      return res.redirect(REDIRECT_PATH.EDIT_STUDENT + `/${id}`);
-    }
-
-    const { name, email, phone, address } = req.body;
-    const [status, message] = await userService.editUser(
-      +id,
-      name,
-      email,
-      phone,
-      address
-    );
-
-    if (!status) {
-      req.flash("error", message);
-    } else {
-      req.flash("success", message);
+    const { id } = req.params;
+    try {
+      await userService.update(req.body, id);
+      req.flash("success", MESSAGE_SUCCESS.USER.EDIT_USER_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.USER.EDIT_USER_FAILED);
     }
 
     return res.redirect(REDIRECT_PATH.EDIT_STUDENT + `/${id}`);
   },
 
   handleDeleteStudents: async (req, res) => {
-    const { id } = req.body;
-
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("error", errors[0].msg);
-      return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
-    }
-
-    const [status, message] = await userService.removeUsers(
-      Array.isArray(id) ? id : [id]
-    );
-    if (status) {
-      req.flash("success", message);
-    } else {
-      req.flash("error", message);
+    try {
+      const { id } = req.body;
+      await userService.removeUsers(Array.isArray(id) ? id : [id]);
+      req.flash("success", MESSAGE_SUCCESS.USER.DELETE_USER_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.USER.DELETE_USER_FAILED);
     }
 
     return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
@@ -230,48 +148,47 @@ module.exports = {
   },
 
   handleImportStudents: async (req, res) => {
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("error", errors[0].msg);
-      return res.redirect(REDIRECT_PATH.IMPORT_STUDENTS);
-    }
+    try {
+      await userService.importUsers(
+        "student",
+        req.file,
+        FIELDS_IMPORT.STUDENT_FIELDS
+      );
 
-    const [status, message] = await userService.importUsers(
-      "student",
-      req.file,
-      FIELDS_IMPORT.STUDENT_FIELDS
-    );
-    if (status) {
-      req.flash("success", message);
-    } else {
-      req.flash("error", message);
+      req.flash("success", MESSAGE_SUCCESS.FILE.IMPORT_USERS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.FILE.IMPORT_USERS_FAILED);
     }
 
     return res.redirect(REDIRECT_PATH.IMPORT_STUDENTS);
   },
 
   handleExportStudents: async (req, res) => {
-    const [users, message] = await userService.getAllUser(["student"]);
+    try {
+      const students = await userService.findAllWithTypes("student");
 
-    if (!users) {
-      req.flash("error", message);
+      if (!students?.length) throw new Error(MESSAGE_INFO.FILE.NOTHING_EXPORT);
+
+      writeFile(
+        res,
+        SHEET_HEADERS_EXPORT.HEADERS_STUDENT,
+        FILE_NAME_EXPORT.STUDENT,
+        (sheet) => {
+          students.forEach(({ name, email, phone, address }) => {
+            sheet.addRow({
+              name,
+              email,
+              phone,
+              address,
+            });
+          });
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.FILE.EXPORT_USERS_FAILED);
       return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
     }
-
-    fileExcel.writeFile(
-      res,
-      SHEET_HEADERS_EXPORT.HEADERS_STUDENT,
-      FILE_NAME_EXPORT.STUDENT,
-      (sheet) => {
-        users.forEach(({ name, email, phone, address }) => {
-          sheet.addRow({
-            name,
-            email,
-            phone,
-            address,
-          });
-        });
-      }
-    );
   },
 };

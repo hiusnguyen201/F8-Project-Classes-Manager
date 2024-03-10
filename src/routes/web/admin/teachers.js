@@ -11,13 +11,6 @@ const validator = require("../../../utils/validator");
 router.get("/", TeacherController.index);
 
 router.get("/create", TeacherController.create);
-
-router.get(
-  "/edit/:id",
-  validator.make(TEACHER_RULES.GET),
-  TeacherController.edit
-);
-
 router.post(
   "/create",
   csrf.verify,
@@ -25,6 +18,7 @@ router.post(
   TeacherController.handleCreateTeacher
 );
 
+router.get("/edit/:id", TeacherController.edit);
 router.patch(
   "/edit/:id",
   csrf.verify,
@@ -32,12 +26,7 @@ router.patch(
   TeacherController.handleEditTeacher
 );
 
-router.delete(
-  "/",
-  csrf.verify,
-  validator.make(TEACHER_RULES.DELETE),
-  TeacherController.handleDeleteTeachers
-);
+router.delete("/", csrf.verify, TeacherController.handleDeleteTeachers);
 
 router.get("/import", TeacherController.importTeachersPage);
 

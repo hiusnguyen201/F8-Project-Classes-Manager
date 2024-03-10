@@ -3,18 +3,13 @@ const MESSAGE_ERROR = {
     // Login
     MISSING_CREDENTIALS: "Please Complete Information",
     INVALID_ACCOUNT: "Incorrect email or password",
-    LOGOUT_FAILED: "Log out error",
 
     // Feature
+    LOGOUT_FAILED: "Log out error",
     CREATE_USER_FAILED: "Create user failed",
     EDIT_USER_FAILED: "Edit user information failed",
     CHANGE_PASS_FAILED: "Change password failed",
     DELETE_USER_FAILED: "Delete user failed",
-    CHANGE_PASS_FAILED: "Change password user failed",
-    LOGIN_FAILED: "Login failed",
-    FIND_USER_FAILED: "Find user failed",
-    SEND_RESET_PASS: "Send password reset failed",
-    COUNT_USER_FAILED: "Count user failed",
 
     // Validate create user
     REQUIRED_NAME: "Name is required",
@@ -24,52 +19,46 @@ const MESSAGE_ERROR = {
     EMAIL_REGISTERED: "Email was registered",
     REQUIRED_PHONE: "Phone is required",
     INVALID_PHONE: "Phone must be Vietnam phone number",
-    INVALID_USER: "Invalid user",
+    USER_NOT_FOUND: "User not found",
     REQUIRED_TYPE: "Type is required",
     INVALID_TYPE: "Invalid type",
 
-    USER_NOT_FOUND: "User not found",
-    EMAIL_NOT_EXIST: "Email isn't exist",
-    INVALID_OLD_PASS: "Old password isn't valid",
-    NEW_PASS_NOT_STRONG:
-      "New password at least 6 characters including a number and a lowercase letter",
+    // Feature change pass
+    REQUIRED_PASS: "Password is required",
+    INVALID_PASS: "Password must be string",
+    CURPASS_NOT_MATCH: "Password is not correct",
+    REQUIRED_NEWPASS: "New password is required",
+    INVALID_NEWPASS: "New password must be string",
+    NEWPASS_NOT_STRONG:
+      "New password at least 4 characters including a number and a lowercase letter",
     INVALID_CONFIRM_PASS: "Confirm password isn't match new password",
 
-    USERS_EMPTY: "Users is empty",
+    USER_NOT_FOUND: "User not found",
   },
 
   TYPE: {
     TYPE_NOT_FOUND: "Type not found",
-    TYPES_EMPTY: "Types is empty",
-    FIND_TYPE_FAILED: "Find type failed",
   },
 
   SOCIAL: {
+    SOCIAL_NOT_FOUND: "Account social not found",
     ACCOUNT_NOT_LINKED: "Account is not linked",
     INVALID_LINK_ACCOUNT: "Invalid account or account is already linked",
-
+    LINK_ACCOUNT_FAILED: "Link account failed",
     REMOVE_ACCOUNT_SOCIAL_FAILED: "Unlink social failed",
-    CREATE_SOCIAL_FAILED: "Link social failed",
-    FIND_SOCIAL_FAILED: "Find social failed",
   },
 
   OTP: {
-    VERIFY_OTP_FAILED: "Verify otp failed",
     WRONG_OTP: "Otp Is Incorrect. Please Try Again",
     EMPTY_OTP: "Please Enter The Otp Below",
     OTP_EXPIRE: "Otp Is Expired. Please Login Again",
     INVALID_OTP: "Invalid otp",
     OTP_NOT_FOUND: "Otp not found",
-    REMOVE_OTP_FAILED: "Remove otp failed",
-    FIND_OTP_FAILED: "Find otp failed",
     CREATE_OTP_FAILED: "Create otp failed",
   },
 
   TOKEN: {
     VERIFY_TOKEN_FAILED: "Verify token failed",
-    REMOVE_TOKEN_FAILED: "Delete token failed",
-    CREATE_TOKEN_FAILED: "Create token failed",
-    FIND_TOKEN_FAILED: "Find token failed",
     LOGIN_TOKEN_NOT_FOUND: "Login token not found",
   },
 
@@ -90,23 +79,18 @@ const MESSAGE_ERROR = {
     REQUIRED_COURSE: "Course is required",
     INVALID_COURSE: "Invalid course",
 
+    // Feature
     COURSE_EXISTED: "Course is existed",
     COURSE_NOT_FOUND: "Course not found",
-    COURSES_EMPTY: "Courses is empty",
-    // Feature
     CREATE_COURSE_FAILED: "Create course failed",
     EDIT_COURSE_FAILED: "Edit course information failed",
     DELETE_COURSE_FAILED: "Delete course failed",
-    FIND_COURSE_FAILED: "Find course failed",
-    COUNT_COURSE_FAILED: "Count course failed",
   },
 
   CLASS: {
-    CLASS_EXISTED: "Class is existed",
-    CLASS_NOT_FOUND: "Class not found",
-    CLASSES_EMPTY: "Classes is empty",
-
     REQUIRED_NAME: "Name is required",
+    NAME_EXISTED: "Name is existed",
+    INVALID_NAME: "Invalid name",
     REQUIRED_QUANTITY: "Quantity is required",
     INVALID_QUANTITY: "Invalid quantity",
     REQUIRED_SCHEDULE: "Schedule is required",
@@ -122,11 +106,11 @@ const MESSAGE_ERROR = {
     INVALID_ASSISTANT: "Invalid assistant",
 
     // Feature
+    CLASS_EXISTED: "Class is existed",
+    CLASS_NOT_FOUND: "Class not found",
     CREATE_CLASS_FAILED: "Create class failed",
     EDIT_CLASS_FAILED: "Edit class information failed",
     DELETE_CLASS_FAILED: "Delete class failed",
-    FIND_CLASS_FAILED: "Find class failed",
-    COUNT_CLASS_FAILED: "Count class failed",
   },
 
   OTHER: {
@@ -137,9 +121,6 @@ const MESSAGE_ERROR = {
     // Mail
     SEND_MAIL_FAILED: "Send mail failed",
     READ_MAIL_HTML: "Read Mail Html Error",
-
-    // Common
-    REQUIRED_FIELD: "Field is required",
   },
 
   FILE: {
@@ -148,7 +129,6 @@ const MESSAGE_ERROR = {
     MIMETYPE_EXCEL_WRONG: "Please upload only excel format",
     REMOVE_FILE_UPLOAD_ERROR: "Remove file upload error",
     CREATE_FOLDER_FAILED: "Create folder is failed",
-    INVALID_KEY: "Invalid key",
 
     // Upload
     ERROR_MULTER_UPLOAD: "Multer error occurred when uploading",
@@ -174,7 +154,7 @@ const MESSAGE_SUCCESS = {
   USER: {
     SENDED_RESET_PASS: "Check your email for a link to reset your password",
     CREATE_USER_SUCCESS: "Create user successfully",
-    EDIT_USER_SUCCESS: "Edit user information successfully",
+    EDIT_USER_SUCCESS: "Edit user successfully",
     DELETE_USER_SUCCESS: "Delete user successfully",
     CHANGE_PASS_SUCCESS: "Change password successfully",
   },
@@ -197,12 +177,22 @@ const MESSAGE_SUCCESS = {
     EDIT_COURSE_SUCCESS: "Edit course successfully",
     DELETE_COURSE_SUCCESS: "Delete course successfully",
   },
+
+  CLASS: {
+    CREATE_CLASS_SUCCESS: "Create class successfully",
+    EDIT_CLASS_SUCCESS: "Edit class successfully",
+    DELETE_CLASS_SUCCESS: "Delete class successfully",
+  },
 };
 
 const MESSAGE_INFO = {
   TWO_FA: "Two-Factor Login Verification",
   RESET_PASS_TITLE: "Reset Your Password",
   PASSWORD_ACTIVE_ACCOUNT: "Password Active Account",
+
+  FILE: {
+    NOTHING_EXPORT: "Nothing to export",
+  },
 };
 
 module.exports = {

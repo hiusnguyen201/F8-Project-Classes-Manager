@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING(200),
       price: DataTypes.INTEGER,
       teacherId: DataTypes.INTEGER,
-      tryLearn: DataTypes.INTEGER,
+      tryLearn: DataTypes.TINYINT,
       quantity: DataTypes.INTEGER,
       duration: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,

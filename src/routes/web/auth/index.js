@@ -6,6 +6,8 @@ const AuthController = require("../../../http/controllers/web/auth/auth.controll
 
 const validator = require("../../../utils/validator");
 const { REDIRECT_PATH } = require("../../../constants/path.constant");
+const { RULES_REQUEST } = require("../../../constants/rules.constant");
+const OTP_RULES = RULES_REQUEST.OTP_RULES;
 
 const AuthMiddleware = require("../../../http/middlewares/web/auth.middleware");
 const GuestMiddleware = require("../../../http/middlewares/web/guest.middleware");
@@ -24,7 +26,13 @@ router.get(
     failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
     failureMessage: true,
   }),
-  AuthController.handleSocialLogin
+  (req, res) => {
+    if (req.cookies.token) {
+      AuthController.handleLinkAccountSocial(req, res);
+    } else {
+      AuthController.handleSocialLogin(req, res);
+    }
+  }
 );
 
 // Github Login
@@ -35,7 +43,13 @@ router.get(
     failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
     failureMessage: true,
   }),
-  AuthController.handleSocialLogin
+  (req, res) => {
+    if (req.cookies.token) {
+      AuthController.handleLinkAccountSocial(req, res);
+    } else {
+      AuthController.handleSocialLogin(req, res);
+    }
+  }
 );
 
 // Facebook Login
@@ -46,13 +60,25 @@ router.get(
     failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
     failureMessage: true,
   }),
-  AuthController.handleSocialLogin
+  (req, res) => {
+    if (req.cookies.token) {
+      AuthController.handleLinkAccountSocial(req, res);
+    } else {
+      AuthController.handleSocialLogin(req, res);
+    }
+  }
 );
 
 router.use(GuestMiddleware);
 // Otp
 router.get("/otp", OtpMiddleware, AuthController.otp);
-router.post("/otp", OtpMiddleware, csrf.verify, AuthController.handleOtp);
+router.post(
+  "/otp",
+  OtpMiddleware,
+  csrf.verify,
+  validator.make(OTP_RULES),
+  AuthController.handleOtp
+);
 
 // Password
 router.get("/passwordreset", AuthController.emailResetPass);
