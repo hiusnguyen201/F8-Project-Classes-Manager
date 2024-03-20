@@ -1,23 +1,11 @@
 const { MESSAGE_ERROR } = require("../constants/message.constant");
 
 const USER_RULES = {
-  GET: {
-    RULES: {
-      id: "required|integer|gt:0|exists:users,id",
-    },
-    MESSAGES: {
-      "id.required": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.integer": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.gt:0": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.exists:users,id": MESSAGE_ERROR.USER.INVALID_USER,
-    },
-  },
-
   CREATE: {
     RULES: {
       name: "required|string",
       email: "required|email|unique:users,email",
-      phone: "required|phone:+84",
+      phone: "required|phone:vi-VN",
     },
     MESSAGES: {
       "name.required": MESSAGE_ERROR.USER.REQUIRED_NAME,
@@ -26,157 +14,107 @@ const USER_RULES = {
       "email.email": MESSAGE_ERROR.USER.INVALID_EMAIL,
       "email.unique:users,email": MESSAGE_ERROR.USER.EMAIL_REGISTERED,
       "phone.required": MESSAGE_ERROR.USER.REQUIRED_PHONE,
-      "phone.phone:+84": MESSAGE_ERROR.USER.INVALID_PHONE,
+      "phone.phone:vi-VN": MESSAGE_ERROR.USER.INVALID_PHONE,
     },
   },
 
   EDIT: {
     RULES: {
-      id: "required|integer|gt:0|exists:users,id",
       name: "required|string",
       email: "required|email|unique:users,email,id,id",
-      phone: "required|phone:+84",
+      phone: "required|phone:vi-VN",
     },
     MESSAGES: {
-      "id.required": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.integer": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.gt:0": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.exists:users,id": MESSAGE_ERROR.USER.INVALID_USER,
       "name.required": MESSAGE_ERROR.USER.REQUIRED_NAME,
       "name.string": MESSAGE_ERROR.USER.INVALID_NAME,
       "email.required": MESSAGE_ERROR.USER.REQUIRED_EMAIL,
       "email.email": MESSAGE_ERROR.USER.INVALID_EMAIL,
       "email.unique:users,email,id,id": MESSAGE_ERROR.USER.EMAIL_REGISTERED,
       "phone.required": MESSAGE_ERROR.USER.REQUIRED_PHONE,
-      "phone.phone:+84": MESSAGE_ERROR.USER.INVALID_PHONE,
+      "phone.phone:vi-VN": MESSAGE_ERROR.USER.INVALID_PHONE,
     },
   },
 
-  DELETE: {
+  CHANGE_PASS: {
     RULES: {
-      id: "required",
-      "id.*": "integer|gt:0",
+      oldPassword: "required|string|currentPassword",
+      newPassword: "required|string|strongPassword",
+      confirmPassword: "confirmed:newPassword",
     },
     MESSAGES: {
-      "id.required": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.*.integer": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.*.gt:0": MESSAGE_ERROR.USER.INVALID_USER,
+      "oldPassword.required": MESSAGE_ERROR.USER.REQUIRED_PASS,
+      "oldPassword.string": MESSAGE_ERROR.USER.INVALID_PASS,
+      "oldPassword.currentPassword": MESSAGE_ERROR.USER.CURPASS_NOT_MATCH,
+      "newPassword.required": MESSAGE_ERROR.USER.REQUIRED_NEWPASS,
+      "newPassword.string": MESSAGE_ERROR.USER.INVALID_PASS,
+      "newPassword.strongPassword": MESSAGE_ERROR.USER.NEWPASS_NOT_STRONG,
+      "confirmPassword.confirmed:newPassword":
+        MESSAGE_ERROR.USER.INVALID_CONFIRM_PASS,
     },
   },
 };
 
 const COURSE_RULES = {
-  GET: {
-    RULES: {
-      id: "required|integer|gt:0|exists:courses,id",
-    },
-    MESSAGES: {
-      "id.required": MESSAGE_ERROR.COURSE.INVALID_COURSE,
-      "id.integer": MESSAGE_ERROR.COURSE.INVALID_COURSE,
-      "id.gt:0": MESSAGE_ERROR.COURSE.INVALID_COURSE,
-      "id.exists:courses,id": MESSAGE_ERROR.COURSE.INVALID_COURSE,
-    },
-  },
-
   CREATE: {
     RULES: {
       name: "required|string",
-      price: "required|integer|gte:0",
-      teacherId: "required|integer|gt:0|exists:users,id",
-      tryLearn: "required|integer|gte:0",
-      quantity: "required|integer|gt:0",
-      duration: "required|integer|gt:0",
+      price: "required|integer",
+      teacherId: "required|integer|exists:users,id",
+      tryLearn: "required|integer",
+      quantity: "required|integer",
+      duration: "required|integer",
     },
     MESSAGES: {
       "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
       "name.string": MESSAGE_ERROR.COURSE.INVALID_NAME,
       "price.required": MESSAGE_ERROR.COURSE.REQUIRED_PRICE,
       "price.integer": MESSAGE_ERROR.COURSE.INVALID_PRICE,
-      "price.gte:0": MESSAGE_ERROR.COURSE.INVALID_PRICE,
       "teacherId.required": MESSAGE_ERROR.COURSE.REQUIRED_TEACHER,
       "teacherId.integer": MESSAGE_ERROR.COURSE.INVALID_TEACHER,
-      "teacherId.gt:0": MESSAGE_ERROR.COURSE.INVALID_TEACHER,
       "teacherId.exists:users,id": MESSAGE_ERROR.COURSE.INVALID_TEACHER,
       "tryLearn.required": MESSAGE_ERROR.COURSE.REQUIRED_TRYLEARN,
       "tryLearn.integer": MESSAGE_ERROR.COURSE.INVALID_TRYLEARN,
-      "tryLearn.gte:0": MESSAGE_ERROR.COURSE.INVALID_TRYLEARN,
       "quantity.required": MESSAGE_ERROR.COURSE.REQUIRED_QUANTITY,
       "quantity.integer": MESSAGE_ERROR.COURSE.INVALID_QUANTITY,
-      "quantity.gt:0": MESSAGE_ERROR.COURSE.INVALID_QUANTITY,
       "duration.required": MESSAGE_ERROR.COURSE.REQUIRED_DURATION,
       "duration.integer": MESSAGE_ERROR.COURSE.INVALID_DURATION,
-      "duration.gt:0": MESSAGE_ERROR.COURSE.INVALID_DURATION,
     },
   },
 
   EDIT: {
     RULES: {
-      id: "required|integer|gt:0|exists:courses,id",
       name: "required|string",
-      price: "required|integer|gte:0",
-      teacherId: "required|integer|gt:0|exists:users,id",
-      tryLearn: "required|integer|gte:0",
-      quantity: "required|integer|gt:0",
-      duration: "required|integer|gt:0",
+      price: "required|integer",
+      teacherId: "required|integer|exists:users,id",
+      tryLearn: "required|integer",
+      quantity: "required|integer",
+      duration: "required|integer",
     },
     MESSAGES: {
-      "id.required": MESSAGE_ERROR.COURSE.REQUIRED_COURSE,
-      "id.integer": MESSAGE_ERROR.COURSE.INVALID_COURSE,
-      "id.gt:0": MESSAGE_ERROR.COURSE.INVALID_COURSE,
-      "id.exists:courses,id": MESSAGE_ERROR.COURSE.INVALID_COURSE,
       "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
       "name.string": MESSAGE_ERROR.COURSE.INVALID_NAME,
       "price.required": MESSAGE_ERROR.COURSE.REQUIRED_PRICE,
       "price.integer": MESSAGE_ERROR.COURSE.INVALID_PRICE,
-      "price.gte:0": MESSAGE_ERROR.COURSE.INVALID_PRICE,
       "teacherId.required": MESSAGE_ERROR.COURSE.REQUIRED_TEACHER,
       "teacherId.integer": MESSAGE_ERROR.COURSE.INVALID_TEACHER,
-      "teacherId.gt:0": MESSAGE_ERROR.COURSE.INVALID_TEACHER,
       "teacherId.exists:users,id": MESSAGE_ERROR.COURSE.INVALID_TEACHER,
       "tryLearn.required": MESSAGE_ERROR.COURSE.REQUIRED_TRYLEARN,
       "tryLearn.integer": MESSAGE_ERROR.COURSE.INVALID_TRYLEARN,
-      "tryLearn.gte:0": MESSAGE_ERROR.COURSE.INVALID_TRYLEARN,
       "quantity.required": MESSAGE_ERROR.COURSE.REQUIRED_QUANTITY,
       "quantity.integer": MESSAGE_ERROR.COURSE.INVALID_QUANTITY,
-      "quantity.gt:0": MESSAGE_ERROR.COURSE.INVALID_QUANTITY,
       "duration.required": MESSAGE_ERROR.COURSE.REQUIRED_DURATION,
       "duration.integer": MESSAGE_ERROR.COURSE.INVALID_DURATION,
-      "duration.gt:0": MESSAGE_ERROR.COURSE.INVALID_DURATION,
-    },
-  },
-
-  DELETE: {
-    RULES: {
-      id: "required",
-      "id.*": "integer|gt:0",
-    },
-    MESSAGES: {
-      "id.required": MESSAGE_ERROR.COURSE.INVALID_COURSE,
-      "id.*.integer": MESSAGE_ERROR.COURSE.INVALID_COURSE,
-      "id.*.gt:0": MESSAGE_ERROR.COURSE.INVALID_COURSE,
     },
   },
 };
 
 const TEACHER_RULES = {
-  GET: {
-    RULES: {
-      id: "required|integer|gt:0|exists:users,id",
-    },
-    MESSAGES: {
-      "id.required": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.integer": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.gt:0": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.exists:users,id": MESSAGE_ERROR.USER.INVALID_USER,
-    },
-  },
-
   CREATE: {
     RULES: {
       name: "required|string",
       email: "required|email|unique:users,email",
-      phone: "required|phone:+84",
-      typeId: "required|integer|gt:0|exists:types,id",
+      phone: "required|phone:vi-VN",
+      typeId: "required|integer|exists:types,id",
     },
     MESSAGES: {
       "name.required": MESSAGE_ERROR.USER.REQUIRED_NAME,
@@ -185,58 +123,104 @@ const TEACHER_RULES = {
       "email.email": MESSAGE_ERROR.USER.INVALID_EMAIL,
       "email.unique:users,email": MESSAGE_ERROR.USER.EMAIL_REGISTERED,
       "phone.required": MESSAGE_ERROR.USER.REQUIRED_PHONE,
-      "phone.phone:+84": MESSAGE_ERROR.USER.INVALID_PHONE,
+      "phone.phone:vi-VN": MESSAGE_ERROR.USER.INVALID_PHONE,
       "typeId.required": MESSAGE_ERROR.USER.REQUIRED_TYPE,
       "typeId.integer": MESSAGE_ERROR.USER.INVALID_TYPE,
-      "typeId.gt:0": MESSAGE_ERROR.USER.INVALID_TYPE,
       "typeId.exists:types,id": MESSAGE_ERROR.USER.INVALID_TYPE,
     },
   },
 
   EDIT: {
     RULES: {
-      id: "required|integer|gt:0|exists:users,id",
       name: "required|string",
       email: "required|email|unique:users,email,id,id",
-      phone: "required|phone:+84",
-      typeId: "required|integer|gt:0|exists:types,id",
+      phone: "required|phone:vi-VN",
+      typeId: "required|integer|exists:types,id",
     },
     MESSAGES: {
-      "id.required": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.integer": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.gt:0": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.exists:users,id": MESSAGE_ERROR.USER.INVALID_USER,
       "name.required": MESSAGE_ERROR.USER.REQUIRED_NAME,
       "name.string": MESSAGE_ERROR.USER.INVALID_NAME,
       "email.required": MESSAGE_ERROR.USER.REQUIRED_EMAIL,
       "email.email": MESSAGE_ERROR.USER.INVALID_EMAIL,
       "email.unique:users,email,id,id": MESSAGE_ERROR.USER.EMAIL_REGISTERED,
       "phone.required": MESSAGE_ERROR.USER.REQUIRED_PHONE,
-      "phone.phone:+84": MESSAGE_ERROR.USER.INVALID_PHONE,
+      "phone.phone:vi-VN": MESSAGE_ERROR.USER.INVALID_PHONE,
       "typeId.required": MESSAGE_ERROR.USER.REQUIRED_TYPE,
       "typeId.integer": MESSAGE_ERROR.USER.INVALID_TYPE,
-      "typeId.gt:0": MESSAGE_ERROR.USER.INVALID_TYPE,
       "typeId.exists:types,id": MESSAGE_ERROR.USER.INVALID_TYPE,
     },
   },
+};
 
-  DELETE: {
+const OTP_RULES = {
+  RULES: {
+    "otp.*": "required",
+  },
+  MESSAGES: {
+    "otp.*.required": MESSAGE_ERROR.OTP.EMPTY_OTP,
+  },
+};
+
+const CLASS_RULES = {
+  CREATE: {
     RULES: {
-      id: "required",
-      "id.*": "integer|gt:0",
+      name: "required|string|unique:classes,name",
+      quantity: "required|integer",
+      startDate: "required|string|date:DD/MM/YYYY",
+      schedule: "required",
+      timeLearnStart: "required|time",
+      timeLearnEnd: "required|time",
+      courseId: "required|integer",
     },
     MESSAGES: {
-      "id.required": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.*.integer": MESSAGE_ERROR.USER.INVALID_USER,
-      "id.*.gt:0": MESSAGE_ERROR.USER.INVALID_USER,
+      "name.required": MESSAGE_ERROR.CLASS.REQUIRED_NAME,
+      "name.string": MESSAGE_ERROR.CLASS.INVALID_NAME,
+      "name.unique:classes,name": MESSAGE_ERROR.CLASS.CLASS_EXISTED,
+      "quantity.required": MESSAGE_ERROR.CLASS.REQUIRED_QUANTITY,
+      "quantity.integer": MESSAGE_ERROR.CLASS.INVALID_QUANTITY,
+      "startDate.required": MESSAGE_ERROR.CLASS.REQUIRED_START_DATE,
+      "startDate.string": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
+      "startDate.date": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
+      "schedule.required": MESSAGE_ERROR.CLASS.REQUIRED_SCHEDULE,
+      "timeLearnStart.required": MESSAGE_ERROR.CLASS.REQUIRED_TIMELEARN,
+      "timeLearnEnd.required": MESSAGE_ERROR.CLASS.REQUIRED_TIMELEARN,
+      "courseId.required": MESSAGE_ERROR.CLASS.REQUIRED_COURSE,
+      "courseId.integer": MESSAGE_ERROR.CLASS.INVALID_COURSE,
+    },
+  },
+  EDIT: {
+    RULES: {
+      name: "required|string",
+      quantity: "required|integer",
+      startDate: "required|string|date:DD/MM/YYYY",
+      schedule: "required",
+      timeLearnStart: "required|time",
+      timeLearnEnd: "required|time",
+      courseId: "required|integer",
+    },
+    MESSAGES: {
+      "name.required": MESSAGE_ERROR.CLASS.REQUIRED_NAME,
+      "name.string": MESSAGE_ERROR.CLASS.INVALID_NAME,
+      "quantity.required": MESSAGE_ERROR.CLASS.REQUIRED_QUANTITY,
+      "quantity.integer": MESSAGE_ERROR.CLASS.INVALID_QUANTITY,
+      "startDate.required": MESSAGE_ERROR.CLASS.REQUIRED_START_DATE,
+      "startDate.string": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
+      "startDate.date": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
+      "schedule.required": MESSAGE_ERROR.CLASS.REQUIRED_SCHEDULE,
+      "timeLearnStart.required": MESSAGE_ERROR.CLASS.REQUIRED_TIMELEARN,
+      "timeLearnEnd.required": MESSAGE_ERROR.CLASS.REQUIRED_TIMELEARN,
+      "courseId.required": MESSAGE_ERROR.CLASS.REQUIRED_COURSE,
+      "courseId.integer": MESSAGE_ERROR.CLASS.INVALID_COURSE,
     },
   },
 };
 
 const RULES_REQUEST = {
+  OTP_RULES,
   USER_RULES,
   COURSE_RULES,
   TEACHER_RULES,
+  CLASS_RULES,
 };
 
 module.exports = {

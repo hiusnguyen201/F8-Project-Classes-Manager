@@ -1,4 +1,5 @@
-const tokenService = require("../../services/token.service");
+const TokenService = require("../../services/token.service");
+const tokenService = new TokenService();
 const { REDIRECT_PATH } = require("../../../constants/path.constant");
 const { MESSAGE_ERROR } = require("../../../constants/message.constant");
 
@@ -14,9 +15,7 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const [tokenValid] = await tokenService.getLoginToken({
-      token: tokenCookie,
-    });
+    const tokenValid = await tokenService.findByToken(tokenCookie);
 
     if (!tokenValid) {
       res.clearCookie("token");

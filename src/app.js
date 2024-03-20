@@ -29,8 +29,8 @@ const authRouter = require("./routes/web/auth/index");
 // Route Api
 
 // Service
-const userService = require("./http/services/user.service");
-const { RENDER_PATH } = require("./constants/path.constant");
+const UserService = require("./http/services/user.service");
+const userService = new UserService();
 
 var app = express();
 // app.use(helmet());
@@ -63,14 +63,7 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 passport.deserializeUser(async (id, done) => {
-  const [user] = await userService.getUser(
-    {
-      id: +id,
-    },
-    false,
-    ["password"]
-  );
-
+  const user = await userService.findById(id);
   done(null, user);
 });
 
@@ -89,10 +82,28 @@ app.use(
   })
 );
 
-// Path Web
+app.use("/", (req, res, next) => {
+  req.user = {
+    id: 91,
+    name: "hieu nguyen",
+    email: "hiusnguyen201@gmail.com",
+    phone: "0123456789",
+    address: "Viet Nam",
+    firstLogin: 1,
+    Type: {
+      id: 1,
+      name: "admin",
+    },
+  };
+
+  res.cookie("token", "heeo");
+
+  next();
+});
+
 app.use("/auth", authRouter);
 
-app.use(AuthMiddleware);
+// app.use(AuthMiddleware);
 app.use("/", studentsRouter);
 app.use("/teacher", teachersRouter);
 app.use("/admin", adminRouter);

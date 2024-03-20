@@ -6,10 +6,10 @@ const btnDeleteAllChildrenSelected = document.querySelector(
 const btnConfirmDeleteAllChildren = document.querySelector(
   "button#btnConfirmDeleteAllChildren"
 );
-const btnHiddenColumn = document.querySelector(".btn-hidden-column-group>.btn");
 
 let count = 0;
 let arrId = [];
+
 if (btnCheckboxParent) {
   btnCheckboxParent.addEventListener("change", (e) => {
     if (e.target.checked) {
@@ -58,6 +58,7 @@ if (listBtnChild) {
     });
   });
 }
+
 if (btnConfirmDeleteAllChildren) {
   btnConfirmDeleteAllChildren.addEventListener("click", () => {
     if (count > 0 && !btnDeleteAllChildrenSelected.disabled) {
@@ -69,11 +70,13 @@ if (btnConfirmDeleteAllChildren) {
         input.hidden = true;
         formParent.appendChild(input);
       });
+
       formParent.submit();
     }
   });
 }
 
+const btnHiddenColumn = document.querySelector(".btn-hidden-column-group>.btn");
 if (btnHiddenColumn) {
   btnHiddenColumn.addEventListener("click", () => {
     const menu = document.querySelector(
@@ -85,7 +88,6 @@ if (btnHiddenColumn) {
 }
 
 const dropArea = document.querySelector("label#drop-area");
-
 if (dropArea) {
   const btnImport = document.querySelector("button.btnImport");
   const inputFile = dropArea.querySelector("input#importFile");
@@ -118,3 +120,138 @@ if (dropArea) {
     blockUpload.appendChild(div);
   }
 }
+
+const timeLearnHtml = (title, index, timeLearnStart, timeLearnEnd) => {
+  return `<label class="form-label">Time Learn: ${title}</label>
+                <div class="row align-items-center">
+                      <div class="col-5 align-items-center d-flex">
+                        <label class="form-label mr-1 mb-0" style="font-size: 14px"
+                          >Start:</label
+                        >
+                        <div class="input-group">
+                          <div class="input-group-prepend" style="border-right: 0">
+                            <div class="input-group-text">
+                              <i class="far fa-clock"></i>
+                            </div>
+                          </div>
+                          <input
+                            type="text"
+                            value = "${
+                              timeLearnStart[index] === " "
+                                ? ""
+                                : timeLearnStart[index]
+                            }"
+                            name="timeLearnStart"
+                            class="form-control datetimepicker-input"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-1"></div>
+                      <div class="col-5 align-items-center d-flex">
+                        <label class="form-label mr-1 mb-0" style="font-size: 14px"
+                          >End:</label
+                        >
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                              <i class="far fa-clock"></i>
+                            </div>
+                          </div>
+                          <input
+                            type="text"
+                            value = "${
+                              timeLearnEnd[index] === " "
+                                ? ""
+                                : timeLearnEnd[index]
+                            }"
+                            name="timeLearnEnd"
+                            class="form-control datetimepicker-input"
+                          />
+                        </div>
+                      </div>
+                </div>`;
+};
+
+const appendTimeLearnHtml = (
+  child,
+  timeLearnNode,
+  index,
+  timeLearnStart = [],
+  timeLearnEnd = []
+) => {
+  const nodeDiv = document.createElement("div");
+  const title = child.getAttribute("title");
+
+  nodeDiv.innerHTML = timeLearnHtml(title, index, timeLearnStart, timeLearnEnd);
+  timeLearnNode.appendChild(nodeDiv);
+
+  $("input[name='timeLearnStart']").datetimepicker({
+    format: "HH:mm",
+  });
+  $("input[name='timeLearnEnd']").datetimepicker({
+    format: "HH:mm",
+  });
+};
+
+const titlesAccept = [
+  "Monday",
+  "Sunday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const selectedChild = document.querySelectorAll("li.select2-selection__choice");
+if (selectedChild?.length) {
+  const timeLearnNode = document.querySelector("div.timeLearn");
+  let [timeLearnStart, timeLearnEnd] = timeLearnNode
+    .getAttribute("value")
+    .split("-");
+
+  timeLearnNode.setAttribute("value", "");
+  timeLearnStart = timeLearnStart.split(",");
+  timeLearnEnd = timeLearnEnd.split(",");
+
+  selectedChild.forEach((child, index) => {
+    if (titlesAccept.includes(child.getAttribute("title"))) {
+      appendTimeLearnHtml(
+        child,
+        timeLearnNode,
+        index,
+        timeLearnStart,
+        timeLearnEnd
+      );
+    }
+  });
+}
+
+const observer = new MutationObserver((mutations) => {
+  if (mutations[1]?.type === "childList") {
+    const selectedChild = document.querySelectorAll(
+      "li.select2-selection__choice"
+    );
+
+    const timeLearnNode = document.querySelector("div.timeLearn");
+    timeLearnNode.innerHTML = "";
+
+    selectedChild.forEach((child, index) => {
+      let parent = child.parentNode;
+      while (!parent.classList.contains("mb-3")) {
+        parent = parent.parentNode;
+
+        if (parent.classList.contains("mb-3")) {
+          const div = parent.querySelector("label.form-label");
+          if (div.getAttribute("for") === "schedule") {
+            appendTimeLearnHtml(child, timeLearnNode, index);
+          }
+        }
+      }
+    });
+  }
+});
+
+const selectionRender = document.querySelector(
+  "ul.select2-selection__rendered"
+);
+if (selectionRender) observer.observe(selectionRender, { childList: true });

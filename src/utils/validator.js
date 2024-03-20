@@ -1,8 +1,9 @@
 const { check } = require("express-validator");
-const fs = require("fs");
 const { Op } = require("sequelize");
+const fs = require("fs");
 const { MESSAGE_ERROR } = require("../constants/message.constant");
 const models = require("../models/index");
+const tokenUtil = require("../utils/token");
 
 const selectorModel = {
   users: models.User,
@@ -11,18 +12,7 @@ const selectorModel = {
   classes: models.Class,
 };
 
-const regexPhone = {
-  "+84": /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
-};
-
-const selectorConstraint = {
-  /**
-   * @param {string} name
-   * @param {string} error
-   * @param {string} value
-   * @returns {boolean}
-   */
-
+const selectorRule = {
   required: function (name, error) {
     return check(name, error || "This field must be required").notEmpty();
   },
@@ -36,43 +26,14 @@ const selectorConstraint = {
   },
 
   phone: function (name, error, value) {
-    return check(name).custom((data) => {
-      if (!data.match(regexPhone[value])) {
-        throw new Error(error || "This field must be phone number");
-      }
-      return true;
-    });
+    return check(
+      name,
+      error || "This field must be phone number"
+    ).isMobilePhone(value);
   },
 
-  gt: function (key, error, value) {
-    const [name, target] = key.split(".");
-    error = error || `This field must greater than ${value}`;
-
-    if (target === "*") {
-      return check(name).custom((arr) => {
-        if (!Array.isArray(arr)) {
-          arr = [arr];
-        }
-
-        arr.forEach((val, index) => {
-          if (!(+val > +value)) {
-            throw new Error(`${error} in position ${index + 1}`);
-          }
-        });
-
-        return true;
-      });
-    }
-
-    return check(name, error).custom((val) => {
-      return +val > +value;
-    });
-  },
-
-  gte: function (name, error, value) {
-    return check(name, error).custom((val) => {
-      return +val >= +value;
-    });
+  integer: function (name, error, value) {
+    return check(name, error || "This field must be integer number").isInt();
   },
 
   unique: function (name, error, value) {
@@ -102,7 +63,6 @@ const selectorConstraint = {
       const [table, field] = value.split(",");
       let filters = {};
       filters[field] = data;
-
       const obj = await selectorModel[table].findOne({
         where: filters,
       });
@@ -112,63 +72,102 @@ const selectorConstraint = {
     });
   },
 
-  array: function (name, error) {
-    return check(name, error || "This field must be array").isArray();
+  currentPassword: function (name, error) {
+    return check(name).custom(async (data, { req }) => {
+      const user = await models.User.findByPk(req.user.id);
+      const result = tokenUtil.compareHashByBcrypt(data, user.password);
+      if (!result) {
+        throw new Error(
+          error || "The value of field not match with current password"
+        );
+      }
+
+      return true;
+    });
   },
 
-  integer: function (key, error) {
-    const [name, target] = key.split(".");
-    error = error || `This field must be integer number`;
+  strongPassword: function (name, error) {
+    return check(
+      name,
+      error || "The field isn't strong password"
+    ).isStrongPassword({
+      minLength: 4,
+      minLowercase: 1,
+      minNumbers: 1,
+      minSymbols: 0,
+      minUppercase: 0,
+    });
+  },
 
-    if (target === "*") {
-      return check(name).custom((arr) => {
-        if (!Array.isArray(arr)) {
-          arr = [arr];
-        }
+  confirmed: function (name, error, value) {
+    return check(name).custom((data, { req }) => {
+      if (req.body[value] !== data) {
+        throw new Error(
+          error || `The value of field not match with the value of ${name}`
+        );
+      }
 
-        arr.forEach((val, index) => {
-          if (!Number.isInteger(+val)) {
-            throw new Error(`${error} in position ${index + 1}`);
-          }
-        });
+      return true;
+    });
+  },
 
-        return true;
-      });
-    }
+  date: function (name, error, value) {
+    return check(name, error || "The field must be date").isDate({
+      format: value,
+    });
+  },
 
-    return check(name, error).isInt();
+  time: function (name, error) {
+    return check(name, error || "The field must be time").isTime({
+      hourFormat: "hour24",
+    });
   },
 };
 
 module.exports = {
   make: function (rulesObj) {
-    const names = rulesObj.RULES;
-    const executeArr = [];
+    return async (req, res, next) => {
+      const { RULES, MESSAGES } = rulesObj;
+      const validations = {};
 
-    for (const name in names) {
-      const rules = names[name].split("|");
-      rules.forEach((rule) => {
-        const messErr = rulesObj?.MESSAGES;
-        const [constraint, value] = rule.split(":");
-        const funcSelected = selectorConstraint[constraint];
-        if (funcSelected) {
-          executeArr.push(
-            funcSelected(
-              name,
-              messErr ? messErr[`${name}.${rule}`] : null,
-              value ?? null
-            )
-          );
-        } else {
-          console.log(
-            "\x1b[33m%s\x1b[0m",
-            `***** Constraint ${constraint} is undefined *****`
-          );
+      for (const [name, rulesStr] of Object.entries(RULES)) {
+        const rules = rulesStr.split("|");
+
+        for (const rule of rules) {
+          const [ruleName, ruleValue] = rule.split(":");
+          const funcSelected = selectorRule[ruleName];
+
+          if (!funcSelected) {
+            console.log(
+              "\x1b[33m%s\x1b[0m",
+              `***** Rule '${rule}' is undefined *****`
+            );
+            continue;
+          }
+
+          const { errors } = await funcSelected(
+            name,
+            MESSAGES ? MESSAGES[`${name}.${rule}`] : null,
+            ruleValue ?? null
+          ).run(req);
+
+          if (errors?.length) {
+            validations[name] = errors[0].msg;
+            break;
+          }
         }
-      });
-    }
+      }
 
-    return executeArr;
+      console.log(validations);
+
+      if (Object.keys(validations)?.length) {
+        req.flash("oldValues", req.body);
+        req.flash("errors", validations);
+        return res.redirect(req.originalUrl);
+      }
+
+      return next();
+    };
   },
 
   // Excel

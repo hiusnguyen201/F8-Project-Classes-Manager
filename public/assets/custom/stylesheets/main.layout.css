@@ -382,13 +382,241 @@ body {
   background-color: #007bff;
 }
 
-.optional-text {
+.required-text {
   margin-left: 5px;
   font-weight: 400;
-  color: #979797;
-  font-size: 15px;
+  color: red;
 }
 
 .modal-body {
   overflow: auto;
+}
+
+/* Setting */
+
+.setting-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 32px;
+  color: #232946;
+  font-weight: 600;
+}
+
+.nav-tabs.flex-column {
+  border-right: 0;
+}
+
+.nav-tabs.flex-column .nav-link.active {
+  background-color: #f6f6ff;
+  border-left: 1px solid #6246ea;
+  color: #6246ea;
+}
+
+.btn-update_password {
+  background-color: #6246ea;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fffffe;
+}
+
+.btn-update_password:hover,
+.btn-social.btn.active:hover {
+  color: #fffffe;
+  background-color: #503bb5;
+}
+
+.nav-tabs.flex-column .nav-link {
+  color: #232946;
+  border-radius: 0;
+  border: none;
+}
+
+.card {
+  padding: 1.5rem 0;
+  border-radius: 0;
+}
+
+.btn-back {
+  font-size: 20px;
+  color: #232946;
+}
+
+.nav-tabs.flex-column .nav-link:hover,
+.btn-back:hover {
+  transition: 0.3s;
+  color: #6246ea;
+}
+
+.card .row .tab-pane_title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.tab-content h5 {
+  padding-bottom: 8px;
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+
+.tab-pane_group {
+  width: 80%;
+}
+
+.tab-pane_group + .tab-pane_group {
+  margin-top: 24px;
+}
+
+.tab-pane_status {
+  font-size: 16px;
+}
+
+.toggle-container {
+  position: relative;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-container .toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90px;
+  height: 50px;
+  background-color: #444;
+  border-radius: 30px;
+}
+
+.toggle-container .toggle .toggle-button {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.toggle-container .text {
+  position: absolute;
+  left: 95px;
+}
+
+.tab-pane_password,
+.tab-pane_info {
+  border: 0;
+  width: 100%;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.btn-social {
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 0.25rem;
+  border: 1px solid #ccc;
+  width: 100px;
+  position: relative;
+}
+
+.btn-social:hover {
+  color: #6246ea;
+}
+
+.btn-social.btn.active {
+  background-color: #6246ea;
+  color: #fffffe;
+}
+
+.fab {
+  font-size: 24px;
+}
+
+.fa-google {
+  background: conic-gradient(
+      from -45deg,
+      #ea4335 110deg,
+      #4285f4 90deg 180deg,
+      #34a853 180deg 270deg,
+      #fbbc05 270deg
+    )
+    73% 55%/150% 150% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+input:focus-visible {
+  outline: none;
+}
+
+#vert-tabs-tab {
+  width: 90%;
+}
+
+@media (max-width: 769px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .alert.alert-danger {
+    margin-top: 20px;
+  }
+
+  .col-6.col-sm-4,
+  .col-7.col-sm-8 {
+    max-width: unset !important;
+    width: 100%;
+  }
+
+  .tab-pane_group {
+    width: 90%;
+  }
+
+  .tab-pane_password {
+    width: 100%;
+  }
+
+  #vert-tabs-tab {
+    width: 100%;
+  }
+}
+
+@media (max-width: 426px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .tab-pane_group {
+    width: 100%;
+  }
+
+  .tab-pane_group .col-9 {
+    max-width: 100%;
+  }
+
+  .col-6.col-sm-4,
+  .col-7.col-sm-8 {
+    max-width: unset !important;
+    width: 100%;
+  }
+
+  .card-body {
+    padding: 0rem;
+  }
+
+  .content-wrapper > .content,
+  .container-fluid {
+    padding: 0;
+  }
+
+  .tab-pane_group {
+    width: 100%;
+  }
 }

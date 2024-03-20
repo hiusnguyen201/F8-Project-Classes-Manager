@@ -12,18 +12,14 @@ router.get("/", CourseController.index);
 
 router.get("/create", CourseController.create);
 
-router.get(
-  "/edit/:id",
-  validator.make(COURSE_RULES.GET),
-  CourseController.edit
-);
-
 router.post(
   "/create",
   csrf.verify,
   validator.make(COURSE_RULES.CREATE),
   CourseController.handleCreateCourse
 );
+
+router.get("/edit/:id", CourseController.edit);
 
 router.patch(
   "/edit/:id",
@@ -32,12 +28,7 @@ router.patch(
   CourseController.handleEditCourse
 );
 
-router.delete(
-  "/",
-  csrf.verify,
-  validator.make(COURSE_RULES.DELETE),
-  CourseController.handleDeleteCourses
-);
+router.delete("/", csrf.verify, CourseController.handleDeleteCourses);
 
 router.get("/import", CourseController.importCoursesPage);
 

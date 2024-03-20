@@ -7,15 +7,24 @@ const {
   MESSAGE_ERROR,
   MESSAGE_SUCCESS,
 } = require("../../../../constants/message.constant");
-const otpService = require("../../../services/otp.service");
-const tokenService = require("../../../services/token.service");
-const userService = require("../../../services/user.service");
-const tokenUtil = require("../../../../utils/token");
+
 const csrf = require("../../../middlewares/web/csrf.middleware");
+
+const tokenUtil = require("../../../../utils/token");
+const classifyRedirect = require("../../../../utils/classifyRedirect");
+
+const OtpService = require("../../../services/otp.service");
+const otpService = new OtpService();
+const TokenService = require("../../../services/token.service");
+const tokenService = new TokenService();
+const UserService = require("../../../services/user.service");
+const userService = new UserService();
+const SocialService = require("../../../services/social.service");
+const userSocialService = new SocialService();
+
 module.exports = {
   login: (req, res) => {
     const error = req.flash("error");
-    const success = req.flash("success");
 
     if (error[0] === "Missing credentials") {
       error[0] = MESSAGE_ERROR.USER.MISSING_CREDENTIALS;
@@ -25,106 +34,126 @@ module.exports = {
       layout: "layouts/auth.layout.ejs",
       title: `Login - ${process.env.APP_NAME} Accounts`,
       error,
-      success,
       csrf,
       REDIRECT_PATH,
     });
   },
 
   handleLocalLogin: async (req, res) => {
-    const user = req.user;
-
-    if (!user.firstLogin) {
-      const tokenReset = tokenUtil.createTokenByJwt(user.id);
-      return res.redirect(`${REDIRECT_PATH.EMAIL_PASS_RESET}/${tokenReset}`);
-    }
-
-    const [userOtp, message] = await otpService.createUserOtp(
-      user.id,
-      user.email,
-      user.name
-    );
-
-    if (userOtp) {
-      req.flash("success", message);
+    try {
+      const user = req.user;
+      await otpService.create(user.id, user.email, user.name);
+      req.flash("success", MESSAGE_SUCCESS.OTP.SENDED_OTP);
       return res.redirect(REDIRECT_PATH.OTP_AUTH);
-    } else {
-      req.flash("error", message);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.OTP.CREATE_OTP_FAILED);
       return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
     }
   },
 
   otp: (req, res) => {
-    const success = req.flash("success");
-    const error = req.flash("error");
+    const errors = req.flash("errors")[0];
+    let error = req.flash("error")[0];
+
+    if (errors) {
+      for (let err in errors) {
+        error = errors[err];
+      }
+    }
 
     return res.render(RENDER_PATH.OTP_AUTH, {
       layout: "layouts/auth.layout.ejs",
       title: `Verify Otp - ${process.env.APP_NAME} Accounts`,
       REDIRECT_PATH,
-      success,
+      success: req.flash("success"),
       error,
       csrf,
     });
   },
 
   handleOtp: async (req, res) => {
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("error", errors[0].msg);
-      return res.redirect(REDIRECT_PATH.OTP_AUTH);
-    }
+    try {
+      let { otp } = req.body;
+      otp = otp.join("");
 
-    const { ...params } = req.body;
-    const otp = params.otp.join("");
-    const user = req.user;
+      if (!Number.isInteger(+otp))
+        throw new Error(MESSAGE_ERROR.OTP.INVALID_OTP);
 
-    const [loginToken, message] = await otpService.verifyOtp(otp, user.id);
+      const user = req.user;
+      await otpService.verify(otp);
+      const loginToken = await tokenService.create(user.id);
 
-    if (!loginToken) {
-      req.flash("error", message);
-      if (message === MESSAGE_ERROR.OTP.OTP_EXPIRE) {
-        return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
-      } else {
-        return res.redirect(REDIRECT_PATH.OTP_AUTH);
+      if (loginToken) {
+        if (!user.firstLogin) {
+          const tokenReset = tokenUtil.createTokenByJwt(user.id);
+          req.session.firstLogin = loginToken.token;
+          return res.redirect(
+            `${REDIRECT_PATH.EMAIL_PASS_RESET}/${tokenReset}`
+          );
+        }
+
+        res.cookie("token", req.session.firstLogin);
+        return res.redirect(
+          classifyRedirect(user.Type.name, [
+            REDIRECT_PATH.HOME_ADMIN,
+            REDIRECT_PATH.HOME_TEACHER,
+            REDIRECT_PATH.HOME_STUDENT,
+          ])
+        );
       }
+    } catch (err) {
+      console.log(err);
+      req.flash("error", err.message);
     }
-
-    res.cookie("token", loginToken.token);
-
-    const { Type } = user;
-    if (Type.name === "admin") {
-      return res.redirect(REDIRECT_PATH.HOME_ADMIN);
-    } else if (Type.name === "teacher") {
-      return res.redirect(REDIRECT_PATH.HOME_TEACHER);
-    } else {
-      return res.redirect(REDIRECT_PATH.HOME_STUDENT);
-    }
+    return res.redirect(REDIRECT_PATH.OTP_AUTH);
   },
 
   handleSocialLogin: async (req, res) => {
-    const tokenCookie = req.cookies.token;
-    if (tokenCookie) {
-      req.flash("success", MESSAGE_SUCCESS.SOCIAL.LINK_ACCOUNT_SOCIAL_SUCCESS);
-      return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
-    }
-
     const user = req.user;
-    const [loginToken, message] = await tokenService.createLoginToken(user.id);
-    if (!loginToken) {
-      req.flash("error", message);
-      return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+    try {
+      const loginToken = await tokenService.create(user.id);
+
+      if (loginToken) {
+        res.cookie("token", loginToken.token);
+      }
+    } catch (err) {
+      console.log(err);
     }
 
-    res.cookie("token", loginToken.token);
-    const { Type } = user;
-    if (Type.name === "admin") {
-      return res.redirect(REDIRECT_PATH.HOME_ADMIN);
-    } else if (Type.name === "teacher") {
-      return res.redirect(REDIRECT_PATH.HOME_TEACHER);
-    } else {
-      return res.redirect(REDIRECT_PATH.HOME_STUDENT);
+    return res.redirect(
+      classifyRedirect(user.Type.name, [
+        REDIRECT_PATH.HOME_ADMIN,
+        REDIRECT_PATH.HOME_TEACHER,
+        REDIRECT_PATH.HOME_STUDENT,
+      ])
+    );
+  },
+
+  handleLinkAccountSocial: async (req, res) => {
+    const user = req.user;
+
+    try {
+      const { profile } = req.cookies;
+      delete req.cookies.profile;
+      await userSocialService.create(
+        profile.providerId,
+        profile.provider,
+        user.id
+      );
+      req.flash("success", MESSAGE_SUCCESS.SOCIAL.LINK_ACCOUNT_SOCIAL_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("success", MESSAGE_ERROR.SOCIAL.LINK_ACCOUNT_FAILED);
     }
+
+    return res.redirect(
+      classifyRedirect(user.Type.name, [
+        REDIRECT_PATH.SECURITY_SETTING_ADMIN,
+        REDIRECT_PATH.SETTINGS_SECURITY_TEACHER,
+        REDIRECT_PATH.SETTINGS_SECURITY_STUDENT,
+      ])
+    );
   },
 
   logout: async (req, res) => {
@@ -133,62 +162,50 @@ module.exports = {
       if (err) {
         console.log(err);
         req.flash("error", MESSAGE_ERROR.USER.LOGOUT_FAILED);
-        return res.redirect(req.url);
       }
     });
 
-    const [status, message] = await tokenService.removeLoginToken({
-      token: tokenCookie,
-    });
-
-    if (status) {
+    try {
       res.clearCookie("token");
+      await tokenService.remove(tokenCookie);
       return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
-    } else {
-      req.flash("error", message);
-      return res.redirect(req.url);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.USER.LOGOUT_FAILED);
     }
+
+    return res.redirect(req.url);
   },
 
   emailResetPass: (req, res) => {
-    const error = req.flash("error");
-    const success = req.flash("success");
-
     return res.render(RENDER_PATH.EMAIL_PASS_RESET, {
       layout: "layouts/auth.layout.ejs",
       title: `Reset Password - ${process.env.APP_NAME} Accounts`,
       REDIRECT_PATH,
-      error,
+      error: req.flash("error"),
+      success: req.flash("success"),
       csrf,
-      success,
     });
   },
 
   handleEmailResetPass: async (req, res) => {
-    const { errors } = validationResult(req);
-    if (errors?.length) {
-      req.flash("error", errors[0].msg);
-      return res.redirect(REDIRECT_PATH.EMAIL_PASS_RESET);
+    try {
+      await userService.sendResetPassLink(req.body.email);
+      req.flash("success", MESSAGE_SUCCESS.USER.SENDED_RESET_PASS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.OTHER.SEND_MAIL_FAILED);
     }
 
-    const { email } = req.body;
-    const [status, message] = await userService.sendResetPassLink(email);
-    if (!status) {
-      req.flash("error", message);
-    } else {
-      req.flash("success", message);
-    }
     return res.redirect(REDIRECT_PATH.EMAIL_PASS_RESET);
   },
 
   resetPassword: async (req, res) => {
-    const error = req.flash("error");
-
     return res.render(RENDER_PATH.RESET_PASSWORD_LINK, {
       layout: "layouts/auth.layout.ejs",
       title: `Reset Password - ${process.env.APP_NAME} Accounts`,
       REDIRECT_PATH,
-      error,
+      error: req.flash("error"),
       csrf,
     });
   },
@@ -204,14 +221,19 @@ module.exports = {
     }
 
     const { confirmPassword } = req.body;
-    const [status, message] = await userService.updatePassword(
-      +userIdReset,
-      confirmPassword
-    );
-    if (status) {
-      req.flash("success", message);
-    } else {
-      req.flash("error", message);
+    await userService.changePassword(+userIdReset, confirmPassword);
+
+    if (req.session.firstLogin) {
+      const user = req.user;
+      res.cookie("token", req.session.firstLogin);
+      delete req.session.firstLogin;
+      return res.redirect(
+        classifyRedirect(user.Type.name, [
+          REDIRECT_PATH.HOME_ADMIN,
+          REDIRECT_PATH.HOME_TEACHER,
+          REDIRECT_PATH.HOME_STUDENT,
+        ])
+      );
     }
 
     return res.redirect(REDIRECT_PATH.LOGIN_AUTH);

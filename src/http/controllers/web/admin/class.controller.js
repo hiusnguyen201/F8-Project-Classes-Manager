@@ -1,125 +1,173 @@
-const { validationResult } = require("express-validator");
+const createHttpError = require("http-errors");
 const moment = require("moment");
-
-const { Op } = require("sequelize");
+const {
+  MESSAGE_ERROR,
+  MESSAGE_SUCCESS,
+  MESSAGE_INFO,
+} = require("../../../../constants/message.constant");
 const {
   RENDER_PATH,
   REDIRECT_PATH,
 } = require("../../../../constants/path.constant");
+const { STATUS_CODE } = require("../../../../constants/status.constant");
 const {
   FIELDS_IMPORT,
   FILE_NAME_EXPORT,
   SHEET_HEADERS_EXPORT,
 } = require("../../../../constants/fileExcel.constant");
 
-const stringUtil = require("../../../../utils/string");
-const fileExcel = require("../../../../utils/fileExcel");
-
 const csrf = require("../../../middlewares/web/csrf.middleware");
-const classService = require("../../../services/class.service");
-const courseService = require("../../../services/course.service");
-const userService = require("../../../services/user.service");
+
+const stringUtil = require("../../../../utils/string");
+const { writeFile } = require("../../../../utils/fileExcel");
+
+const ClassService = require("../../../services/class.service");
+const classService = new ClassService();
+const CourseService = require("../../../services/course.service");
+const courseService = new CourseService();
+const UserService = require("../../../services/user.service");
+const userService = new UserService();
 
 module.exports = {
-  index: async (req, res) => {
-    const error = req.flash("error");
-    const success = req.flash("success");
-    let { page, limit, keyword } = req.query;
+  index: async (req, res, next) => {
+    try {
+      const { meta, data: classes } =
+        await classService.findAllWithSearchAndPaginate(req.query);
 
-    const filters = {};
-    if (keyword) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
+      return res.render(RENDER_PATH.HOME_CLASSES_ADMIN, {
+        req,
+        user: req.user,
+        page: meta.page,
+        title: `Manage Classes - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        totalCount: meta.count,
+        offset: meta.offset,
+        limit: meta.limit,
+        currPage: "classes",
+        classes,
+        totalPage: meta.totalPage,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        stringUtil,
+        csrf,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
     }
+  },
 
-    const [totalCount] = await classService.countAllClass(filters);
-    if (!limit) {
-      limit = 10;
-    } else {
-      if (+limit === 25 || +limit === 50 || +limit === 100) {
-        limit = +limit;
-      } else {
-        limit = 10;
-      }
+  create: async (req, res) => {
+    try {
+      const courses = await courseService.findAll();
+      const assistants = await userService.findAllWithTypes(["assistant"]);
+
+      return res.render(RENDER_PATH.CREATE_CLASS, {
+        stringUtil,
+        user: req.user,
+        daysOfWeek: moment.weekdays(),
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        courses,
+        assistants,
+        title: `Create Class - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
     }
-
-    const totalPage = Math.ceil(totalCount / limit);
-    if (page < 1 || !page) {
-      page = 1;
-    } else if (page > totalPage) {
-      page = totalPage;
-    }
-    const offset = (page - 1) * +limit;
-
-    const [classes] = await classService.getAllClass(filters, offset, limit);
-    const [courses] = await courseService.getAllCourse(null, [["name", "ASC"]]);
-    const [assistants] = await userService.getAllUser(["assistant"]);
-    const daysOfWeek = moment.weekdays();
-
-    const oldValues = req.flash("oldValues");
-    const errorsValidate = req.flash("errors");
-
-    return res.render(RENDER_PATH.HOME_CLASSES_ADMIN, {
-      req,
-      daysOfWeek,
-      user: req.user,
-      page,
-      classes: classes ?? [],
-      oldValues: oldValues[0] ?? {},
-      errorsValidate,
-      title: `Manage Classes - ${process.env.APP_NAME}`,
-      REDIRECT_PATH,
-      totalCount,
-      currPage: "classes",
-      assistants,
-      offset,
-      courses,
-      limit,
-      totalPage,
-      success,
-      error,
-      stringUtil,
-      csrf,
-    });
   },
 
   handleCreateClass: async (req, res) => {
-    // const { errors } = validationResult(req);
-    // if (errors?.length) {
-    //   req.flash("oldValues", req.body);
-    //   req.flash("errors", errors);
-    //   return res.redirect(REDIRECT_PATH.HOME_CLASSES_ADMIN);
-    // }
-    // const {
-    //   name,
-    //   quantity,
-    //   startDate,
-    //   schedule,
-    //   timeLearnStart,
-    //   timeLearnEnd,
-    //   courseId,
-    //   assistantId,
-    // } = req.body;
-    // const timeLearn = `${timeLearnStart} - ${timeLearnEnd}`;
-    // const [newClass, message] = await classService.createClass(
-    //   name,
-    //   quantity,
-    //   startDate,
-    //   schedule,
-    //   timeLearn,
-    //   courseId,
-    //   assistantId
-    // );
-    // return res.redirect(REDIRECT_PATH.HOME_CLASSES_ADMIN);
+    try {
+      await classService.create(req.body);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.CREATE_CLASS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.CREATE_CLASS_FAILED);
+    }
+
+    return res.redirect(REDIRECT_PATH.CREATE_CLASS);
   },
 
-  handleEditClass: async (req, res) => {},
-  handleDeleteClasses: async (req, res) => {},
+  edit: async (req, res, next) => {
+    try {
+      const courses = await courseService.findAll();
+      const assistants = await userService.findAllWithTypes("assistant");
+      const oldValues = req.flash("oldValues")[0];
+
+      if (oldValues) {
+        oldValues.timeLearn = "";
+        if (oldValues.schedule?.length) {
+          oldValues.schedule.forEach((schedule, i) => {
+            oldValues.timeLearn += `${oldValues.timeLearnStart[i]} - ${oldValues.timeLearnEnd[i]}`;
+            if (oldValues.schedule.length != i) {
+              oldValues.timeLearn += ",";
+            }
+          });
+        } else {
+          oldValues.timeLearn = `${oldValues.timeLearnStart} - ${oldValues.timeLearnEnd}`;
+        }
+      }
+
+      const classObj = await classService.findByName(req.params.name);
+      const listClassTeacher = classObj.Users.map((user) => user.id);
+
+      return res.render(RENDER_PATH.EDIT_CLASS, {
+        csrf,
+        stringUtil,
+        user: req.user,
+        moment,
+        daysOfWeek: moment.weekdays(),
+        success: req.flash("success"),
+        error: req.flash("error"),
+        REDIRECT_PATH,
+        oldValues: oldValues ?? classObj ?? {},
+        courses,
+        assistants,
+        listClassTeacher,
+        title: `Edit Class - ${process.env.APP_NAME}`,
+        currPage: "classes",
+        errorsValidate: stringUtil.extractErr(req.flash("errors")),
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.NOT_FOUND));
+    }
+  },
+
+  handleEditClass: async (req, res) => {
+    const { name } = req.params;
+    try {
+      await classService.update(req.body, name);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_CLASS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.EDIT_CLASS_FAILED);
+    }
+
+    return res.redirect(REDIRECT_PATH.EDIT_CLASS + `/${name}`);
+  },
+
+  handleDeleteClasses: async (req, res) => {
+    try {
+      const { id } = req.body;
+      await classService.removeClasses(Array.isArray(id) ? id : [id]);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_CLASS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_CLASS_FAILED);
+    }
+
+    return res.redirect(REDIRECT_PATH.HOME_CLASSES_ADMIN);
+  },
   importClassesPage: async (req, res) => {},
   handleImportClasses: async (req, res) => {},
   handleExportClasses: async (req, res) => {},

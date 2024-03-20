@@ -2,32 +2,41 @@ var express = require("express");
 var router = express.Router();
 
 const { RULES_REQUEST } = require("../../../constants/rules.constant");
+const CLASS_RULES = RULES_REQUEST.CLASS_RULES;
 const ClassController = require("../../../http/controllers/web/admin/class.controller");
 const csrf = require("../../../http/middlewares/web/csrf.middleware");
 const fileMiddleware = require("../../../http/middlewares/web/file.middleware");
 const validator = require("../../../utils/validator");
 
-router.get("/classes", ClassController.index);
-router.post("/classes", csrf.verify, ClassController.handleCreateClass);
+router.get("/", ClassController.index);
 
-// router.patch(
-//   "/classes",
-//   csrf.verify,
-//   ClassController.handleEditClass
-// );
-// router.delete(
-//   "/classes",
-//   csrf.verify,
-//   ClassController.handleDeleteClasses
-// );
+router.get("/create", ClassController.create);
 
-// router.get("/classes/import", ClassController.importClassesPage);
+router.post(
+  "/create",
+  csrf.verify,
+  validator.make(CLASS_RULES.CREATE),
+  ClassController.handleCreateClass
+);
+
+router.get("/edit/:name", ClassController.edit);
+
+router.patch(
+  "/edit/:name",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT),
+  ClassController.handleEditClass
+);
+
+router.delete("/", csrf.verify, ClassController.handleDeleteClasses);
+
+// router.get("/import", ClassController.importClassesPage);
 // router.post(
-//   "/classes/import",
+//   "/import",
 //   fileMiddleware,
 //   validator.fileExcel(),
 //   ClassController.handleImportClasses
 // );
-// router.get("/classes/export", ClassController.handleExportClasses);
+// router.get("/export", ClassController.handleExportClasses);
 
 module.exports = router;

@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       userId: DataTypes.INTEGER,
       provider: DataTypes.STRING(100),
-      provider_id: DataTypes.STRING(100),
+      providerId: DataTypes.STRING(100),
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },

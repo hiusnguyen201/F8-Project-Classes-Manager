@@ -10,13 +10,18 @@
 <% } %>
 
 <form action="" method="post">
-  <div class="pl-0 modal fade modal-edit show activeModal" tabindex="-1">
+  <div
+    class="pl-0 modal fade modal-edit show activeModal"
+    tabindex="-1"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header align-items-center">
           <h5 class="modal-title">
-            <a href="<%= REDIRECT_PATH.HOME_CLASSES_ADMIN %>"><i class="fas fa-times mr-3 icon-operation"></i></a>
-            <i class="fas fa-book mr-2"></i><span>Class</span>
+            <a href="<%= REDIRECT_PATH.HOME_CLASSES_ADMIN %>"><i
+              class="fas fa-times mr-3 icon-operation"
+            ></i></a>
+            <i class="fas fa-chalkboard-teacher mr-2"></i><span>Class</span>
           </h5>
           <button type="submit" class="btn btn-success py-2">Save</button>
         </div>
@@ -25,66 +30,168 @@
             <div class="card">
               <!-- Row 1 -->
               <div class="mb-3">
-                <label class="form-label">Name</label>
-                <input type="text" class="form-control" placeholder="Name..." value="<%= courses[i].name %>" autocomplete="off" name="name" />
-                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'name') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <label class="form-label">Name<span class="required-text">*</span></label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Name..."
+                  autocomplete="off"
+                  name="name"
+                  value="<%= oldValues.name %>"
+                />
+                <% if(errorsValidate['name']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['name'] %>
+                </span>
+                <% } %>
               </div>
 
               <!-- Row 2 -->
               <div class="mb-3">
-                <label class="form-label">Price</label>
-                <input type="number" class="form-control" placeholder="Price..." value="<%= courses[i].price %>" autocomplete="off" name="price" />
-                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'price') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <label class="form-label">Quantity<span class="required-text">*</span></label>
+                <input
+                  type="number"
+                  name="quantity"
+                  class="form-control"
+                  placeholder="Quantity..."
+                  autocomplete="off"
+                  value="<%= oldValues.quantity %>"
+                />
+                <% if(errorsValidate['quantity']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['quantity'] %>
+                </span>
+                <% } %>
               </div>
 
               <!-- Row 3 -->
               <div class="mb-3">
-                <label class="form-label">Teacher</label>
-                <select class="form-control" name="teacherId">
-                  <option value="0">--- Select a Teacher ---</option>
-                  <% if(teachers?.length) {%> <% teachers.forEach(({id, email}) => { %>
-                  <option <%= +courses[i].teacherId === +id? 'selected' : '' %> value="<%= id %>"><%= email %></option>
-                  <% }) %> <% } %>
-                  <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'teacherId') {%>
-                  <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                  <% break;}}} %>
-                </select>
+                <label class="form-label">Start Date<span class="required-text">*</span></label>
+                <div class="input-group date">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    name="startDate"
+                    class="form-control datetimepicker-input"
+                    id="startDatePicker"
+                    value="<%= moment(oldValues.startDate).format("DD/MM/YYYY") %>"
+                  />
+                </div>
+
+                <% if(errorsValidate['startDate']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['startDate'] %>
+                </span>
+                <% } %>
               </div>
 
               <!-- Row 4 -->
               <div class="mb-3">
-                <label class="form-label">Try Learn</label>
-                <input type="number" name="tryLearn" class="form-control" value="<%= courses[i].tryLearn %>" placeholder="Try Learn..." autocomplete="off" />
-                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'tryLearn') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <label for="schedule" class="form-label">Schedule<span class="required-text">*</span></label>
+                <select
+                  class="select2 form-control"
+                  name="schedule"
+                  multiple="multiple"
+                  data-placeholder="--- Select a Schedule ---"
+                  style="width: 100%"
+                >
+                  <% if(oldValues?.schedule){ var schedulesStr = (Array.isArray(oldValues.schedule))? oldValues.schedule.join(",") : oldValues.schedule }  %>
+                  <% if(daysOfWeek?.length) { daysOfWeek.forEach((day, index) => { %>
+                      <option <%= schedulesStr?.includes(`${index}`)? "selected" : "" %> value="<%= index %>"><%= day %></option>
+                  <% })} %>
+                </select>
+
+                <% if(errorsValidate['schedule']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['schedule'] %>
+                </span>
+                <% } %>
               </div>
 
               <!-- Row 5 -->
-              <div class="mb-3">
-                <label class="form-label">Quantity</label>
-                <input type="number" name="quantity" class="form-control" placeholder="Quantity..." value="<%= courses[i].quantity %>" autocomplete="off" />
-                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'quantity') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+              <% const timeLearnArr = oldValues?.timeLearn.split(",") %>
+              <% const timeLearnStart = [], timeLearnEnd = [] %>
+              <% timeLearnArr.forEach((timeLearn) => { const [start, end] = timeLearn.split(" - "); timeLearnStart.push(start); timeLearnEnd.push(end)}) %>
+              <div class="timeLearn" value="<%= (timeLearnStart || '') + " - " +  (timeLearnEnd || '') %>">
+                  
               </div>
+              <% if(oldValues?.schedule) {%>
+                    <div class="row align-items-center mb-3">
+                    <div class="col-5"><% if(errorsValidate['timeLearnStart']){ %>
+                  <span class="text-danger">
+                    <%= errorsValidate['timeLearnStart'] %>
+                  </span>
+                  <% } %>
+                  </div>
+                    <div class="col-1"></div>
+                    <div class="col-5"> <% if(errorsValidate['timeLearnEnd']){ %>
+                  <span class="text-danger">
+                    <%= errorsValidate['timeLearnEnd'] %>
+                  </span>
+                  <% } %></div>
+                  </div>
+                  <% } %>
 
               <!-- Row 6 -->
               <div class="mb-3">
-                <label class="form-label">Duration</label>
-                <input type="number" name="duration" class="form-control" placeholder="Duration..." value="<%= courses[i].duration %>" autocomplete="off" />
-                <% if(errorsValidate?.length){ for(var i = 0; i < errorsValidate.length; i++) { if(errorsValidate[i]?.path === 'duration') {%>
-                <span class="text-danger"><%= errorsValidate[i]?.msg %></span>
-                <% break;}}} %>
+                <label class="form-label">Course<span class="required-text">*</span></label>
+                <select name="courseId" class="form-control">
+                  <option value="">--- Select a Course ---</option>
+                  <% if(courses?.length) {courses.forEach(({id, name, User}) =>
+                  { %>
+                  <option <%= +oldValues.courseId === +id ? 'selected' : '' %> value="<%= id %>">
+                    <%= name %> - <%= User.email%>
+                  </option>
+                  <% })} %>
+                </select>
+
+                <% if(errorsValidate['courseId']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['courseId'] %>
+                </span>
+                <% } %>
+              </div>
+
+              <!-- Row 7 -->
+              <div class="mb-3">
+                <label class="form-label"
+                  ><span>Assistant</span
+                  ><span class="required-text">*</span></label
+                >
+                <select
+                  class="select2 form-control"
+                  name="assistantId"
+                  multiple="multiple"
+                  data-placeholder="--- Select a Assistant ---"
+                  style="width: 100%"
+                >
+                  <option value=""></option>
+                  <% if(assistants?.length) {assistants.forEach(({id, email}) =>
+                  { %>
+                    <% if(listClassTeacher && listClassTeacher.includes(id)) { %>
+                      <option selected value="<%= id %>"><%= email %></option>
+                    <% } else {%>
+                    <option value="<%= id %>"><%= email %></option>
+                  <% }})} %>
+                </select>
+
+                <% if(errorsValidate['assistantId']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['assistantId'] %>
+                </span>
+                <% } %>
               </div>
 
               <input type="hidden" name="_method" value="PATCH" />
-              <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
-              <input type="hidden" name="classId" value="<%= courses[i].id %>" />
+              <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= csrf.createToken() %>"
+              />
             </div>
           </div>
         </div>

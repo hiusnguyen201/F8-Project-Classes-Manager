@@ -1,3 +1,10 @@
+<% if(error?.length) { %>
+    <input type="hidden" disabled class="toastMessageError" value="<%= error %>">
+    <% } %>
+    <% if(success?.length) { %>
+    <input type="hidden" disabled class="toastMessageSuccess" value="<%= success %>">
+    <% } %>
+
 <div class="card py-1 mx-2">
   <div class="row align-items-center">
     <div class="col-6">
@@ -22,13 +29,6 @@
     <a href="<%= REDIRECT_PATH.EXPORT_CLASSES %>" class="btn btn-primary mx-2">Export classes (Excel)</a>
   </div>
   <div class="tab-content">
-    <% if(error?.length) { %>
-    <input type="hidden" disabled class="toastMessageError" value="<%= error %>">
-    <% } %>
-    <% if(success?.length) { %>
-    <input type="hidden" disabled class="toastMessageSuccess" value="<%= success %>">
-    <% } %>
-
     <div class="card px-2 py-3">
       <div class="row align-items-center">
         <div class="col-6 d-flex align-items-center px-2">
@@ -36,16 +36,16 @@
           <select class="form-control" style="width: 60px;
                 padding: 4px;
                 font-size: 16px;" onchange="window.location.href = this.value">
-            <option <%=+limit===10? 'selected' : '' %> value="?<%= stringUtil.getPaginateClassUrl(req, page, 10) %>">
+            <option <%=+limit===10? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 10) %>">
               10
             </option>
-            <option <%=+limit===25? 'selected' : '' %> value="?<%= stringUtil.getPaginateClassUrl(req, page, 25) %>">
+            <option <%=+limit===25? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 25) %>">
               25
             </option>
-            <option <%=+limit===50? 'selected' : '' %> value="?<%= stringUtil.getPaginateClassUrl(req, page, 50) %>">
+            <option <%=+limit===50? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 50) %>">
               50
             </option>
-            <option <%=+limit===100? 'selected' : '' %> value="?<%= stringUtil.getPaginateClassUrl(req, page, 100) %>">
+            <option <%=+limit===100? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 100) %>">
               100
             </option>
           </select>
@@ -113,8 +113,8 @@
               <th>Quantity</th>
               <th>Start Date</th>
               <th>End Date</th>
-              <th>Schedule & Time Learn</th>
-              <th>Teacher & Assistant</th>
+              <th>Schedule</th>
+              <th>Teacher</th>
               <th width="1%">Operation</th>
             </tr>
           </thead>
@@ -123,19 +123,24 @@
             <tr class="object-row">
               <td width="1%" class="px-1">
                 <label class="checkbox-btn">
-                  <input type="checkbox" class="checkboxChildren" value="<%= classes[i].id %>" />
+                  <input type="checkbox" class="checkboxChildren" value="<%= classes[i].name %>" />
                 </label>
               </td>
               <td><%= classes[i].name %></td>
               <td><%= classes[i].quantity %></td>
-              <td><%= classes[i].startDate %></td>
-              <td><%= classes[i].endDate %></td>
-              <td><%= classes[i].schedule - classes[i].timeLearn %></td>
-              <td><%# classes[i].User %></td>
+              <td><%= moment(classes[i].startDate).format("DD/MM/YYYY") %></td>
+              <td><%= moment(classes[i].endDate).format("DD/MM/YYYY")  %></td>
+              <td>
+                  <% const schedules = classes[i].schedule.split(",") %>
+                <% schedules.forEach((schedule, index) => { %>
+                  <%= moment.weekdays(+schedule)%><%= (+schedules.length - 1 === +index) ? '' : ', ' %>
+                <% }) %>
+              </td>
+              <td><a href="#"><%= classes[i].Course.User.name %></a></td>
               <td width="1%">
                 <div class="d-flex align-items-center justify-content-center">
-                  <a class="mx-1 icon-operation" href="<%= REDIRECT_PATH.EDIT_CLASS + `/${classes[i].id}` %>"><i class="fas fa-pen fa-xs"></i></a>
-                  <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-deleteChildren-<%= classes[i].id %>">
+                  <a class="mx-1 icon-operation" href="<%= REDIRECT_PATH.EDIT_CLASS + `/${classes[i].name}` %>"><i class="fas fa-pen fa-xs"></i></a>
+                  <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-deleteChildren-<%= classes[i].name %>">
                     <i class="fas fa-trash fa-xs"></i>
                   </button>
                 </div>
@@ -150,7 +155,7 @@
 
       <div class="row align-items-center">
         <div class="col-6 d-flex align-items-center px-2">
-          <span>Showing <%= classes?.length? +offset+1 : +offset %> to <%= +offset + classes.length %> of <%= totalCount %> entries</span>
+          <span>Showing <%= (classes && classes?.length)? +offset+1 : +offset %> to <%= +offset + (classes && classes?.length)? classes.length : 0 %> of <%= totalCount %> entries</span>
         </div>
         <div class="col-6 px-2 d-flex justify-content-end">
           <div class="row align-items-center justify-content-end">
@@ -159,14 +164,14 @@
               <ul class="pagination justify-content-center my-0">
                 <!-- Start -->
                 <li class="page-item <%= +page===1? 'disabled' : '' %>">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateClassUrl(req, +page-1, limit) %>" aria-label="Previous">
+                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page-1, limit) %>" aria-label="Previous">
                     <i class="fas fa-chevron-left fa-xs"></i>
                   </a>
                 </li>
 
                 <% if(+page > 3) {%>
                 <li class="page-item">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateClassUrl(req, 1, limit) %>">
+                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, 1, limit) %>">
                     1
                   </a>
                 </li>
@@ -180,11 +185,11 @@
                 <% } %> <% for(; i <= (+page +2) && i <= totalPage; i++ ) {%> <% if(i ===
       +page) {%>
                 <li class="page-item active">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateClassUrl(req, +i, limit) %>"><%= i %></a>
+                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +i, limit) %>"><%= i %></a>
                 </li>
                 <% } else {%>
                 <li class="page-item">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateClassUrl(req, +i, limit) %>"><%= i %></a>
+                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +i, limit) %>"><%= i %></a>
                 </li>
                 <% }%> <% if(i === +page + 2 && i < +totalPage) {%>
                 <li class="page-item disabled">
@@ -195,14 +200,14 @@
                 <!-- End -->
                 <% if(+page <= +totalPage - 3) {%>
                 <li class="page-item">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateClassUrl(req, +totalPage, limit) %>">
+                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +totalPage, limit) %>">
                     <%= +totalPage %>
                   </a>
                 </li>
                 <% } %>
 
                 <li class="page-item <%= +page===+totalPage? 'disabled' : '' %>">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateClassUrl(req, +page+1, limit) %>" aria-label="Next">
+                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page+1, limit) %>" aria-label="Next">
                     <i class="fas fa-chevron-right fa-xs"></i>
                   </a>
                 </li>

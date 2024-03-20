@@ -1,6 +1,9 @@
 const GitHubStrategy = require("passport-github2").Strategy;
-const socialService = require("../../http/services/social.service");
 const { MESSAGE_ERROR } = require("../../constants/message.constant");
+const SocialService = require("../../http/services/social.service");
+const SocialServiceInstance = new SocialService();
+const TokenService = require("../../http/services/token.service");
+const tokenService = new TokenService();
 
 module.exports = new GitHubStrategy(
   {
@@ -11,11 +14,12 @@ module.exports = new GitHubStrategy(
     scope: ["profile"],
   },
   async (req, accessToken, refreshToken, profile, done) => {
-    const [userSocial] = await socialService.getUserSocial({
-      provider: profile.provider,
-      provider_id: profile.id,
-    });
+    const userSocial = await SocialServiceInstance.findByProviderId(
+      profile.id,
+      profile.provider
+    );
 
+    const loginToken = await tokenService.findByToken(req.cookies?.token);
     if (!req.cookies.token) {
       // Login Page
       if (!userSocial) {
@@ -24,25 +28,14 @@ module.exports = new GitHubStrategy(
         });
       }
 
-      const { User } = userSocial;
-      return done(null, User);
-    } else {
-      if (userSocial) {
-        return done(null, false, {
-          message: MESSAGE_ERROR.SOCIAL.INVALID_LINK_ACCOUNT,
-        });
-      }
-      // Social Link page
-      const user = req.user;
-      const [newUserSocial] = await socialService.createUserSocial(
-        profile.provider,
-        profile.id,
-        +user.id
-      );
-
-      if (newUserSocial) {
-        return done(null, user);
-      }
+      return done(null, userSocial.User);
     }
+
+    req.cookies.profile = {
+      provider: profile.provider,
+      providerId: profile.id,
+    };
+
+    return done(null, loginToken.User);
   }
 );

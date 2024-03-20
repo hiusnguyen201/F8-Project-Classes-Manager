@@ -27,7 +27,7 @@
             <div class="card">
               <!-- Row 1 -->
               <div class="mb-3">
-                <label class="form-label">Name</label>
+                <label class="form-label">Name<span class="required-text">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -43,7 +43,7 @@
 
               <!-- Row 2 -->
               <div class="mb-3">
-                <label class="form-label">Email</label>
+                <label class="form-label">Email<span class="required-text">*</span></label>
                 <input
                   type="email"
                   class="form-control"
@@ -61,7 +61,7 @@
 
               <!-- Row 3 -->
               <div class="mb-3">
-                <label class="form-label"><span>Phone</span></label>
+                <label class="form-label">Phone<span class="required-text">*</span></label>
                 <input
                   type="tel"
                   name="phone"
@@ -80,8 +80,7 @@
               <!-- Row 4 -->
               <div class="mb-3">
                 <label class="form-label"
-                  ><span>Address</span
-                  ><span class="optional-text">(optional)</span></label
+                  >Address</label
                 >
                 <input
                   type="text"
@@ -95,7 +94,7 @@
 
               <!-- Row 5 -->
               <div class="mb-3">
-                <label class="form-label">Type</label>
+                <label class="form-label">Type<span class="required-text">*</span></label>
                 <select name="typeId" class="form-control">
                   <option value="">--- Select a Type ---</option>
                   <% if(types?.length) { %> <% types.forEach(({id, name}) => {

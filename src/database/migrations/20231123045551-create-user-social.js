@@ -21,7 +21,7 @@ module.exports = {
       provider: {
         type: Sequelize.STRING(100),
       },
-      provider_id: {
+      providerId: {
         type: Sequelize.STRING(100),
       },
       createdAt: {

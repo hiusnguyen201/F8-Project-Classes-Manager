@@ -1,234 +1,194 @@
 const { Op } = require("sequelize");
-const {
-  MESSAGE_ERROR,
-  MESSAGE_SUCCESS,
-} = require("../../constants/message.constant");
-const { FIELDS_IMPORT } = require("../../constants/fileExcel.constant");
+const { MESSAGE_ERROR } = require("../../constants/message.constant");
+const { LIMIT_PAGE } = require("../../constants/setting.constant");
 
 const fileExcel = require("../../utils/fileExcel");
 const momentUtil = require("../../utils/moment");
 
-const userService = require("./user.service");
+const models = require("../../models/index");
 
-const model = require("../../models/index");
-const Course = model.Course;
-const User = model.User;
+const UserService = require("./user.service");
+const userService = new UserService();
 
-module.exports = {
-  countAllCourse: async (filters) => {
-    try {
-      const { count, rows } = await Course.findAndCountAll({
-        where: filters,
-        include: {
-          model: User,
-        },
-      });
+class CourseService {
+  constructor() {
+    this.Course = models.Course;
+    this.User = models.User;
+  }
 
-      return [{ count, rows }, null];
-    } catch (err) {
-      console.log(err);
-    }
+  async findAllWithSearchAndPaginate(queryString) {
+    let { page = 1, limit = 10, keyword } = queryString;
 
-    return [null, MESSAGE_ERROR.COURSE.COUNT_COURSE_FAILED];
-  },
-
-  getAllCourse: async (filters, order, offset, limit) => {
-    try {
-      const options = {};
-
-      options.include = User;
-
-      if (filters) {
-        options.where = filters;
-      }
-
-      if (order) {
-        options.order = order;
-      }
-
-      if (offset) {
-        options.offset = +offset;
-      }
-
-      if (limit) {
-        options.limit = +limit;
-      }
-
-      const courses = await Course.findAll(options);
-
-      if (courses?.length) {
-        return [courses, null];
-      } else {
-        return [null, MESSAGE_ERROR.COURSE.COURSES_EMPTY];
-      }
-    } catch (err) {
-      console.log(err);
-    }
-
-    return [null, MESSAGE_ERROR.COURSE.FIND_COURSE_FAILED];
-  },
-
-  getCourse: async (filters) => {
-    try {
-      const course = await Course.findOne({
-        where: filters,
-        include: User,
-      });
-
-      if (course) {
-        return [course, null];
-      } else {
-        return [null, MESSAGE_ERROR.COURSE.COURSE_NOT_FOUND];
-      }
-    } catch (err) {
-      console.log(err);
-    }
-
-    return [null, MESSAGE_ERROR.COURSE.FIND_COURSE_FAILED];
-  },
-
-  createCourse: async (
-    name,
-    price,
-    teacherId,
-    tryLearn,
-    quantity,
-    duration
-  ) => {
-    try {
-      const courseExist = await Course.findOne({
-        where: {
-          name,
-          teacherId,
-        },
-      });
-
-      if (courseExist) {
-        return [false, MESSAGE_ERROR.COURSE.COURSE_EXISTED];
-      }
-
-      const course = await Course.create({
-        name,
-        price,
-        teacherId,
-        tryLearn,
-        quantity,
-        duration,
-      });
-
-      if (course) {
-        return [true, MESSAGE_SUCCESS.COURSE.CREATE_COURSE_SUCCESS];
-      }
-    } catch (err) {
-      console.log(err);
-    }
-
-    return [false, MESSAGE_ERROR.COURSE.CREATE_COURSE_FAILED];
-  },
-
-  updateCourse: async (
-    id,
-    name,
-    price,
-    teacherId,
-    tryLearn,
-    quantity,
-    duration
-  ) => {
-    try {
-      const course = await Course.findByPk(id);
-
-      if (!course) {
-        return [false, MESSAGE_ERROR.COURSE.COURSE_NOT_FOUND];
-      }
-
-      const statusUpdated = await course.update({
-        name,
-        price,
-        teacherId,
-        tryLearn,
-        quantity,
-        duration,
-        updatedAt: momentUtil.getDateNow(),
-      });
-
-      if (statusUpdated) {
-        return [true, MESSAGE_SUCCESS.COURSE.EDIT_COURSE_SUCCESS];
-      }
-    } catch (err) {
-      console.log(err);
-    }
-
-    return [false, MESSAGE_ERROR.COURSE.EDIT_COURSE_FAILED];
-  },
-
-  removeCourses: async (courseIdList) => {
-    try {
-      const courses = await Course.findAll({
-        where: {
-          id: {
-            [Op.in]: courseIdList,
+    const filters = {};
+    if (keyword) {
+      filters[Op.or] = [
+        {
+          name: {
+            [Op.like]: `%${keyword}%`,
           },
         },
-      });
+      ];
+    }
 
-      if (courses?.length !== courseIdList.length) {
-        return [false, MESSAGE_ERROR.COURSE.COURSE_NOT_FOUND];
-      }
+    const count = await this.Course.count({
+      where: filters,
+    });
 
-      const statusDeleted = await Course.destroy({
-        where: {
-          id: {
-            [Op.in]: courseIdList,
-          },
+    limit = LIMIT_PAGE.includes(+limit) ? +limit : 10;
+    const totalPage = Math.ceil(count / +limit);
+    if (+page < 1 || +page > totalPage) {
+      page = 1;
+    }
+    const offset = (+page - 1) * +limit;
+
+    const courses = await this.Course.findAll({
+      where: filters,
+      include: {
+        model: this.User,
+        attributes: {
+          exclude: ["password"],
         },
-      });
+      },
+      offset,
+      limit,
+    });
 
-      if (statusDeleted === courseIdList.length) {
-        return [true, MESSAGE_SUCCESS.COURSE.DELETE_COURSE_SUCCESS];
-      }
-    } catch (err) {
-      console.log(err);
+    return {
+      meta: { page, offset, totalPage, limit, count },
+      data: courses,
+    };
+  }
+
+  async findAll() {
+    const courses = await this.Course.findAll({
+      include: {
+        model: this.User,
+        attributes: {
+          exclude: ["password"],
+        },
+      },
+    });
+
+    return courses;
+  }
+
+  async findById(id) {
+    if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
+    console.log(id);
+
+    const course = await this.Course.findOne({
+      where: { id },
+      include: {
+        model: this.User,
+        attributes: {
+          exclude: ["password"],
+        },
+      },
+    });
+
+    return course;
+  }
+
+  async findByNameAndTeacherId(name, teacherId) {
+    if (!name || !teacherId) return null;
+
+    const course = await this.Course.findOne({
+      where: {
+        name,
+        teacherId,
+      },
+      include: {
+        model: this.User,
+        attributes: {
+          exclude: ["password"],
+        },
+      },
+      paranoid: false,
+    });
+
+    return course ? course : null;
+  }
+
+  async create(data) {
+    const existCourse = await this.findByNameAndTeacherId(
+      data.name,
+      data.teacherId
+    );
+
+    if (existCourse) {
+      throw new Error(MESSAGE_ERROR.COURSE.COURSE_EXISTED);
     }
 
-    return [false, MESSAGE_ERROR.COURSE.DELETE_COURSE_FAILED];
-  },
+    delete data.csrfToken;
+    const course = await this.Course.create({
+      ...data,
+    });
 
-  importCourses: async function (fileInfo) {
-    try {
-      const [dataArr, message] = await fileExcel.readFile(
-        fileInfo,
-        FIELDS_IMPORT.COURSE_FIELDS
-      );
+    if (course) {
+      return course;
+    }
+  }
 
-      if (!dataArr) {
-        return [false, message];
-      }
+  async update(data, id) {
+    const course = await this.findById(id);
 
-      await Promise.all(
-        dataArr.map(async (data) => {
-          const [user] = await userService.getUser({
-            email: data.teacher,
-          });
-
-          if (user && user.Type.name === "teacher") {
-            return await this.createCourse(
-              data.name,
-              data.price,
-              +user.id,
-              data.tryLearn,
-              data.quantity,
-              data.duration
-            );
-          }
-        })
-      );
-
-      return [true, MESSAGE_SUCCESS.FILE.IMPORT_COURSES_SUCCESS];
-    } catch (err) {
-      console.log(err);
+    if (!course) {
+      throw new Error(MESSAGE_ERROR.COURSE.COURSE_NOT_FOUND);
     }
 
-    return [false, MESSAGE_ERROR.FILE.IMPORT_COURSES_FAILED];
-  },
-};
+    const status = await course.update({
+      ...data,
+      updatedAt: momentUtil.getDateNow(),
+    });
+
+    return status;
+  }
+
+  async removeCourses(listId) {
+    const courses = await this.Course.findAll({
+      where: {
+        id: {
+          [Op.in]: listId,
+        },
+      },
+    });
+
+    if (courses?.length !== listId.length) {
+      throw new Error(MESSAGE_ERROR.COURSE.COURSE_NOT_FOUND);
+    }
+
+    const status = await this.Course.destroy({
+      where: {
+        id: {
+          [Op.in]: listId,
+        },
+      },
+    });
+
+    return status;
+  }
+
+  async importCourses(fileInfo, courseFields) {
+    const [dataArr, message] = await fileExcel.readFile(fileInfo, courseFields);
+
+    if (!dataArr) throw new Error(message);
+
+    await Promise.all(
+      dataArr.map(async (data) => {
+        const teacher = await userService.findByEmail(data.teacher);
+        if (teacher && teacher.Type.name === "teacher") {
+          return await this.create(
+            data.name,
+            data.price,
+            teacher.id,
+            data.tryLearn,
+            data.quantity,
+            data.duration
+          );
+        }
+      })
+    );
+  }
+}
+
+module.exports = CourseService;

@@ -12,14 +12,14 @@ router.get("/", StudentController.index);
 
 router.get("/create", StudentController.create);
 
-router.get("/edit/:id", validator.make(USER_RULES.GET), StudentController.edit);
-
 router.post(
   "/create",
   csrf.verify,
   validator.make(USER_RULES.CREATE),
   StudentController.handleCreateStudent
 );
+
+router.get("/edit/:id", StudentController.edit);
 
 router.patch(
   "/edit/:id",
@@ -28,12 +28,7 @@ router.patch(
   StudentController.handleEditStudent
 );
 
-router.delete(
-  "/",
-  csrf.verify,
-  validator.make(USER_RULES.DELETE),
-  StudentController.handleDeleteStudents
-);
+router.delete("/", csrf.verify, StudentController.handleDeleteStudents);
 
 router.get("/import", StudentController.importStudentsPage);
 

@@ -36,16 +36,16 @@
             <select class="form-control" style="width: 60px;
                 padding: 4px;
                 font-size: 16px;" onchange="window.location.href = this.value">
-              <option <%=+limit===10? 'selected' : '' %> value="?<%= stringUtil.getPaginateCourseUrl(req, page, 10) %>">
+              <option <%=+limit===10? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 10) %>">
                 10
               </option>
-              <option <%=+limit===25? 'selected' : '' %> value="?<%= stringUtil.getPaginateCourseUrl(req, page, 25) %>">
+              <option <%=+limit===25? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 25) %>">
                 25
               </option>
-              <option <%=+limit===50? 'selected' : '' %> value="?<%= stringUtil.getPaginateCourseUrl(req, page, 50) %>">
+              <option <%=+limit===50? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 50) %>">
                 50
               </option>
-              <option <%=+limit===100? 'selected' : '' %> value="?<%= stringUtil.getPaginateCourseUrl(req, page, 100) %>">
+              <option <%=+limit===100? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 100) %>">
                 100
               </option>
             </select>
@@ -130,7 +130,7 @@
                 <td>
                   <%= +courses[i].price === 0 ? 'Free' : stringUtil.formatCurrency(courses[i].price) %>
                 </td>
-                <td><%= courses[i].User.email %></td>
+                <td><a href="#"><%= courses[i].User.name %></a></td>
                 <td><%= courses[i].tryLearn + " trials"%></td>
                 <td><%= courses[i].quantity + " users / class"%></td>
                 <td><%= courses[i].duration + " lessons"%></td>
@@ -152,7 +152,7 @@
 
         <div class="row align-items-center">
           <div class="col-6 d-flex align-items-center px-2">
-            <span>Showing <%= courses?.length? +offset+1 : +offset %> to <%= +offset + courses.length %> of <%= totalCount %> entries</span>
+            <span>Showing <%= (courses && courses?.length)? +offset+1 : +offset %> to <%= +offset + (courses && courses?.length)? courses.length : 0%> of <%= totalCount %> entries</span>
           </div>
           <div class="col-6 px-2 d-flex justify-content-end">
             <div class="row align-items-center justify-content-end">
@@ -161,14 +161,14 @@
                 <ul class="pagination justify-content-center my-0">
                   <!-- Start -->
                   <li class="page-item <%= +page===1? 'disabled' : '' %>">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateCourseUrl(req, +page-1, limit) %>" aria-label="Previous">
+                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page-1, limit) %>" aria-label="Previous">
                       <i class="fas fa-chevron-left fa-xs"></i>
                     </a>
                   </li>
 
                   <% if(+page > 3) {%>
                   <li class="page-item">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateCourseUrl(req, 1, limit) %>">
+                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, 1, limit) %>">
                       1
                     </a>
                   </li>
@@ -182,11 +182,11 @@
                   <% } %> <% for(; i <= (+page +2) && i <= totalPage; i++ ) {%> <% if(i ===
       +page) {%>
                   <li class="page-item active">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateCourseUrl(req, +i, limit) %>"><%= i %></a>
+                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +i, limit) %>"><%= i %></a>
                   </li>
                   <% } else {%>
                   <li class="page-item">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateCourseUrl(req, +i, limit) %>"><%= i %></a>
+                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +i, limit) %>"><%= i %></a>
                   </li>
                   <% }%> <% if(i === +page + 2 && i < +totalPage) {%>
                   <li class="page-item disabled">
@@ -197,14 +197,14 @@
                   <!-- End -->
                   <% if(+page <= +totalPage - 3) {%>
                   <li class="page-item">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateCourseUrl(req, +totalPage, limit) %>">
+                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +totalPage, limit) %>">
                       <%= +totalPage %>
                     </a>
                   </li>
                   <% } %>
 
                   <li class="page-item <%= +page===+totalPage? 'disabled' : '' %>">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateCourseUrl(req, +page+1, limit) %>" aria-label="Next">
+                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page+1, limit) %>" aria-label="Next">
                       <i class="fas fa-chevron-right fa-xs"></i>
                     </a>
                   </li>

@@ -3,27 +3,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("classes_teachers", {
+    return queryInterface.createTable("Classes_Teachers", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      classId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: "classes",
-          },
-          key: "id",
-        },
-      },
       teacherId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
             tableName: "users",
+          },
+          key: "id",
+        },
+      },
+      classId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: "classes",
           },
           key: "id",
         },
@@ -39,7 +39,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("classes_teachers");
+    return queryInterface.dropTable("Classes_Teachers");
   },
 };
-//
