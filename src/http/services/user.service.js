@@ -153,7 +153,7 @@ class UserService {
     return users;
   }
 
-  async create(data, typeId) {
+  async create(data) {
     delete data.csrfToken;
 
     const passRandom = tokenUtil.generatePasswordRandom();
@@ -163,7 +163,7 @@ class UserService {
         email: data.email,
         phone: data.phone,
         address: !data.address ? null : data.address,
-        typeId,
+        typeId: data.typeId,
         password: tokenUtil.createHashByBcrypt(passRandom),
       },
       {

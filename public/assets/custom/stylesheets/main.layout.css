@@ -382,11 +382,10 @@ body {
   background-color: #007bff;
 }
 
-.optional-text {
+.required-text {
   margin-left: 5px;
   font-weight: 400;
-  color: #979797;
-  font-size: 15px;
+  color: red;
 }
 
 .modal-body {

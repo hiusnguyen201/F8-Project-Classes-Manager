@@ -30,7 +30,7 @@
             <div class="card">
               <!-- Row 1 -->
               <div class="mb-3">
-                <label class="form-label">Name</label>
+                <label class="form-label">Name<span class="required-text">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -48,7 +48,7 @@
 
               <!-- Row 2 -->
               <div class="mb-3">
-                <label class="form-label">Quantity</label>
+                <label class="form-label">Quantity<span class="required-text">*</span></label>
                 <input
                   type="number"
                   name="quantity"
@@ -66,7 +66,7 @@
 
               <!-- Row 3 -->
               <div class="mb-3">
-                <label class="form-label">Start Date</label>
+                <label class="form-label">Start Date<span class="required-text">*</span></label>
                 <div class="input-group date">
                   <div class="input-group-prepend">
                     <div class="input-group-text">
@@ -91,7 +91,7 @@
 
               <!-- Row 4 -->
               <div class="mb-3">
-                <label for="schedule" class="form-label">Schedule</label>
+                <label for="schedule" class="form-label">Schedule<span class="required-text">*</span></label>
                 <select
                   class="select2 form-control"
                   name="schedule"
@@ -138,7 +138,7 @@
 
               <!-- Row 6 -->
               <div class="mb-3">
-                <label class="form-label">Course</label>
+                <label class="form-label">Course<span class="required-text">*</span></label>
                 <select name="courseId" class="form-control">
                   <option value="">--- Select a Course ---</option>
                   <% if(courses?.length) {courses.forEach(({id, name, User}) =>
@@ -160,7 +160,7 @@
               <div class="mb-3">
                 <label class="form-label"
                   ><span>Assistant</span
-                  ><span class="optional-text">(optional)</span></label
+                  ><span class="required-text">*</span></label
                 >
                 <select
                   class="select2 form-control"

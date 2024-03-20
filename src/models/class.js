@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Class.hasOne(models.Student_Class, { foreignKey: "id" });
       Class.hasMany(models.Teacher_Calender, {
         foreignKey: "classId",
+        onDelete: "CASCADE",
       });
 
       Class.hasMany(models.Student_Attendance, { foreignKey: "id" });
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       Class.belongsToMany(models.User, {
         foreignKey: "classId",
         through: "class_teachers",
+        onDelete: "CASCADE",
       });
     }
   }

@@ -102,7 +102,7 @@ class ClassService {
     };
   }
 
-  async create(data) {
+  async create(data, ids) {
     // convert data to array
     data.schedule = Array.isArray(data.schedule)
       ? data.schedule
@@ -115,9 +115,8 @@ class ClassService {
       : [data.timeLearnEnd];
     data.assistantId = Array.isArray(data.assistantId)
       ? data.assistantId
-      : data.assistantId
-      ? [data.assistantId]
-      : [];
+      : [data.assistantId];
+
     data.startDate = moment(data.startDate, "DD/MM/YYYY");
 
     const course = await courseService.findById(data.courseId);
@@ -138,17 +137,15 @@ class ClassService {
       }
     }
 
-    // Add teacher to array
-    data.assistantId.push(course.User.id);
-
     // Create classes
     for (let i = 0; i < classLength; i++) {
-      let transaction;
+      let transaction = await sequelizeInstance.transaction();
       try {
-        transaction = await sequelizeInstance.transaction();
+        const id = ids && ids.length ? ids[i] : null;
 
         const classObj = await this.Class.create(
           {
+            id: id,
             name: data.name,
             quantity: data.quantity,
             startDate: data.startDate,
@@ -160,14 +157,17 @@ class ClassService {
           { transaction }
         );
 
-        // Add teacher and asssistant to class
+        // Add asssistant to class
         const teacherClassLength = data.assistantId.length;
         for (let i = 0; i < teacherClassLength; i++) {
           const teacher = await this.User.findByPk(data.assistantId[i]);
           await classObj.addUser(teacher, { transaction });
         }
 
-        // Create calender for teacher
+        // Add Teacher to class
+        await classObj.addUser(course.User, { transaction });
+
+        // Create calender for teacher follow class
         const dayNeeded = data.startDate.clone().weekday(+data.schedule[i]);
         while (dayNeeded.diff(endDate) <= 0) {
           if (dayNeeded.diff(data.startDate) >= 0) {
@@ -195,36 +195,41 @@ class ClassService {
   }
 
   async update(data, name) {
-    const classesArr = await this.Class.findAll({
-      where: {
-        name,
-      },
-      include: this.TeacherCalender,
-    });
-
-    if (!classesArr?.length) return false;
-
+    const ids = [];
     try {
-      classesArr.forEach(async (classObj) => {
-        const users = await classObj.getUsers();
-        for (let i = 0; i < users.length; i++) {
-          await classObj.removeUser(users[i]);
-        }
-
-        for (let i = 0; i < classObj.Teacher_Calenders.length; i++) {
-          await classObj.Teacher_Calenders[i].destroy();
-        }
-
-        await classObj.destroy({
-          force: true,
-        });
+      const classesArr = await this.Class.findAll({
+        where: {
+          name,
+        },
+        include: this.TeacherCalender,
       });
+
+      if (!classesArr?.length) return false;
+
+      await Promise.all(
+        classesArr.map(async (classObj) => {
+          const users = await classObj.getUsers();
+          for (let i = 0; i < users.length; i++) {
+            await classObj.removeUser(users[i]);
+          }
+
+          for (let i = 0; i < classObj.Teacher_Calenders.length; i++) {
+            await classObj.Teacher_Calenders[i].destroy();
+          }
+
+          ids.push(classObj.id);
+
+          await classObj.destroy({
+            force: true,
+          });
+        })
+      );
     } catch (err) {
       console.log(err);
       throw new Error(MESSAGE_ERROR.CLASS.EDIT_CLASS_FAILED);
     }
 
-    this.create(data);
+    await this.create(data, ids);
     return true;
   }
 
@@ -235,14 +240,45 @@ class ClassService {
           [Op.in]: listId,
         },
       },
+      include: [this.User, this.TeacherCalender],
     });
 
-    classes.forEach(async (classObj) => {
-      await classObj.destroy();
-    });
+    await Promise.all(
+      classes.map(async (classObj) => {
+        await classObj.removeUsers(classObj.Users);
+
+        classObj.Teacher_Calenders.forEach(async (calender) => {
+          await calender.destroy();
+        });
+
+        await classObj.destroy();
+      })
+    );
 
     return true;
   }
+
+  // async importClasses(fileInfo, classFields) {
+  //   const [dataArr, message] = await fileExcel.readFile(fileInfo, classFields);
+
+  //   if (!dataArr) throw new Error(message);
+
+  //   await Promise.all(
+  //     dataArr.map(async (data) => {
+  //       const teacher = await courseService.findById(data.teacher);
+  //       if (teacher && teacher.Type.name === "teacher") {
+  //         return await this.create(
+  //           data.name,
+  //           data.price,
+  //           teacher.id,
+  //           data.tryLearn,
+  //           data.quantity,
+  //           data.duration
+  //         );
+  //       }
+  //     })
+  //   );
+  // }
 }
 
 module.exports = ClassService;

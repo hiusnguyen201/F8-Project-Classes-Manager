@@ -81,7 +81,7 @@ module.exports = {
 
   handleCreateTeacher: async (req, res) => {
     try {
-      await userService.create(req.body, typeId);
+      await userService.create(req.body);
       req.flash("success", MESSAGE_SUCCESS.USER.CREATE_USER_SUCCESS);
     } catch (err) {
       console.log(err);

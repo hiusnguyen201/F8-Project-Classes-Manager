@@ -92,7 +92,7 @@ module.exports = {
     try {
       const studentEdit = await userService.findById(req.params.id);
       if (!studentEdit) throw new Error(MESSAGE_ERROR.USER.USER_NOT_FOUND);
-      return res.render(RENDER_PATH.EDIT_USER, {
+      return res.render(RENDER_PATH.EDIT_STUDENT, {
         req,
         user: req.user,
         oldValues: req.flash("oldValues")[0] || studentEdit || {},
