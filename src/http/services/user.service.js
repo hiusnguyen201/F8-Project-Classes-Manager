@@ -253,7 +253,7 @@ class UserService {
 
     const resetPassHtml = getResetPasswordMailHtml(
       user.name,
-      REDIRECT_PATH.EMAIL_PASS_RESET,
+      REDIRECT_PATH.AUTH.EMAIL_PASS_RESET,
       token
     );
 

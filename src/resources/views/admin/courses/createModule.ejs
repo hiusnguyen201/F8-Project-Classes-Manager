@@ -1,0 +1,61 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
+<form action="" enctype="multipart/form-data" method="post">
+  <div class="pl-0 modal fade modal-edit show activeModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header align-items-center">
+          <h5 class="modal-title">
+            <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_COURSE %>/<%= courseId %>"
+              ><i class="fas fa-times mr-3 icon-operation"></i
+            ></a>
+            <i class="fas fa-book mr-2"></i><span>Module</span>
+          </h5>
+          <button type="submit" class="btn btn-success py-2">Create</button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body mx-auto">
+            <div class="card">
+              <div class="mb-3">
+                <label for="name"
+                  >Name<span class="required-text">*</span></label
+                >
+                <input type="text" name="name" class="form-control" />
+                <% if(errorsValidate?.name) {%>
+                <span class="required-text"><%= errorsValidate.name %></span>
+                <% } %>
+              </div>
+
+              <div class="mb-3">
+                <label for="file">Documents</label>
+                <input type="file" name="file" class="form-control" multiple />
+              </div>
+
+              <input type="hidden" name="_method" value="POST" />
+              <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= csrf.createToken() %>"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<style>
+  html {
+    overflow: hidden;
+  }
+</style>

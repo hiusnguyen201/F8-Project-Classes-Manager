@@ -93,7 +93,7 @@
       >
         <a
           href="<% if(user.Type.name === 'admin') { %>
-            <%= REDIRECT_PATH.PROFILE_SETTINGS_ADMIN %> 
+            <%= REDIRECT_PATH.ADMIN.PROFILE_SETTING %> 
           <% } else if (user.Type.name === 'teacher'){ %>
             <%= REDIRECT_PATH.SETTINGS_PROFILE_TEACHER %> 
           <% } else if (user.Type.name === 'student') { %> 
@@ -105,7 +105,7 @@
         </a>
         <div class="dropdown-divider"></div>
         <a
-          href="<%= REDIRECT_PATH.LOGOUT %>"
+          href="<%= REDIRECT_PATH.AUTH.LOGOUT %>"
           class="dropdown-item header-logout_item"
         >
           <i class="fas fa-sign-out-alt mr-2"></i> Log out

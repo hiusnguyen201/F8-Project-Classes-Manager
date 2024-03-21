@@ -78,13 +78,19 @@ const MESSAGE_ERROR = {
     INVALID_DURATION: "Invalid duration",
     REQUIRED_COURSE: "Course is required",
     INVALID_COURSE: "Invalid course",
+    REQUIRED_MODULE: "Module is required",
+    MODULE_NOT_FOUND: "Module not found",
+    NAME_MODULE_EXISTED: "Name is existed",
 
     // Feature
     COURSE_EXISTED: "Course is existed",
     COURSE_NOT_FOUND: "Course not found",
     CREATE_COURSE_FAILED: "Create course failed",
-    EDIT_COURSE_FAILED: "Edit course information failed",
+    EDIT_COURSE_FAILED: "Edit course failed",
     DELETE_COURSE_FAILED: "Delete course failed",
+    CREATE_MODULE_FAILED: "Create module failed",
+    EDIT_MODULE_FAILED: "Edit module failed",
+    DELETE_MODULE_FAILED: "Delete module failed",
   },
 
   CLASS: {
@@ -126,7 +132,7 @@ const MESSAGE_ERROR = {
   FILE: {
     // Validate
     SIZE_FILE_LIMIT: "File is too large to upload",
-    MIMETYPE_EXCEL_WRONG: "Please upload only excel format",
+    MIMETYPE_WRONG: "File is not right format",
     REMOVE_FILE_UPLOAD_ERROR: "Remove file upload error",
     CREATE_FOLDER_FAILED: "Create folder is failed",
 
@@ -176,6 +182,9 @@ const MESSAGE_SUCCESS = {
     CREATE_COURSE_SUCCESS: "Create course successfully",
     EDIT_COURSE_SUCCESS: "Edit course successfully",
     DELETE_COURSE_SUCCESS: "Delete course successfully",
+    CREATE_MODULE_SUCCESS: "Create module succesfully",
+    EDIT_MODULE_SUCCESS: "Edit module succesfully",
+    DELETE_MODULE_SUCCESS: "Delete module succesfully",
   },
 
   CLASS: {

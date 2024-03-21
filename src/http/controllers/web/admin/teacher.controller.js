@@ -14,6 +14,7 @@ const {
   FILE_NAME_EXPORT,
   SHEET_HEADERS_EXPORT,
 } = require("../../../../constants/fileExcel.constant");
+const moment = require("moment");
 
 const csrf = require("../../../middlewares/web/csrf.middleware");
 
@@ -34,7 +35,7 @@ module.exports = {
           "assistant",
         ]);
 
-      return res.render(RENDER_PATH.HOME_TEACHERS_ADMIN, {
+      return res.render(RENDER_PATH.ADMIN.HOME_TEACHERS, {
         req,
         user: req.user,
         page: meta.page,
@@ -57,11 +58,37 @@ module.exports = {
     }
   },
 
+  async details(req, res, next) {
+    try {
+      const teacher = await userService.findById(req.params.id);
+      if (!teacher) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.DETAILS_TEACHER, {
+        req,
+        user: req.user,
+        title: `Details Teacher - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "teachers",
+        teacher,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
   create: async (req, res) => {
     try {
       const types = await typeService.findAllByTypes(["teacher", "assistant"]);
 
-      return res.render(RENDER_PATH.CREATE_TEACHER, {
+      return res.render(RENDER_PATH.ADMIN.CREATE_TEACHER, {
         req,
         user: req.user,
         oldValues: req.flash("oldValues")[0] || {},
@@ -88,7 +115,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.CREATE_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.CREATE_TEACHER);
+    return res.redirect(REDIRECT_PATH.ADMIN.CREATE_TEACHER);
   },
 
   edit: async (req, res, next) => {
@@ -96,7 +123,7 @@ module.exports = {
       const teacherEdit = await userService.findById(req.params.id);
       if (!teacherEdit) throw new Error(MESSAGE_ERROR.USER.USER_NOT_FOUND);
       const types = await typeService.findAllByTypes(["teacher", "assistant"]);
-      return res.render(RENDER_PATH.EDIT_TEACHER, {
+      return res.render(RENDER_PATH.ADMIN.EDIT_TEACHER, {
         req,
         types,
         user: req.user,
@@ -126,7 +153,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.EDIT_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.EDIT_TEACHER + `/${id}`);
+    return res.redirect(REDIRECT_PATH.ADMIN.EDIT_TEACHER + `/${id}`);
   },
 
   handleDeleteTeachers: async (req, res) => {
@@ -139,11 +166,11 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.DELETE_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.HOME_TEACHERS_ADMIN);
+    return res.redirect(REDIRECT_PATH.ADMIN.HOME_TEACHERS);
   },
 
   importTeachersPage: async (req, res) => {
-    return res.render(RENDER_PATH.IMPORT_TEACHERS, {
+    return res.render(RENDER_PATH.ADMIN.IMPORT_TEACHERS, {
       title: `Import Teachers - ${process.env.APP_NAME}`,
       user: req.user,
       REDIRECT_PATH,
@@ -167,7 +194,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.FILE.IMPORT_USERS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.IMPORT_TEACHERS);
+    return res.redirect(REDIRECT_PATH.ADMIN.IMPORT_TEACHERS);
   },
 
   handleExportTeachers: async (req, res) => {
@@ -198,7 +225,7 @@ module.exports = {
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.FILE.EXPORT_USERS_FAILED);
-      return res.redirect(REDIRECT_PATH.HOME_TEACHERS_ADMIN);
+      return res.redirect(REDIRECT_PATH.ADMIN.HOME_TEACHERS);
     }
   },
 };

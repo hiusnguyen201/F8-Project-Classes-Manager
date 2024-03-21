@@ -1,12 +1,10 @@
+html {
+  background-color: #f4f6f9;
+}
+
 body {
   color: #232946;
   font-family: "Poppins", sans-serif;
-}
-
-.card {
-  padding: 0;
-  border-radius: 0;
-  margin-bottom: 0;
 }
 
 .tab-custom-content {
@@ -57,12 +55,8 @@ body {
   min-width: 200px;
 }
 
-.content {
-  margin: 64px 0 27px;
-}
-
-.container-fluid {
-  padding: 18px 0px;
+.content-wrapper > .content {
+  padding: 75px 0 27px;
 }
 
 .navbar-white {
@@ -430,11 +424,6 @@ body {
   color: #232946;
   border-radius: 0;
   border: none;
-}
-
-.card {
-  padding: 1.5rem 0;
-  border-radius: 0;
 }
 
 .btn-back {

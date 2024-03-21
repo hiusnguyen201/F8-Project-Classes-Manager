@@ -1,4 +1,5 @@
 const createHttpError = require("http-errors");
+const moment = require("moment");
 const {
   MESSAGE_ERROR,
   MESSAGE_SUCCESS,
@@ -34,7 +35,7 @@ module.exports = {
           "student"
         );
 
-      return res.render(RENDER_PATH.HOME_STUDENTS_ADMIN, {
+      return res.render(RENDER_PATH.ADMIN.HOME_STUDENTS, {
         req,
         user: req.user,
         page: meta.page,
@@ -57,8 +58,34 @@ module.exports = {
     }
   },
 
+  async details(req, res, next) {
+    try {
+      const student = await userService.findById(req.params.id);
+      if (!student) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.DETAILS_STUDENT, {
+        req,
+        user: req.user,
+        title: `Details Student - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "students",
+        student,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
   create: async (req, res) => {
-    return res.render(RENDER_PATH.CREATE_STUDENT, {
+    return res.render(RENDER_PATH.ADMIN.CREATE_STUDENT, {
       req,
       user: req.user,
       oldValues: req.flash("oldValues")[0] || {},
@@ -85,14 +112,14 @@ module.exports = {
       req.flash("error", error);
     }
 
-    return res.redirect(REDIRECT_PATH.CREATE_STUDENT);
+    return res.redirect(REDIRECT_PATH.ADMIN.CREATE_STUDENT);
   },
 
   edit: async (req, res, next) => {
     try {
       const studentEdit = await userService.findById(req.params.id);
       if (!studentEdit) throw new Error(MESSAGE_ERROR.USER.USER_NOT_FOUND);
-      return res.render(RENDER_PATH.EDIT_STUDENT, {
+      return res.render(RENDER_PATH.ADMIN.EDIT_STUDENT, {
         req,
         user: req.user,
         oldValues: req.flash("oldValues")[0] || studentEdit || {},
@@ -120,7 +147,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.EDIT_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.EDIT_STUDENT + `/${id}`);
+    return res.redirect(REDIRECT_PATH.ADMIN.EDIT_STUDENT + `/${id}`);
   },
 
   handleDeleteStudents: async (req, res) => {
@@ -133,11 +160,11 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.DELETE_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
+    return res.redirect(REDIRECT_PATH.ADMIN.HOME_STUDENTS);
   },
 
   importStudentsPage: async (req, res) => {
-    return res.render(RENDER_PATH.IMPORT_STUDENTS, {
+    return res.render(RENDER_PATH.ADMIN.IMPORT_STUDENTS, {
       title: `Import Students - ${process.env.APP_NAME}`,
       user: req.user,
       REDIRECT_PATH,
@@ -161,7 +188,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.FILE.IMPORT_USERS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.IMPORT_STUDENTS);
+    return res.redirect(REDIRECT_PATH.ADMIN.IMPORT_STUDENTS);
   },
 
   handleExportStudents: async (req, res) => {
@@ -188,7 +215,7 @@ module.exports = {
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.FILE.EXPORT_USERS_FAILED);
-      return res.redirect(REDIRECT_PATH.HOME_STUDENTS_ADMIN);
+      return res.redirect(REDIRECT_PATH.ADMIN.HOME_STUDENTS);
     }
   },
 };

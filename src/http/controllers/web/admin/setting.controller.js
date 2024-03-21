@@ -24,7 +24,7 @@ module.exports = {
   profile: async (req, res, next) => {
     try {
       const userEdit = await userService.findById(req.user.id);
-      return res.render(RENDER_PATH.PROFILE_SETTING_ADMIN, {
+      return res.render(RENDER_PATH.ADMIN.PROFILE_SETTING, {
         title: `Settings - ${process.env.APP_NAME}`,
         req,
         user: req.user,
@@ -52,7 +52,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.EDIT_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.PROFILE_SETTINGS_ADMIN);
+    return res.redirect(REDIRECT_PATH.ADMIN.PROFILE_SETTING);
   },
 
   security: async (req, res, next) => {
@@ -63,7 +63,7 @@ module.exports = {
         LIST_SOCIALS
       );
 
-      return res.render(RENDER_PATH.SECURITY_SETTING_ADMIN, {
+      return res.render(RENDER_PATH.ADMIN.SECURITY_SETTING, {
         title: `Settings - ${process.env.APP_NAME}`,
         req,
         user,
@@ -94,12 +94,12 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.SOCIAL.REMOVE_ACCOUNT_SOCIAL_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.SECURITY_SETTING_ADMIN);
+    return res.redirect(REDIRECT_PATH.ADMIN.SECURITY_SETTING);
   },
 
   password: async (req, res, next) => {
     try {
-      return res.render(RENDER_PATH.PASSWORD_SETTING_ADMIN, {
+      return res.render(RENDER_PATH.ADMIN.PASSWORD_SETTING, {
         title: `Settings - ${process.env.APP_NAME}`,
         req,
         user: req.user,
@@ -132,6 +132,6 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.CHANGE_PASS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.PASSWORD_SETTING_ADMIN);
+    return res.redirect(REDIRECT_PATH.ADMIN.PASSWORD_SETTING);
   },
 };

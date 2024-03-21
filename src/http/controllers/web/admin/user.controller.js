@@ -14,6 +14,7 @@ const {
   FILE_NAME_EXPORT,
   SHEET_HEADERS_EXPORT,
 } = require("../../../../constants/fileExcel.constant");
+const moment = require("moment");
 
 const csrf = require("../../../middlewares/web/csrf.middleware");
 
@@ -34,7 +35,7 @@ module.exports = {
           "admin"
         );
 
-      return res.render(RENDER_PATH.HOME_USERS_ADMIN, {
+      return res.render(RENDER_PATH.ADMIN.HOME_USERS, {
         req,
         user: req.user,
         page: meta.page,
@@ -57,8 +58,34 @@ module.exports = {
     }
   },
 
+  async details(req, res, next) {
+    try {
+      const admin = await userService.findById(req.params.id);
+      if (!admin) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.DETAILS_USER, {
+        req,
+        user: req.user,
+        title: `Details User - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "users",
+        admin,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
   create(req, res) {
-    return res.render(RENDER_PATH.CREATE_USER, {
+    return res.render(RENDER_PATH.ADMIN.CREATE_USER, {
       req,
       user: req.user,
       oldValues: req.flash("oldValues")[0] || {},
@@ -85,14 +112,14 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.CREATE_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.CREATE_USER);
+    return res.redirect(REDIRECT_PATH.ADMIN.CREATE_USER);
   },
 
   async edit(req, res, next) {
     try {
       const userEdit = await userService.findById(req.params.id);
       if (!userEdit) throw new Error(MESSAGE_ERROR.USER.USER_NOT_FOUND);
-      return res.render(RENDER_PATH.EDIT_USER, {
+      return res.render(RENDER_PATH.ADMIN.EDIT_USER, {
         req,
         user: req.user,
         oldValues: req.flash("oldValues")[0] || userEdit || {},
@@ -120,7 +147,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.EDIT_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.EDIT_USER + `/${id}`);
+    return res.redirect(REDIRECT_PATH.ADMIN.EDIT_USER + `/${id}`);
   },
 
   async handleDeleteUsers(req, res) {
@@ -133,11 +160,11 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.USER.DELETE_USER_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.HOME_USERS_ADMIN);
+    return res.redirect(REDIRECT_PATH.ADMIN.HOME_USERS);
   },
 
   importUsersPage(req, res) {
-    return res.render(RENDER_PATH.IMPORT_USERS, {
+    return res.render(RENDER_PATH.ADMIN.IMPORT_USERS, {
       title: `Import Users - ${process.env.APP_NAME}`,
       user: req.user,
       REDIRECT_PATH,
@@ -161,7 +188,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.FILE.IMPORT_USERS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.IMPORT_USERS);
+    return res.redirect(REDIRECT_PATH.ADMIN.IMPORT_USERS);
   },
 
   async handleExportUsers(req, res) {
@@ -188,7 +215,7 @@ module.exports = {
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.FILE.EXPORT_USERS_FAILED);
-      return res.redirect(REDIRECT_PATH.HOME_USERS_ADMIN);
+      return res.redirect(REDIRECT_PATH.ADMIN.HOME_USERS);
     }
   },
 };

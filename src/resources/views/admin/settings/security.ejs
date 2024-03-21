@@ -17,7 +17,7 @@
     <div class="col-6">
       <ol class="breadcrumb float-sm-right mb-0">
         <li class="breadcrumb-item">
-          <a href="<%= REDIRECT_PATH.HOME_ADMIN %>">Home</a>
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
         </li>
         <li class="breadcrumb-item active">Settings</li>
       </ol>
@@ -30,19 +30,17 @@
     <div class="row mx-2">
       <div class="col-6 col-sm-4 px-2" style="max-width: 276px">
         <div class="nav flex-column nav-tabs">
-          <a
-            class="nav-link"
-            href="<%= REDIRECT_PATH.PROFILE_SETTINGS_ADMIN %> "
+          <a class="nav-link" href="<%= REDIRECT_PATH.ADMIN.PROFILE_SETTING %> "
             ><i class="fas fa-user mr-2"></i>Account settings</a
           >
           <a
             class="nav-link active"
-            href="<%= REDIRECT_PATH.SECURITY_SETTING_ADMIN %> "
+            href="<%= REDIRECT_PATH.ADMIN.SECURITY_SETTING %> "
             ><i class="fas fa-shield-alt mr-2"></i>Security and login</a
           >
           <a
             class="nav-link"
-            href="<%= REDIRECT_PATH.PASSWORD_SETTING_ADMIN %> "
+            href="<%= REDIRECT_PATH.ADMIN.PASSWORD_SETTING %> "
             ><i class="fas fa-lock mr-2"></i>Password</a
           >
         </div>

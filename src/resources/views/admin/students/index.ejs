@@ -6,7 +6,7 @@
     <div class="col-6">
       <ol class="breadcrumb float-sm-right mb-0">
         <li class="breadcrumb-item">
-          <a href="<%= REDIRECT_PATH.HOME_ADMIN %>">Home</a>
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
         </li>
         <li class="breadcrumb-item active">Users</li>
       </ol>
@@ -16,10 +16,10 @@
 
 <div class="card-body mx-auto">
   <div class="tab-custom-content d-flex align-items-center">
-    <a href="<%= REDIRECT_PATH.CREATE_STUDENT %>" class="btn btn-success mx-2">Create student</a>
+    <a href="<%= REDIRECT_PATH.ADMIN.CREATE_STUDENT %>" class="btn btn-success mx-2">Create student</a>
     <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected" class="btn btn-danger mx-2" disabled>Delete selected</button>
-    <a href="<%= REDIRECT_PATH.IMPORT_STUDENTS %>" class="btn btn-primary mx-2">Import students</a>
-    <a href="<%= REDIRECT_PATH.EXPORT_STUDENTS %>" class="btn btn-primary mx-2">Export students (Excel)</a>
+    <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_STUDENTS %>" class="btn btn-primary mx-2">Import students</a>
+    <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_STUDENTS %>" class="btn btn-primary mx-2">Export students (Excel)</a>
   </div>
   <div class="tab-content">
     <% if(error?.length) { %>
@@ -118,7 +118,7 @@
                   </label>
                 </td>
                 <td>
-                  <%= students[i].name %>
+                  <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_STUDENT + `/${students[i].id}` %>"><%= students[i].name %></a>
                 </td>
                 <td>
                   <%= students[i].email %>
@@ -131,7 +131,7 @@
                 </td>
                 <td width="1%">
                   <div class="d-flex align-items-center justify-content-center">
-                    <a class="mx-1 icon-operation" href="<%= REDIRECT_PATH.EDIT_STUDENT + `/${students[i].id}` %>"><i class="fas fa-pen fa-xs"></i></a>
+                    <a class="mx-1 icon-operation" href="<%= REDIRECT_PATH.ADMIN.EDIT_STUDENT + `/${students[i].id}` %>"><i class="fas fa-pen fa-xs"></i></a>
                     <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-deleteChildren-<%= students[i].id %>">
                       <i class="fas fa-trash fa-xs"></i>
                     </button>

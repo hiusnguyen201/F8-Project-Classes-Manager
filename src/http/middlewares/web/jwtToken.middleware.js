@@ -6,16 +6,16 @@ module.exports = (req, res, next) => {
   const { token } = req.params;
 
   if (!token) {
-    return res.redirect(REDIRECT_PATH.EMAIL_PASS_RESET);
+    return res.redirect(REDIRECT_PATH.AUTH.EMAIL_PASS_RESET);
   }
 
   const userIdReset = tokenUtil.verifyTokenByJwt(token);
   if (!userIdReset) {
     req.flash("error", MESSAGE_ERROR.OTHER.JWT_INVALID_TOKEN);
-    return res.redirect(REDIRECT_PATH.EMAIL_PASS_RESET);
+    return res.redirect(REDIRECT_PATH.AUTH.EMAIL_PASS_RESET);
   } else if (req.cookies.token && !userIdReset) {
     req.flash("error", MESSAGE_ERROR.OTHER.JWT_INVALID_TOKEN);
-    return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+    return res.redirect(REDIRECT_PATH.AUTH.LOGIN);
   }
 
   next();

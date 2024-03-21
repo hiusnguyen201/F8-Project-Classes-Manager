@@ -13,12 +13,12 @@ module.exports = async (req, res, next) => {
   const tokenValid = await tokenService.findByToken(tokenCookie);
   if (!tokenValid) {
     res.clearCookie("token");
-    return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+    return res.redirect(REDIRECT_PATH.AUTH.LOGIN);
   }
 
   return res.redirect(
     classifyRedirect(req.user.Type.name, [
-      REDIRECT_PATH.HOME_ADMIN,
+      REDIRECT_PATH.ADMIN.HOME_ADMIN,
       REDIRECT_PATH.HOME_TEACHER,
       REDIRECT_PATH.HOME_STUDENT,
     ])

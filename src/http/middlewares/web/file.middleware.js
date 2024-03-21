@@ -6,6 +6,7 @@ module.exports = (req, res, next) => {
   if (req.session.fileUploaded) {
     next();
   } else {
+    console.log(11111111111111111111);
     const uploadFolder = "./public/uploads";
     if (!fs.existsSync(uploadFolder)) {
       try {
@@ -26,7 +27,7 @@ module.exports = (req, res, next) => {
       },
     });
 
-    const upload = multer({ storage: storage }).single("file");
+    const upload = multer({ storage: storage }).array("file");
 
     upload(req, res, (err) => {
       if (err instanceof multer.MulterError) {
@@ -40,6 +41,8 @@ module.exports = (req, res, next) => {
         req.flash("error", MESSAGE_ERROR.FILE.UNKNOWN_ERROR_UPLOAD);
         return res.redirect(req.originalUrl);
       }
+
+      console.log(req.body);
       next();
     });
   }

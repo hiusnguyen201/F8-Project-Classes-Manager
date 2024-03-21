@@ -34,7 +34,7 @@ module.exports = {
       const { meta, data: classes } =
         await classService.findAllWithSearchAndPaginate(req.query);
 
-      return res.render(RENDER_PATH.HOME_CLASSES_ADMIN, {
+      return res.render(RENDER_PATH.ADMIN.HOME_CLASSES, {
         req,
         user: req.user,
         page: meta.page,
@@ -63,7 +63,7 @@ module.exports = {
       const courses = await courseService.findAll();
       const assistants = await userService.findAllWithTypes(["assistant"]);
 
-      return res.render(RENDER_PATH.CREATE_CLASS, {
+      return res.render(RENDER_PATH.ADMIN.CREATE_CLASS, {
         stringUtil,
         user: req.user,
         daysOfWeek: moment.weekdays(),
@@ -93,7 +93,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.CLASS.CREATE_CLASS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.CREATE_CLASS);
+    return res.redirect(REDIRECT_PATH.ADMIN.CREATE_CLASS);
   },
 
   edit: async (req, res, next) => {
@@ -119,7 +119,7 @@ module.exports = {
       const classObj = await classService.findByName(req.params.name);
       const listClassTeacher = classObj.Users.map((user) => user.id);
 
-      return res.render(RENDER_PATH.EDIT_CLASS, {
+      return res.render(RENDER_PATH.ADMIN.EDIT_CLASS, {
         csrf,
         stringUtil,
         user: req.user,
@@ -153,7 +153,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.CLASS.EDIT_CLASS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.EDIT_CLASS + `/${name}`);
+    return res.redirect(REDIRECT_PATH.ADMIN.EDIT_CLASS + `/${name}`);
   },
 
   handleDeleteClasses: async (req, res) => {
@@ -166,7 +166,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.CLASS.DELETE_CLASS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.HOME_CLASSES_ADMIN);
+    return res.redirect(REDIRECT_PATH.ADMIN.HOME_CLASSES);
   },
   importClassesPage: async (req, res) => {},
   handleImportClasses: async (req, res) => {},

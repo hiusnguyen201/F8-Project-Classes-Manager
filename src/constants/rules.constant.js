@@ -108,6 +108,32 @@ const COURSE_RULES = {
   },
 };
 
+const MODULE_RULES = {
+  CREATE: {
+    RULES: {
+      name: "required|string|unique:course_modules,name",
+    },
+    MESSAGES: {
+      "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
+      "name.string": MESSAGE_ERROR.COURSE.INVALID_NAME,
+      "name.unique:course_modules,name":
+        MESSAGE_ERROR.COURSE.NAME_MODULE_EXISTED,
+    },
+  },
+
+  EDIT: {
+    RULES: {
+      name: "required|string|unique:course_modules,name,id,id",
+    },
+    MESSAGES: {
+      "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
+      "name.string": MESSAGE_ERROR.COURSE.INVALID_NAME,
+      "name.unique:course_modules,name,id,id":
+        MESSAGE_ERROR.COURSE.NAME_MODULE_EXISTED,
+    },
+  },
+};
+
 const TEACHER_RULES = {
   CREATE: {
     RULES: {
@@ -221,6 +247,7 @@ const RULES_REQUEST = {
   COURSE_RULES,
   TEACHER_RULES,
   CLASS_RULES,
+  MODULE_RULES,
 };
 
 module.exports = {

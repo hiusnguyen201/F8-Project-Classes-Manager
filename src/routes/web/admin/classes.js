@@ -34,7 +34,7 @@ router.delete("/", csrf.verify, ClassController.handleDeleteClasses);
 // router.post(
 //   "/import",
 //   fileMiddleware,
-//   validator.fileExcel(),
+//   validator.file("excel"),
 //   ClassController.handleImportClasses
 // );
 // router.get("/export", ClassController.handleExportClasses);

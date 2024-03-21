@@ -5,7 +5,7 @@ const {
 
 module.exports = {
   index: async (req, res) => {
-    return res.render(RENDER_PATH.HOME_ADMIN, {
+    return res.render(RENDER_PATH.ADMIN.HOME_ADMIN, {
       req,
       user: req.user,
       title: `Home - ${process.env.APP_NAME}`,

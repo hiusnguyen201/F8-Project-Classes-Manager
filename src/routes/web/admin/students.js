@@ -12,6 +12,8 @@ router.get("/", StudentController.index);
 
 router.get("/create", StudentController.create);
 
+router.get("/details/:id", StudentController.details);
+
 router.post(
   "/create",
   csrf.verify,
@@ -35,7 +37,7 @@ router.get("/import", StudentController.importStudentsPage);
 router.post(
   "/import",
   fileMiddleware,
-  validator.fileExcel(),
+  validator.file("excel"),
   StudentController.handleImportStudents
 );
 
