@@ -254,6 +254,20 @@ class CourseService {
 
     return true;
   }
+
+  async removeModules(listId) {
+    await Promise.all(
+      listId.map(async (id) => {
+        const module = await this.Course_Module.findByPk(id, {
+          include: this.Module_Document,
+        });
+
+        if (!module) throw new Error(MESSAGE_ERROR.COURSE.MODULE_NOT_FOUND);
+
+        await module.destroy();
+      })
+    );
+  }
 }
 
 module.exports = CourseService;

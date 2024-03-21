@@ -32,6 +32,10 @@ router.post(
   validator.make(MODULE_RULES.EDIT),
   CourseController.handleEditModule
 );
+router.delete(
+  "/details/:id/modules/delete/:moduleId",
+  CourseController.handleDeleteModules
+);
 
 router.post(
   "/create",

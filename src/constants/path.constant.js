@@ -18,6 +18,7 @@ const REDIRECT_PATH = {
 
     CREATE_MODULE: "/modules/create",
     EDIT_MODULE: "/modules/edit",
+    DELETE_MODULE: "/modules/delete",
 
     HOME_TEACHERS: "/admin/teachers",
     DETAILS_TEACHER: "/admin/teachers/details",

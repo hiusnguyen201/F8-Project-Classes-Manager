@@ -90,7 +90,7 @@
 
   <div class="row mb-4">
     <div class="col-12">
-      <span class="d-block mb-2">Modules:</span>
+      <span class="d-block mb-2">Documents:</span>
 
       <div class="mb-3 row">
         <div class="col-3">
@@ -153,13 +153,14 @@
             class="mx-1 icon-operation"
             type="button"
             data-toggle="modal"
-            data-target="#modal-deleteChildren-"
+            data-target="#modal-deleteChildren-<%= moduleObj.id %>"
           >
             <i class="fas fa-trash fa-xs"></i>
           </button>
         </div>
       </div>
-      <% })} %>
+
+      <%- include("./deleteModule.modal.ejs", {moduleObj}) %> <% })} %>
     </div>
   </div>
 

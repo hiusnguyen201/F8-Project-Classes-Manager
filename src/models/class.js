@@ -11,9 +11,17 @@ module.exports = (sequelize, DataTypes) => {
       Class.belongsTo(models.Course, { foreignKey: "courseId" });
       Class.hasMany(models.Comment, { foreignKey: "id" });
       Class.hasOne(models.Student_Class, { foreignKey: "id" });
+
       Class.hasMany(models.Teacher_Calender, {
         foreignKey: "classId",
         onDelete: "CASCADE",
+        hooks: true,
+      });
+
+      Class.hasMany(models.Class_Schedule, {
+        foreignKey: "classId",
+        onDelete: "CASCADE",
+        hooks: true,
       });
 
       Class.hasMany(models.Student_Attendance, { foreignKey: "id" });
@@ -23,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "classId",
         through: "class_teachers",
         onDelete: "CASCADE",
+        hooks: true,
       });
     }
   }
@@ -37,14 +46,9 @@ module.exports = (sequelize, DataTypes) => {
       quantity: DataTypes.INTEGER,
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
-      schedule: DataTypes.TINYINT,
-      timeLearn: DataTypes.STRING(50),
       courseId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
-      deletedAt: {
-        type: DataTypes.DATE,
-      },
     },
     {
       sequelize,

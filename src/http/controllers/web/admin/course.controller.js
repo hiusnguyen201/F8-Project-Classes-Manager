@@ -283,4 +283,19 @@ module.exports = {
 
     return res.redirect(req.originalUrl);
   },
+
+  handleDeleteModules: async (req, res) => {
+    const { id, moduleId } = req.params;
+    try {
+      await courseService.removeModules(
+        Array.isArray(moduleId) ? moduleId : [moduleId]
+      );
+      req.flash("success", MESSAGE_SUCCESS.COURSE.DELETE_MODULE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.COURSE.DELETE_MODULE_FAILED);
+    }
+
+    return res.redirect(REDIRECT_PATH.ADMIN.DETAILS_COURSE + `/${id}`);
+  },
 };
