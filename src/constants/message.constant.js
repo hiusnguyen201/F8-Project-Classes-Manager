@@ -139,16 +139,16 @@ const MESSAGE_ERROR = {
     // Upload
     ERROR_MULTER_UPLOAD: "Multer error occurred when uploading",
     UNKNOWN_ERROR_UPLOAD: "Unknown error occurred when uploading",
-
-    // Import
     INVALID_HEADERS: "Invalid headers",
 
     IMPORT_USERS_FAILED: "Import users failed",
-    IMPORT_COURSES_FAILED: "Import courses failed",
-
-    // Export
     EXPORT_USERS_FAILED: "Export users failed",
+
+    IMPORT_COURSES_FAILED: "Import courses failed",
     EXPORT_COURSES_FAILED: "Export courses failed",
+
+    EXPORT_CLASSES_FAILED: "Export classes failed",
+    IMPORT_CLASSES_FAILED: "Import classes failed",
   },
 };
 
@@ -171,6 +171,9 @@ const MESSAGE_SUCCESS = {
 
     EXPORT_COURSES_SUCCESS: "Export courses successfully",
     IMPORT_COURSES_SUCCESS: "Import courses successfully",
+
+    EXPORT_CLASSES_SUCCESS: "Export classes successfully",
+    IMPORT_CLASSES_SUCCESS: "Import classes successfully",
   },
 
   SOCIAL: {

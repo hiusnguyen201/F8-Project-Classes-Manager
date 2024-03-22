@@ -80,6 +80,14 @@ class ClassService {
     return classObj ? classObj : null;
   }
 
+  async findAll() {
+    const classObj = await this.Class.findAll({
+      include: [this.ClassSchedule, this.Course],
+    });
+
+    return classObj;
+  }
+
   async create(data) {
     const course = await this.Course.findByPk(data.courseId, {
       include: this.User,
@@ -161,9 +169,11 @@ class ClassService {
       // Add Teacher to class
       await classObj.addUser(course.User, { transaction });
       // Add asssistant to class
-      for (let i = 0; i < data.assistantId.length; i++) {
-        const teacher = await this.User.findByPk(data.assistantId[i]);
-        await classObj.addUser(teacher, { transaction });
+      if (data.assistantId && data.assistantId?.length) {
+        for (let i = 0; i < data.assistantId.length; i++) {
+          const teacher = await this.User.findByPk(data.assistantId[i]);
+          await classObj.addUser(teacher, { transaction });
+        }
       }
 
       await transaction.commit();
@@ -281,9 +291,11 @@ class ClassService {
       // Add Teacher to class
       await classObj.addUser(course.User, { transaction });
       // Add asssistant to class
-      for (let i = 0; i < data.assistantId.length; i++) {
-        const teacher = await this.User.findByPk(data.assistantId[i]);
-        await classObj.addUser(teacher, { transaction });
+      if (data.assistantId && data.assistantId?.length) {
+        for (let i = 0; i < data.assistantId.length; i++) {
+          const teacher = await this.User.findByPk(data.assistantId[i]);
+          await classObj.addUser(teacher, { transaction });
+        }
       }
 
       await transaction.commit();
@@ -321,6 +333,56 @@ class ClassService {
 
         await classObj.remove;
         await classObj.destroy();
+      })
+    );
+  }
+
+  async importClasses(fileInfo, classFields) {
+    const [dataArr, message] = await fileExcel.readFile(fileInfo, classFields);
+
+    if (!dataArr) throw new Error(message);
+
+    await Promise.all(
+      dataArr.map(async (data) => {
+        const classObj = await this.Class.findOne({
+          where: {
+            name: data.name,
+          },
+        });
+
+        if (!classObj) {
+          let schedules = data.schedules.split(",");
+          schedules.map((schedule, i) => {
+            schedules[i] = `${moment
+              .weekdays()
+              .findIndex((day) => day == schedule)}`;
+          });
+
+          const timeLearns = data.timeLearns.split(",");
+          const timeLearnStart = [],
+            timeLearnEnd = [];
+          timeLearns.map((timeLearn) => {
+            const [start, end] = timeLearn.split(" - ");
+            timeLearnStart.push(start);
+            timeLearnEnd.push(end);
+          });
+
+          const course = await this.Course.findOne({
+            where: {
+              name: data.course,
+            },
+          });
+
+          return await this.create({
+            name: data.name,
+            quantity: data.quantity,
+            startDate: moment(data.startDate).format("DD/MM/YYYY"),
+            schedule: schedules,
+            timeLearnStart,
+            timeLearnEnd,
+            courseId: course.id,
+          });
+        }
       })
     );
   }

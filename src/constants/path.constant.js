@@ -110,7 +110,7 @@ const RENDER_PATH = {
     DETAILS_CLASS: "admin/classes/details",
     CREATE_CLASS: "admin/classes/create",
     EDIT_CLASS: "admin/classes/edit",
-    IMPORT_CLASS: "admin/classes/import",
+    IMPORT_CLASSES: "admin/classes/import",
 
     PROFILE_SETTING: "admin/settings/profile",
     SECURITY_SETTING: "admin/settings/security",

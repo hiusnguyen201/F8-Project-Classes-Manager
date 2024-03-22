@@ -125,7 +125,7 @@
                   <input type="checkbox" class="checkboxChildren" value="<%= classObj.id %>" />
                 </label>
               </td>
-              <td><%= classObj.name %></td>
+              <td><a href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= classObj.id %>"><%= classObj.name %></a></td>
               <td><a href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER %>/<%= classObj.Course.User.id %>"><%= classObj.Course.User.name %></a></td>
               <td><%= classObj.quantity %></td>
               <td><%= moment(classObj.startDate).format("DD/MM/YYYY") %></td>

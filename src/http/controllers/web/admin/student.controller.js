@@ -178,7 +178,7 @@ module.exports = {
     try {
       await userService.importUsers(
         "student",
-        req.file,
+        req.files[0],
         FIELDS_IMPORT.STUDENT_FIELDS
       );
 

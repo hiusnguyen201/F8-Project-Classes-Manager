@@ -6,7 +6,6 @@ module.exports = (req, res, next) => {
   if (req.session.fileUploaded) {
     next();
   } else {
-    console.log(11111111111111111111);
     const uploadFolder = "./public/uploads";
     if (!fs.existsSync(uploadFolder)) {
       try {

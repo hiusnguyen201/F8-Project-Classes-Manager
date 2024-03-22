@@ -178,7 +178,7 @@ module.exports = {
     try {
       await userService.importUsers(
         "admin",
-        req.file,
+        req.files[0],
         FIELDS_IMPORT.USER_FIELDS
       );
 

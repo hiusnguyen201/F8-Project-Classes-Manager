@@ -10,6 +10,14 @@ const FIELDS_IMPORT = {
   ],
   TEACHER_FIELDS: ["name", "email", "phone", "address", "type"],
   STUDENT_FIELDS: ["name", "email", "phone", "address"],
+  CLASS_FIELDS: [
+    "name",
+    "quantity",
+    "startDate",
+    "course",
+    "schedules",
+    "timeLearns",
+  ],
 };
 
 const FILE_NAME_EXPORT = {
@@ -17,6 +25,7 @@ const FILE_NAME_EXPORT = {
   COURSE: "CoursesReport",
   TEACHER: "TeachersReport",
   STUDENT: "StudentsReport",
+  CLASS_FIELDS: "ClassesReport",
 };
 
 const SHEET_HEADERS_EXPORT = {
@@ -49,6 +58,16 @@ const SHEET_HEADERS_EXPORT = {
     { header: "Email", key: "email", width: 35 },
     { header: "Phone", key: "phone", width: 20 },
     { header: "Address", key: "address", width: 15 },
+  ],
+
+  HEADERS_CLASS: [
+    { header: "Name", key: "name", width: 20 },
+    { header: "Quantity", key: "quantity", width: 10 },
+    { header: "Start Date", key: "startDate", width: 20 },
+    { header: "End Date", key: "endDate", width: 15 },
+    { header: "Course", key: "course", width: 20 },
+    { header: "Schedules", key: "schedules", width: 25 },
+    { header: "Time Learns", key: "timeLearns", width: 35 },
   ],
 };
 

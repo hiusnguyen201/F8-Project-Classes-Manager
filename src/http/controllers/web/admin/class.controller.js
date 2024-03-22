@@ -72,7 +72,7 @@ module.exports = {
         assistants,
         oldValues: req.flash("oldValues")[0] || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Create class - ${process.env.APP_NAME}`,
+        title: `Create Class - ${process.env.APP_NAME}`,
         REDIRECT_PATH,
         currPage: "classes",
         success: req.flash("success"),
@@ -113,9 +113,9 @@ module.exports = {
         assistants,
         oldValues: req.flash("oldValues")[0] || classEdit || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Edit course - ${process.env.APP_NAME}`,
+        title: `Edit Class - ${process.env.APP_NAME}`,
         REDIRECT_PATH,
-        currPage: "courses",
+        currPage: "classes",
         success: req.flash("success"),
         error: req.flash("error"),
         moment,
@@ -151,5 +151,84 @@ module.exports = {
     }
 
     return res.redirect(req.originalUrl);
+  },
+
+  importClassesPage: async (req, res) => {
+    return res.render(RENDER_PATH.ADMIN.IMPORT_CLASSES, {
+      title: `Import Classes - ${process.env.APP_NAME}`,
+      user: req.user,
+      REDIRECT_PATH,
+      currPage: "classes",
+      error: req.flash("error"),
+      success: req.flash("success"),
+    });
+  },
+
+  handleImportClasses: async (req, res) => {
+    try {
+      await classService.importClasses(
+        req.files[0],
+        FIELDS_IMPORT.CLASS_FIELDS
+      );
+      req.flash("success", MESSAGE_SUCCESS.FILE.IMPORT_CLASSES_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.FILE.IMPORT_CLASSES_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleExportClasses: async (req, res) => {
+    try {
+      const classes = await classService.findAll();
+
+      if (!classes?.length) throw new Error(MESSAGE_INFO.FILE.NOTHING_EXPORT);
+
+      writeFile(
+        res,
+        SHEET_HEADERS_EXPORT.HEADERS_CLASS,
+        FILE_NAME_EXPORT.CLASS_FIELDS,
+        (sheet) => {
+          classes.forEach(
+            ({
+              name,
+              quantity,
+              startDate,
+              endDate,
+              Course,
+              Class_Schedules,
+            }) => {
+              let schedules = "",
+                timeLearns = "";
+
+              Class_Schedules.map((scheduleObj, index) => {
+                console.log(scheduleObj.timeLearn);
+                schedules += moment.weekdays(scheduleObj.schedule);
+                timeLearns += scheduleObj.timeLearn;
+                if (index != Class_Schedules.length - 1) {
+                  schedules += ",";
+                  timeLearns += ",";
+                }
+              });
+
+              sheet.addRow({
+                name,
+                quantity,
+                startDate,
+                endDate,
+                course: Course.name,
+                schedules,
+                timeLearns,
+              });
+            }
+          );
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.FILE.EXPORT_CLASSES_FAILED);
+      return res.redirect(req.originalUrl);
+    }
   },
 };

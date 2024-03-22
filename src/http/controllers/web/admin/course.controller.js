@@ -181,7 +181,10 @@ module.exports = {
 
   handleImportCourses: async (req, res) => {
     try {
-      await courseService.importCourses(req.file, FIELDS_IMPORT.COURSE_FIELDS);
+      await courseService.importCourses(
+        req.files[0],
+        FIELDS_IMPORT.COURSE_FIELDS
+      );
       req.flash("success", MESSAGE_SUCCESS.FILE.IMPORT_COURSES_SUCCESS);
     } catch (err) {
       console.log(err);

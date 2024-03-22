@@ -30,13 +30,13 @@ router.patch(
 
 router.delete("/", csrf.verify, ClassController.handleDeleteClasses);
 
-// router.get("/import", ClassController.importClassesPage);
-// router.post(
-//   "/import",
-//   fileMiddleware,
-//   validator.file("excel"),
-//   ClassController.handleImportClasses
-// );
-// router.get("/export", ClassController.handleExportClasses);
+router.get("/import", ClassController.importClassesPage);
+router.post(
+  "/import",
+  fileMiddleware,
+  validator.file("excel"),
+  ClassController.handleImportClasses
+);
+router.get("/export", ClassController.handleExportClasses);
 
 module.exports = router;
