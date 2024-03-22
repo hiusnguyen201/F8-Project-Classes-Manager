@@ -131,7 +131,7 @@
                 <td>
                   <%= +courses[i].price <= 0 ? 'Free' : stringUtil.formatCurrency(courses[i].price) %>
                 </td>
-                <td><a href="<%= REDIRECT_PATH.ADMIN.DETAILS_USER %>/<%= courses[i].User.id %>"><%= courses[i].User.name %></a></td>
+                <td><a href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER %>/<%= courses[i].User.id %>"><%= courses[i].User.name %></a></td>
                 <td><%= courses[i].tryLearn + " trials"%></td>
                 <td><%= courses[i].quantity + " users / class"%></td>
                 <td><%= courses[i].duration + " lessons"%></td>

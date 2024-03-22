@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       Class.belongsToMany(models.User, {
         foreignKey: "classId",
         through: "classes_teachers",
+        onDelete: "CASCADE",
         hooks: true,
       });
     }

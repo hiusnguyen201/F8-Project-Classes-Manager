@@ -74,13 +74,29 @@
       <thead>
         <tr>
           <th>Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
           <th width="1%">Operation</th>
         </tr>
       </thead>
       <tbody>
+        <% if(classesJoining && classesJoining.length) {
+        classesJoining.forEach(({id, name, startDate, endDate}) => { %>
         <tr>
-          <td></td>
+          <td>
+            <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= id %>"
+              ><%= name %></a
+            >
+          </td>
+          <td><%= moment(startDate).format("DD/MM/YYYY") %></td>
+          <td><%= moment(endDate).format("DD/MM/YYYY") %></td>
+          <td class="d-flex align-items-center justify-content-center">
+            <a href="" class="mx-1 icon-operation"
+              ><i class="fas fa-calendar-alt"></i>
+            </a>
+          </td>
         </tr>
+        <% })} %>
       </tbody>
     </table>
   </div>

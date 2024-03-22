@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         through: "users_permissions",
       });
 
-      User.hasOne(models.Course, { foreignKey: "id" });
+      User.hasMany(models.Course, { foreignKey: "teacherId" });
       User.hasOne(models.Student_Class, { foreignKey: "id" });
       User.hasMany(models.Teacher_Calender, { foreignKey: "id" });
 
@@ -33,6 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsToMany(models.Class, {
         foreignKey: "teacherId",
         through: "classes_teachers",
+        onDelete: "CASCADE",
+        hooks: true,
       });
     }
   }

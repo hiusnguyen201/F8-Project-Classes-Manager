@@ -61,9 +61,12 @@ module.exports = {
   async details(req, res, next) {
     try {
       const teacher = await userService.findById(req.params.id);
+
       if (!teacher) {
         return next(createHttpError(STATUS_CODE.NOT_FOUND));
       }
+
+      const classesJoining = await teacher.getClasses();
 
       return res.render(RENDER_PATH.ADMIN.DETAILS_TEACHER, {
         req,
@@ -71,6 +74,7 @@ module.exports = {
         title: `Details Teacher - ${process.env.APP_NAME}`,
         REDIRECT_PATH,
         currPage: "teachers",
+        classesJoining,
         teacher,
         success: req.flash("success"),
         error: req.flash("error"),
