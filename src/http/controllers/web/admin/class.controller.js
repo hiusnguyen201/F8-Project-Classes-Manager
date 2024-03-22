@@ -139,4 +139,17 @@ module.exports = {
 
     return res.redirect(req.originalUrl);
   },
+
+  handleDeleteClasses: async (req, res) => {
+    try {
+      const { id } = req.body;
+      await classService.removeClasses(Array.isArray(id) ? id : [id]);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_CLASS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_CLASS_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
 };

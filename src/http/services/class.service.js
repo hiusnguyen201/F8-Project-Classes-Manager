@@ -295,6 +295,35 @@ class ClassService {
       throw new Error(MESSAGE_ERROR.CLASS.CREATE_CLASS_FAILED);
     }
   }
+
+  async removeClasses(listId) {
+    await Promise.all(
+      listId.map(async (id) => {
+        const classObj = await this.Class.findByPk(id, {
+          include: [this.ClassSchedule, this.User, this.TeacherCalender],
+        });
+
+        await this.ClassSchedule.destroy({
+          where: {
+            classId: classObj.id,
+          },
+        });
+
+        await this.TeacherCalender.destroy({
+          where: {
+            classId: classObj.id,
+          },
+        });
+
+        await classObj.removeUsers(classObj.Users);
+
+        if (!classObj) throw new Error(MESSAGE_ERROR.CLASS.CLASS_NOT_FOUND);
+
+        await classObj.remove;
+        await classObj.destroy();
+      })
+    );
+  }
 }
 
 module.exports = ClassService;

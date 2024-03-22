@@ -28,7 +28,7 @@ router.patch(
   ClassController.handleEditClass
 );
 
-// router.delete("/", csrf.verify, ClassController.handleDeleteClasses);
+router.delete("/", csrf.verify, ClassController.handleDeleteClasses);
 
 // router.get("/import", ClassController.importClassesPage);
 // router.post(
