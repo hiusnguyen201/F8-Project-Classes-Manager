@@ -19,14 +19,14 @@ router.post(
   ClassController.handleCreateClass
 );
 
-// router.get("/edit/:id", ClassController.edit);
+router.get("/edit/:id", ClassController.edit);
 
-// router.patch(
-//   "/edit/:name",
-//   csrf.verify,
-//   validator.make(CLASS_RULES.EDIT),
-//   ClassController.handleEditClass
-// );
+router.patch(
+  "/edit/:id",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT),
+  ClassController.handleEditClass
+);
 
 // router.delete("/", csrf.verify, ClassController.handleDeleteClasses);
 

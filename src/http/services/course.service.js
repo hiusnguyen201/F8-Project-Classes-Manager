@@ -77,7 +77,6 @@ class CourseService {
 
   async findById(id) {
     if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
-    console.log(id);
 
     const course = await this.Course.findOne({
       where: { id },

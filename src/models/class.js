@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       Class.belongsTo(models.Course, { foreignKey: "courseId" });
       Class.hasMany(models.Comment, { foreignKey: "id" });
       Class.hasOne(models.Student_Class, { foreignKey: "id" });
+      Class.hasMany(models.Student_Attendance, { foreignKey: "id" });
+      Class.hasMany(models.Exercise, { foreignKey: "id" });
 
       Class.hasMany(models.Teacher_Calender, {
         foreignKey: "classId",
@@ -24,13 +26,9 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true,
       });
 
-      Class.hasMany(models.Student_Attendance, { foreignKey: "id" });
-      Class.hasMany(models.Exercise, { foreignKey: "id" });
-
       Class.belongsToMany(models.User, {
         foreignKey: "classId",
         through: "classes_teachers",
-        onDelete: "CASCADE",
         hooks: true,
       });
     }

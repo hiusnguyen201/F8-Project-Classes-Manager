@@ -97,4 +97,46 @@ module.exports = {
 
     return res.redirect(req.originalUrl);
   },
+
+  edit: async (req, res, next) => {
+    try {
+      const classEdit = await classService.findById(req.params.id);
+      if (!classEdit) throw new Error(MESSAGE_ERROR.CLASS.CLASS_NOT_FOUND);
+
+      const courses = await courseService.findAll();
+      const assistants = await userService.findAllWithTypes("assistant");
+
+      return res.render(RENDER_PATH.ADMIN.EDIT_CLASS, {
+        req,
+        user: req.user,
+        courses,
+        assistants,
+        oldValues: req.flash("oldValues")[0] || classEdit || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        title: `Edit course - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "courses",
+        success: req.flash("success"),
+        error: req.flash("error"),
+        moment,
+        csrf,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.NOT_FOUND));
+    }
+  },
+
+  handleEditClass: async (req, res) => {
+    const { id } = req.params;
+    try {
+      await classService.update(req.body, id);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_CLASS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.EDIT_CLASS_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
 };

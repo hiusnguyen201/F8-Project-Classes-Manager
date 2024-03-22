@@ -99,10 +99,10 @@
                   data-placeholder="--- Select a Schedule ---"
                   style="width: 100%"
                 >
-                  <% if(oldValues?.schedule){ var schedulesStr = (Array.isArray(oldValues.schedule))? oldValues.schedule.join(",") : oldValues.schedule }  %>
-                  <% if(daysOfWeek?.length) { daysOfWeek.forEach((day, index) => { %>
-                      <option <%= schedulesStr?.includes(`${index}`)? "selected" : "" %> value="<%= index %>"><%= day %></option>
-                  <% })} %>
+                  <%  moment.weekdays().forEach((day, index) => { %>
+                    <% const classSchedule = oldValues.Class_Schedules.find((classSchedule) => classSchedule.schedule == index) %>
+                      <option <%= classSchedule? "selected" : "" %> value="<%= index %>"><%= day %></option>
+                  <% }) %>
                 </select>
 
                 <% if(errorsValidate['schedule']){ %>
@@ -113,9 +113,10 @@
               </div>
 
               <!-- Row 5 -->
-              <% const timeLearnArr = oldValues?.timeLearn.split(",") %>
               <% const timeLearnStart = [], timeLearnEnd = [] %>
-              <% timeLearnArr.forEach((timeLearn) => { const [start, end] = timeLearn.split(" - "); timeLearnStart.push(start); timeLearnEnd.push(end)}) %>
+              <% if(oldValues?.Class_Schedules) {%>
+                <% oldValues.Class_Schedules.forEach((classSchedule) => { const [start, end] = classSchedule.timeLearn.split(" - "); timeLearnStart.push(start); timeLearnEnd.push(end)}) %>
+              <% } %>
               <div class="timeLearn" value="<%= (timeLearnStart || '') + " - " +  (timeLearnEnd || '') %>">
                   
               </div>
@@ -172,11 +173,9 @@
                   <option value=""></option>
                   <% if(assistants?.length) {assistants.forEach(({id, email}) =>
                   { %>
-                    <% if(listClassTeacher && listClassTeacher.includes(id)) { %>
-                      <option selected value="<%= id %>"><%= email %></option>
-                    <% } else {%>
-                    <option value="<%= id %>"><%= email %></option>
-                  <% }})} %>
+                    <% const classTeacher = oldValues.Users.find((user) => user.id == +id)  %>
+                      <option <%= classTeacher? 'selected' : '' %> value="<%= id %>"><%= email %></option>
+                  <% })} %>
                 </select>
 
                 <% if(errorsValidate['assistantId']){ %>
@@ -185,6 +184,7 @@
                 </span>
                 <% } %>
               </div>
+
 
               <input type="hidden" name="_method" value="PATCH" />
               <input
