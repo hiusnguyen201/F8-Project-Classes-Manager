@@ -1,7 +1,7 @@
 <form action="" method="post">
   <div
     class="modal fade"
-    id="modal-deleteChildren-<%= classes[i].name %>"
+    id="modal-deleteChildren-<%= classObj.id %>"
     tabindex="-1"
   >
     <div class="modal-dialog">
@@ -13,7 +13,7 @@
           </h5>
         </div>
         <div class="modal-body text-center">
-          <span style="font-size: 24px"><b> <%= classes[i].name %> </b></span>
+          <span style="font-size: 24px"><b> <%= classObj.name %> </b></span>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -25,7 +25,7 @@
             name="csrfToken"
             value="<%= csrf.createToken() %>"
           />
-          <input type="hidden" name="id" value="<%= classes[i].name %>" />
+          <input type="hidden" name="id" value="<%= classObj.id %>" />
           <button type="submit" class="btn btn-danger">Yes</button>
         </div>
       </div>

@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 
       User.belongsToMany(models.Class, {
         foreignKey: "teacherId",
-        through: "class_teachers",
+        through: "classes_teachers",
       });
     }
   }

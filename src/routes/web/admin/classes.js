@@ -8,18 +8,18 @@ const csrf = require("../../../http/middlewares/web/csrf.middleware");
 const fileMiddleware = require("../../../http/middlewares/web/file.middleware");
 const validator = require("../../../utils/validator");
 
-// router.get("/", ClassController.index);
+router.get("/", ClassController.index);
 
-// router.get("/create", ClassController.create);
+router.get("/create", ClassController.create);
 
-// router.post(
-//   "/create",
-//   csrf.verify,
-//   validator.make(CLASS_RULES.CREATE),
-//   ClassController.handleCreateClass
-// );
+router.post(
+  "/create",
+  csrf.verify,
+  validator.make(CLASS_RULES.CREATE),
+  ClassController.handleCreateClass
+);
 
-// router.get("/edit/:name", ClassController.edit);
+// router.get("/edit/:id", ClassController.edit);
 
 // router.patch(
 //   "/edit/:name",
