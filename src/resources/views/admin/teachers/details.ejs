@@ -91,7 +91,9 @@
           <td><%= moment(startDate).format("DD/MM/YYYY") %></td>
           <td><%= moment(endDate).format("DD/MM/YYYY") %></td>
           <td class="d-flex align-items-center justify-content-center">
-            <a href="" class="mx-1 icon-operation"
+            <a
+              href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER %>/<%= teacher.id %><%= REDIRECT_PATH.ADMIN.CALENDARS_TEACHER %>/<%= id %>"
+              class="mx-1 icon-operation"
               ><i class="fas fa-calendar-alt"></i>
             </a>
           </td>

@@ -14,6 +14,8 @@ router.get("/create", TeacherController.create);
 
 router.get("/details/:id", TeacherController.details);
 
+router.get("/details/:id/calendars/:classId", TeacherController.calendars);
+
 router.post(
   "/create",
   csrf.verify,

@@ -25,6 +25,8 @@ const UserService = require("../../../services/user.service");
 const userService = new UserService();
 const TypeService = require("../../../services/type.service");
 const typeService = new TypeService();
+const ClassService = require("../../../services/class.service");
+const classService = new ClassService();
 
 module.exports = {
   index: async (req, res) => {
@@ -76,6 +78,48 @@ module.exports = {
         currPage: "teachers",
         classesJoining,
         teacher,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  async calendars(req, res, next) {
+    try {
+      const teacher = await userService.findById(req.params.id);
+      const classObj = await classService.findById(req.params.classId);
+      if (!teacher || !classObj)
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+
+      let dataCanlendar = {
+        className: classObj.name,
+        startDate: classObj.startDate,
+        endDate: classObj.endDate,
+        schedules: [],
+        timeLearns: [],
+      };
+
+      const classSchedules = await classObj.getClass_Schedules();
+      classSchedules.map((scheduleObj) => {
+        dataCanlendar.schedules.push(scheduleObj.schedule);
+        dataCanlendar.timeLearns.push(scheduleObj.timeLearn);
+      });
+      dataCanlendar = JSON.stringify(dataCanlendar);
+
+      return res.render(RENDER_PATH.ADMIN.CALENDARS_TEACHER, {
+        req,
+        user: req.user,
+        teacher,
+        title: `Calendars Teacher - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        dataCanlendar,
+        currPage: "teachers",
         success: req.flash("success"),
         error: req.flash("error"),
         csrf,

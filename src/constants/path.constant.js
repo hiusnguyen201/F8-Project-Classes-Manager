@@ -22,6 +22,7 @@ const REDIRECT_PATH = {
 
     HOME_TEACHERS: "/admin/teachers",
     DETAILS_TEACHER: "/admin/teachers/details",
+    CALENDARS_TEACHER: "/calendars",
     CREATE_TEACHER: "/admin/teachers/create",
     EDIT_TEACHER: "/admin/teachers/edit",
     IMPORT_TEACHERS: "/admin/teachers/import",
@@ -96,6 +97,7 @@ const RENDER_PATH = {
 
     HOME_TEACHERS: "admin/teachers/index",
     DETAILS_TEACHER: "admin/teachers/details",
+    CALENDARS_TEACHER: "admin/teachers/calendars",
     CREATE_TEACHER: "admin/teachers/create",
     EDIT_TEACHER: "admin/teachers/edit",
     IMPORT_TEACHERS: "admin/teachers/import",
