@@ -42,6 +42,11 @@
       rel="stylesheet"
       href="/plugins/daterangepicker/daterangepicker.css"
     />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
     <!-- Select2 -->
     <link rel="stylesheet" href="/plugins/select2/css/select2.min.css" />
     <!-- summernote -->
@@ -67,6 +72,9 @@
     <script src="/plugins/jquery/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->
     <script src="/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script>
+      $.widget.bridge("uibutton", $.ui.button);
+    </script>
     <!-- Bootstrap 4 -->
     <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- ChartJS -->
@@ -95,8 +103,11 @@
     <!-- fullCalendar 2.2.5 -->
     <script src="/plugins/fullcalendar/main.js"></script>
     <!-- Toastify -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
     <script defer src="/assets/toastify/index.js"></script>
-
     <script defer src="/assets/custom/javascripts/main.layout.js"></script>
 
     <script>

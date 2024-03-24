@@ -11,6 +11,15 @@ const validator = require("../../../utils/validator");
 router.get("/", ClassController.index);
 
 router.get("/create", ClassController.create);
+router.get("/details/:id", ClassController.details);
+
+router.get("/details/:id/students/add", ClassController.addStudentPage);
+router.post(
+  "/details/:id/students/add",
+  csrf.verify,
+  validator.make(CLASS_RULES.ADD_STUDENT),
+  ClassController.handleAddStudents
+);
 
 router.post(
   "/create",

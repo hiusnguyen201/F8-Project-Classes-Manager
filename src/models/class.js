@@ -11,7 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       Class.belongsTo(models.Course, { foreignKey: "courseId" });
       Class.hasMany(models.Comment, { foreignKey: "id" });
       Class.hasOne(models.Student_Class, { foreignKey: "id" });
-      Class.hasMany(models.Student_Attendance, { foreignKey: "id" });
+      Class.hasMany(models.Student_Attendance, {
+        foreignKey: "classId",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
       Class.hasMany(models.Exercise, { foreignKey: "id" });
 
       Class.hasMany(models.Teacher_Calender, {

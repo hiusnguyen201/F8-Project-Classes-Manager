@@ -1,3 +1,4 @@
 const LIMIT_PAGE = [10, 25, 50, 100];
 const LIST_SOCIALS = ["facebook", "github", "google"];
-module.exports = { LIMIT_PAGE, LIST_SOCIALS };
+const STUDENT_ATTENDANCE_STATUS = ["Learning", "Completed"];
+module.exports = { LIMIT_PAGE, LIST_SOCIALS, STUDENT_ATTENDANCE_STATUS };

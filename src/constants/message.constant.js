@@ -110,6 +110,10 @@ const MESSAGE_ERROR = {
     REQUIRED_COURSE: "Course is required",
     INVALID_COURSE: "Invalid course",
     INVALID_ASSISTANT: "Invalid assistant",
+    REQUIRED_STUDENT: "Student is required",
+    STUDENT_NOT_FOUND: "Student not found",
+    REQUIRED_DATELEARNING: "Date learning is required",
+    INVALID_DATELEARNING: "Invalid Date learning",
 
     // Feature
     CLASS_EXISTED: "Class is existed",
@@ -117,6 +121,7 @@ const MESSAGE_ERROR = {
     CREATE_CLASS_FAILED: "Create class failed",
     EDIT_CLASS_FAILED: "Edit class information failed",
     DELETE_CLASS_FAILED: "Delete class failed",
+    ADD_STUDENTS_TO_CLASS_FAILED: "Add students to class failed",
   },
 
   OTHER: {
@@ -194,6 +199,7 @@ const MESSAGE_SUCCESS = {
     CREATE_CLASS_SUCCESS: "Create class successfully",
     EDIT_CLASS_SUCCESS: "Edit class successfully",
     DELETE_CLASS_SUCCESS: "Delete class successfully",
+    ADD_STUDENTS_TO_CLASS_SUCCESS: "Add students to class successfully",
   },
 };
 

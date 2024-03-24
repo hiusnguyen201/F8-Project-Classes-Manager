@@ -11,6 +11,9 @@ const {
 } = require("../../../../constants/message.constant");
 const { STATUS_CODE } = require("../../../../constants/status.constant");
 const {
+  STUDENT_ATTENDANCE_STATUS,
+} = require("../../../../constants/setting.constant");
+const {
   FILE_NAME_EXPORT,
   SHEET_HEADERS_EXPORT,
   FIELDS_IMPORT,
@@ -84,6 +87,76 @@ module.exports = {
       console.log(err);
       return next(createHttpError(STATUS_CODE.SERVER_ERROR));
     }
+  },
+
+  details: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.DETAILS_CLASS, {
+        req,
+        user: req.user,
+        title: `Details Class - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        STUDENT_ATTENDANCE_STATUS,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  addStudentPage: async (req, res) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      const students = await userService.findAllWithTypes("student");
+
+      return res.render(RENDER_PATH.ADMIN.ADD_STUDENT_CLASS, {
+        req,
+        user: req.user,
+        title: `Add Student - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        students,
+        currPage: "classes",
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        stringUtil,
+        moment,
+        STUDENT_ATTENDANCE_STATUS,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  handleAddStudents: async (req, res) => {
+    try {
+      await classService.addStudents(req.body, req.params.id);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.ADD_STUDENTS_TO_CLASS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.ADD_STUDENTS_TO_CLASS_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
   },
 
   handleCreateClass: async (req, res) => {

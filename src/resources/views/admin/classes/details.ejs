@@ -1,0 +1,157 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
+<div class="card py-1 mx-2 mb-3">
+  <div class="row align-items-center">
+    <div class="col-6">
+      <h3 class="mb-0 ml-3"><%= title.split("-")[0] %></h3>
+    </div>
+    <div class="col-6">
+      <ol class="breadcrumb float-sm-right mb-0">
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_CLASSES %>">Classes</a>
+        </li>
+        <li class="breadcrumb-item active">Details</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="card px-3 py-3 mx-2">
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td width="15%">Name:</td>
+        <td><%= classObj.name %></td>
+      </tr>
+      <tr>
+        <td width="15%">Quantity:</td>
+        <td><%= classObj.quantity %></td>
+      </tr>
+      <tr>
+        <td width="15%">Start date:</td>
+        <td><%= moment(classObj.startDate).format("DD/MM/YYYY") %></td>
+      </tr>
+      <tr>
+        <td width="15%">End date:</td>
+        <td><%= moment(classObj.endDate).format("DD/MM/YYYY") %></td>
+      </tr>
+      <tr>
+        <td width="15%">Schedules:</td>
+        <td>
+          <ul class="mb-0">
+            <% if(classObj.Class_Schedules && classObj.Class_Schedules.length) {
+            classObj.Class_Schedules.forEach((scheduleObj) => { %>
+            <li>
+              <%= moment.weekdays(+scheduleObj.schedule) %>: <%=
+              scheduleObj.timeLearn %>
+            </li>
+            <%}) }%>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td width="15%">Course:</td>
+        <td>
+          <a
+            href="<%= REDIRECT_PATH.ADMIN.DETAILS_COURSE %>/<%= classObj.Course.id %>"
+            ><%= classObj.Course.name %></a
+          >
+        </td>
+      </tr>
+      <tr>
+        <td width="15%">Teacher:</td>
+        <td>
+          <a
+            href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER %>/<%= classObj.Course.User.id %>"
+            ><%= classObj.Course.User.name %></a
+          >
+        </td>
+      </tr>
+      <tr>
+        <td width="15%">Assistants:</td>
+        <td>
+          <ul class="mb-0">
+            <% if(classObj.Users && classObj.Users.length) {
+            classObj.Users.forEach((user) => { %> <% if(user.id !=
+            classObj.Course.User.id) {%>
+            <li>
+              <a
+                href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER %>/<%= user.id %>"
+                ><%= user.name %></a
+              >
+            </li>
+            <%}%> <%}) }%>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="mb-3">
+    <span>All Students:</span>
+    <div class="mb-3 row">
+      <div class="col-3">
+        <a
+          href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= classObj.id %><%= REDIRECT_PATH.ADMIN.ADD_STUDENT_CLASS %>"
+          class="btn btn-success w-100 py-2"
+          >Create</a
+        >
+      </div>
+      <div class="col-3">
+        <button class="btn btn-danger w-100 py-2" disabled="">
+          Delete Selected
+        </button>
+      </div>
+    </div>
+  </div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th width="1%">Operation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if(classObj.Student_Attendances && classObj.Student_Attendances.length)
+      { classObj.Student_Attendances.forEach((studentAttendance) => {%>
+      <tr>
+        <td>
+          <a
+            href="<%= REDIRECT_PATH.ADMIN.DETAILS_STUDENT %>/<%= studentAttendance.User.id %>"
+            ><%= studentAttendance.User.name %></a
+          >
+        </td>
+        <td><%= STUDENT_ATTENDANCE_STATUS[studentAttendance.status] %></td>
+        <td class="d-flex align-items-center justify-content-center">
+          <a
+            href="<%= req.originalUrl %><%= REDIRECT_PATH.ADMIN.EDIT_STUDENT_CLASS %>/<%= studentAttendance.id %>"
+            class="mx-1 icon-operation"
+            ><i class="fas fa-pen fa-xs"></i
+          ></a>
+          <button
+            class="mx-1 icon-operation"
+            type="button"
+            data-toggle="modal"
+            data-target="#modal-deleteChildren-<%= studentAttendance.id %>"
+          >
+            <i class="fas fa-trash fa-xs"></i>
+          </button>
+        </td>
+      </tr>
+      <%}) } %>
+    </tbody>
+  </table>
+</div>

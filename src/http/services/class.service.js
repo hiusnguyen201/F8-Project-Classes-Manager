@@ -16,6 +16,7 @@ class ClassService {
     this.User = models.User;
     this.ClassSchedule = models.Class_Schedule;
     this.TeacherCalender = models.Teacher_Calender;
+    this.StudentAttendance = models.Student_Attendance;
   }
 
   async findAllWithSearchAndPaginate(queryString) {
@@ -74,6 +75,14 @@ class ClassService {
           },
         },
         this.ClassSchedule,
+        {
+          model: this.Course,
+          include: this.User,
+        },
+        {
+          model: this.StudentAttendance,
+          include: this.User,
+        },
       ],
     });
 
@@ -385,6 +394,18 @@ class ClassService {
         }
       })
     );
+  }
+
+  async addStudents(data, classId) {
+    const student = await this.User.findByPk(data.student);
+    const studentAttendance = await this.StudentAttendance.create({
+      studentId: student.id,
+      dateLearning: moment(data.dateLearning, "DD/MM/YYYY"),
+      status: data.status,
+      classId,
+    });
+
+    return studentAttendance;
   }
 }
 

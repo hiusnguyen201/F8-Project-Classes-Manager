@@ -1,0 +1,113 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
+<form action="" method="post">
+  <div class="pl-0 modal fade modal-edit show activeModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header align-items-center">
+          <h5 class="modal-title">
+            <a
+              href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= req.params.id %>"
+              ><i class="fas fa-times mr-3 icon-operation"></i
+            ></a>
+            <i class="fas fa-user mr-2"></i><span>Student</span>
+          </h5>
+          <button type="submit" class="btn btn-success py-2">Add</button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body mx-auto">
+            <div class="card">
+              <div class="mb-3">
+                <label for="student"
+                  >Student<span class="required-text">*</span></label
+                >
+
+                <select class="form-control" name="student">
+                  <option value="">--- Select a students ---</option>
+                  <% if(students?.length) {students.forEach(({id, email}) => {
+                  %> <% if(oldValues?.students &&
+                  oldValues.students.includes(`${id}`)) { %>
+                  <option selected value="<%= id %>"><%= email %></option>
+                  <% } else {%>
+                  <option value="<%= id %>"><%= email %></option>
+                  <% }})} %>
+                </select>
+
+                <% if(errorsValidate?.student) {%>
+                <span class="required-text"><%= errorsValidate.student %></span>
+                <% } %>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label"
+                  >Date Learning<span class="required-text">*</span></label
+                >
+                <div class="input-group date">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    name="dateLearning"
+                    class="form-control datetimepicker-input"
+                    id="startDatePicker"
+                    value="<%= oldValues.dateLearning %>"
+                  />
+                </div>
+
+                <% if(errorsValidate.dateLearning){ %>
+                <span class="text-danger">
+                  <%= errorsValidate.dateLearning %>
+                </span>
+                <% } %>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label"
+                  >Status<span class="required-text">*</span></label
+                >
+                <div class="input-group">
+                  <select name="status" class="form-control">
+                    <% if(STUDENT_ATTENDANCE_STATUS &&
+                    STUDENT_ATTENDANCE_STATUS.length){STUDENT_ATTENDANCE_STATUS.forEach((status,
+                    index) => { %>
+                    <option value="<%= index %>"><%= status %></option>
+                    <% })} %>
+                  </select>
+                </div>
+
+                <% if(errorsValidate.status){ %>
+                <span class="text-danger"> <%= errorsValidate.status %> </span>
+                <% } %>
+              </div>
+
+              <input type="hidden" name="_method" value="POST" />
+              <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= csrf.createToken() %>"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<style>
+  html {
+    overflow: hidden;
+  }
+</style>
