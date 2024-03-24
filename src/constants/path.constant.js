@@ -39,6 +39,7 @@ const REDIRECT_PATH = {
     DETAILS_CLASS: "/admin/classes/details",
     ADD_STUDENT_CLASS: "/students/add",
     EDIT_STUDENT_CLASS: "/students/edit",
+    DELETE_STUDENT_CLASS: "/students/delete",
     CREATE_CLASS: "/admin/classes/create",
     EDIT_CLASS: "/admin/classes/edit",
     IMPORT_CLASSES: "/admin/classes/import",

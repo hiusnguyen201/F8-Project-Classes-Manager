@@ -110,8 +110,14 @@
         >
       </div>
       <div class="col-3">
-        <button class="btn btn-danger w-100 py-2" disabled="">
-          Delete Selected
+        <button
+          type="button"
+          data-toggle="modal"
+          data-target="#btnDeleteAllChildrenSelected"
+          class="btn btn-danger mx-2"
+          disabled
+        >
+          Delete selected
         </button>
       </div>
     </div>
@@ -119,6 +125,11 @@
   <table class="table table-bordered">
     <thead>
       <tr>
+        <th width="1%" class="px-1">
+          <label class="checkbox-btn">
+            <input type="checkbox" class="checkboxParent" />
+          </label>
+        </th>
         <th>Name</th>
         <th>Status</th>
         <th width="1%">Operation</th>
@@ -128,6 +139,15 @@
       <% if(classObj.Student_Attendances && classObj.Student_Attendances.length)
       { classObj.Student_Attendances.forEach((studentAttendance) => {%>
       <tr>
+        <td width="1%" class="px-1">
+          <label class="checkbox-btn">
+            <input
+              type="checkbox"
+              class="checkboxChildren"
+              value="<%= studentAttendance.id %>"
+            />
+          </label>
+        </td>
         <td>
           <a
             href="<%= REDIRECT_PATH.ADMIN.DETAILS_STUDENT %>/<%= studentAttendance.User.id %>"
@@ -151,6 +171,8 @@
           </button>
         </td>
       </tr>
+
+      <%- include("./deleteStudentAttendance.modal.ejs", {studentAttendance}) %>
       <%}) } %>
     </tbody>
   </table>

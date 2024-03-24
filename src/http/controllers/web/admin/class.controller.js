@@ -116,49 +116,6 @@ module.exports = {
     }
   },
 
-  addStudentPage: async (req, res) => {
-    try {
-      const classObj = await classService.findById(req.params.id);
-      if (!classObj) {
-        return next(createHttpError(STATUS_CODE.NOT_FOUND));
-      }
-
-      const students = await userService.findAllWithTypes("student");
-
-      return res.render(RENDER_PATH.ADMIN.ADD_STUDENT_CLASS, {
-        req,
-        user: req.user,
-        title: `Add Student - ${process.env.APP_NAME}`,
-        REDIRECT_PATH,
-        students,
-        currPage: "classes",
-        success: req.flash("success"),
-        error: req.flash("error"),
-        csrf,
-        oldValues: req.flash("oldValues")[0] || {},
-        errorsValidate: req.flash("errors")[0] || {},
-        stringUtil,
-        moment,
-        STUDENT_ATTENDANCE_STATUS,
-      });
-    } catch (err) {
-      console.log(err);
-      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
-    }
-  },
-
-  handleAddStudents: async (req, res) => {
-    try {
-      await classService.addStudents(req.body, req.params.id);
-      req.flash("success", MESSAGE_SUCCESS.CLASS.ADD_STUDENTS_TO_CLASS_SUCCESS);
-    } catch (err) {
-      console.log(err);
-      req.flash("error", MESSAGE_ERROR.CLASS.ADD_STUDENTS_TO_CLASS_FAILED);
-    }
-
-    return res.redirect(req.originalUrl);
-  },
-
   handleCreateClass: async (req, res) => {
     try {
       await classService.create(req.body);
@@ -201,9 +158,9 @@ module.exports = {
   },
 
   handleEditClass: async (req, res) => {
-    const { id } = req.params;
+    const { id, studentAttendance } = req.params;
     try {
-      await classService.update(req.body, id);
+      await classService.update(req.body, id, studentAttendance);
       req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_CLASS_SUCCESS);
     } catch (err) {
       console.log(err);
@@ -303,5 +260,119 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.FILE.EXPORT_CLASSES_FAILED);
       return res.redirect(req.originalUrl);
     }
+  },
+
+  addStudentPage: async (req, res) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      const students = await userService.findAllWithTypes("student");
+
+      return res.render(RENDER_PATH.ADMIN.ADD_STUDENT_CLASS, {
+        req,
+        user: req.user,
+        title: `Add Student - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        students,
+        currPage: "classes",
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        stringUtil,
+        moment,
+        STUDENT_ATTENDANCE_STATUS,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  handleAddStudents: async (req, res) => {
+    try {
+      await classService.addStudent(req.body, req.params.id);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.ADD_STUDENT_TO_CLASS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", err);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  editStudentPage: async (req, res, next) => {
+    try {
+      const { id, studentAttendance } = req.params;
+
+      const classObj = await classService.findById(id);
+      if (!classObj) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+
+      const studentAttendanceEdit =
+        await classService.findStudentAttendanceByPk(studentAttendance);
+      if (!studentAttendanceEdit)
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+
+      const students = await userService.findAllWithTypes("student");
+
+      return res.render(RENDER_PATH.ADMIN.EDIT_STUDENT_CLASS, {
+        req,
+        user: req.user,
+        title: `Edit Student - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        students,
+        currPage: "classes",
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        oldValues: req.flash("oldValues")[0] || studentAttendanceEdit || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        stringUtil,
+        moment,
+        STUDENT_ATTENDANCE_STATUS,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  handleEditStudent: async (req, res) => {
+    try {
+      await classService.editStudent(
+        req.body,
+        req.params.id,
+        req.params.studentAttendance
+      );
+      req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_STUDENT_TO_CLASS_SUCCESS);
+    } catch (err) {
+      req.flash("error", err.message);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleDeleteStudentsAttendance: async (req, res) => {
+    const { id, studentAttendance } = req.params;
+    try {
+      await classService.removeStudentsAttendance(
+        Array.isArray(studentAttendance)
+          ? studentAttendance
+          : [studentAttendance]
+      );
+      req.flash(
+        "success",
+        MESSAGE_SUCCESS.CLASS.DELETE_STUDENT_ATTENDANCE_SUCCESS
+      );
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_STUDENT_ATTENDANCE_FAILED);
+    }
+
+    return res.redirect(REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${id}`);
   },
 };

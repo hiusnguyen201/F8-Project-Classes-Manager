@@ -396,16 +396,83 @@ class ClassService {
     );
   }
 
-  async addStudents(data, classId) {
-    const student = await this.User.findByPk(data.student);
+  async addStudent(data, classId) {
+    const existStudentAttendance = await this.StudentAttendance.findOne({
+      where: {
+        classId,
+        studentId: data.student,
+      },
+    });
+
+    if (existStudentAttendance)
+      throw new Error(MESSAGE_ERROR.CLASS.STUDENT_ATTENDANCED);
+
     const studentAttendance = await this.StudentAttendance.create({
-      studentId: student.id,
+      studentId: data.student,
       dateLearning: moment(data.dateLearning, "DD/MM/YYYY"),
       status: data.status,
       classId,
     });
 
+    if (!studentAttendance) {
+      throw new Error(MESSAGE_ERROR.CLASS.ADD_STUDENT_TO_CLASS_FAILED);
+    }
+
     return studentAttendance;
+  }
+
+  async findStudentAttendanceByPk(id) {
+    if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
+
+    const studentAttendance = await this.StudentAttendance.findByPk(id);
+
+    return studentAttendance ? studentAttendance : null;
+  }
+
+  async editStudent(data, classId, studentAttendanceId) {
+    const existStudentAttendance = await this.StudentAttendance.findOne({
+      where: {
+        classId,
+        studentId: data.student,
+        [Op.not]: {
+          id: studentAttendanceId,
+        },
+      },
+    });
+
+    if (existStudentAttendance)
+      throw new Error(MESSAGE_ERROR.CLASS.STUDENT_ATTENDANCED);
+
+    const status = await this.StudentAttendance.update(
+      {
+        studentId: data.student,
+        dateLearning: moment(data.dateLearning, "DD/MM/YYYY"),
+        status: data.status,
+      },
+      {
+        where: {
+          id: studentAttendanceId,
+        },
+      }
+    );
+
+    if (!status)
+      throw new Error(MESSAGE_ERROR.CLASS.EDIT_STUDENT_TO_CLASS_FAILED);
+
+    return status;
+  }
+
+  async removeStudentsAttendance(listId) {
+    await Promise.all(
+      listId.map(async (id) => {
+        const studentAttendance = await this.StudentAttendance.findByPk(id);
+
+        if (!studentAttendance)
+          throw new Error(MESSAGE_ERROR.CLASS.STUDENT_NOT_FOUND);
+
+        await studentAttendance.destroy();
+      })
+    );
   }
 }
 

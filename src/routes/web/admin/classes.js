@@ -21,6 +21,23 @@ router.post(
   ClassController.handleAddStudents
 );
 
+router.get(
+  "/details/:id/students/edit/:studentAttendance",
+  ClassController.editStudentPage
+);
+
+router.patch(
+  "/details/:id/students/edit/:studentAttendance",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT_STUDENT),
+  ClassController.handleEditStudent
+);
+
+router.delete(
+  "/details/:id/students/delete/:studentAttendance",
+  ClassController.handleDeleteStudentsAttendance
+);
+
 router.post(
   "/create",
   csrf.verify,

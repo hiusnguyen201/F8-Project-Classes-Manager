@@ -253,6 +253,20 @@ const CLASS_RULES = {
       "dateLearning.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_DATELEARNING,
     },
   },
+  EDIT_STUDENT: {
+    RULES: {
+      student: "required|integer|exists:users,id",
+      dateLearning: "required|string|date:DD/MM/YYYY",
+    },
+    MESSAGES: {
+      "student.required": MESSAGE_ERROR.CLASS.REQUIRED_STUDENT,
+      "student.integer": MESSAGE_ERROR.CLASS.STUDENT_NOT_FOUND,
+      "student.exists:users,id": MESSAGE_ERROR.CLASS.STUDENT_NOT_FOUND,
+      "dateLearning.required": MESSAGE_ERROR.CLASS.REQUIRED_DATELEARNING,
+      "dateLearning.string": MESSAGE_ERROR.CLASS.INVALID_DATELEARNING,
+      "dateLearning.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_DATELEARNING,
+    },
+  },
 };
 
 const RULES_REQUEST = {

@@ -114,6 +114,7 @@ const MESSAGE_ERROR = {
     STUDENT_NOT_FOUND: "Student not found",
     REQUIRED_DATELEARNING: "Date learning is required",
     INVALID_DATELEARNING: "Invalid Date learning",
+    STUDENT_ATTENDANCED: "This student already in class",
 
     // Feature
     CLASS_EXISTED: "Class is existed",
@@ -121,7 +122,9 @@ const MESSAGE_ERROR = {
     CREATE_CLASS_FAILED: "Create class failed",
     EDIT_CLASS_FAILED: "Edit class information failed",
     DELETE_CLASS_FAILED: "Delete class failed",
-    ADD_STUDENTS_TO_CLASS_FAILED: "Add students to class failed",
+    ADD_STUDENT_TO_CLASS_FAILED: "Add student to class failed",
+    EDIT_STUDENT_TO_CLASS_FAILED: "Edit student to class failed",
+    DELETE_STUDENT_ATTENDANCE_FAILED: "Delete student attendance failed",
   },
 
   OTHER: {
@@ -199,7 +202,9 @@ const MESSAGE_SUCCESS = {
     CREATE_CLASS_SUCCESS: "Create class successfully",
     EDIT_CLASS_SUCCESS: "Edit class successfully",
     DELETE_CLASS_SUCCESS: "Delete class successfully",
-    ADD_STUDENTS_TO_CLASS_SUCCESS: "Add students to class successfully",
+    ADD_STUDENT_TO_CLASS_SUCCESS: "Add student to class successfully",
+    EDIT_STUDENT_TO_CLASS_SUCCESS: "Edit student to class successfully",
+    DELETE_STUDENT_ATTENDANCE_SUCCESS: "Delete student attendance successfully",
   },
 };
 

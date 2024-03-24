@@ -34,12 +34,9 @@
                 <select class="form-control" name="student">
                   <option value="">--- Select a students ---</option>
                   <% if(students?.length) {students.forEach(({id, email}) => {
-                  %> <% if(oldValues?.students &&
-                  oldValues.students.includes(`${id}`)) { %>
-                  <option selected value="<%= id %>"><%= email %></option>
-                  <% } else {%>
-                  <option value="<%= id %>"><%= email %></option>
-                  <% }})} %>
+                  %>
+                  <option <%= +oldValues.student === +id ? 'selected' : ''%> value="<%= id %>"><%= email %></option>
+                  <% })} %>
                 </select>
 
                 <% if(errorsValidate?.student) {%>
@@ -82,7 +79,7 @@
                     <% if(STUDENT_ATTENDANCE_STATUS &&
                     STUDENT_ATTENDANCE_STATUS.length){STUDENT_ATTENDANCE_STATUS.forEach((status,
                     index) => { %>
-                    <option value="<%= index %>"><%= status %></option>
+                    <option <%= oldValues.status == index ? 'selected' : '' %> value="<%= index %>"><%= status %></option>
                     <% })} %>
                   </select>
                 </div>

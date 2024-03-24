@@ -1,0 +1,39 @@
+<form
+  action="<%= req.originalUrl %><%= REDIRECT_PATH.ADMIN.DELETE_STUDENT_CLASS %>/<%= studentAttendance.id %>"
+  method="post"
+>
+  <div
+    class="modal fade"
+    id="modal-deleteChildren-<%= studentAttendance.id %>"
+    tabindex="-1"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="line"></div>
+        <div class="modal-header">
+          <h5 class="modal-title" style="border: none; font-size: 22px">
+            Are you sure to delete student ?
+          </h5>
+        </div>
+        <div class="modal-body text-center">
+          <span style="font-size: 24px"
+            ><b> <%= studentAttendance.User.name %> </b></span
+          >
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            No
+          </button>
+          <input type="hidden" name="_method" value="DELETE" />
+          <input
+            type="hidden"
+            name="csrfToken"
+            value="<%= csrf.createToken() %>"
+          />
+          <input type="hidden" name="id" value="<%= studentAttendance.id %>" />
+          <button type="submit" class="btn btn-danger">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
