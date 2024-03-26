@@ -23,7 +23,7 @@ router.get("/google/redirect", passport.authenticate("google"));
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
+    failureRedirect: REDIRECT_PATH.AUTH.LOGIN,
     failureMessage: true,
   }),
   (req, res) => {
@@ -40,7 +40,7 @@ router.get("/github/redirect", passport.authenticate("github"));
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
+    failureRedirect: REDIRECT_PATH.AUTH.LOGIN,
     failureMessage: true,
   }),
   (req, res) => {
@@ -57,7 +57,7 @@ router.get("/facebook/redirect", passport.authenticate("facebook"));
 router.get(
   "/facebook/callback",
   passport.authenticate("facebook", {
-    failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
+    failureRedirect: REDIRECT_PATH.AUTH.LOGIN,
     failureMessage: true,
   }),
   (req, res) => {
@@ -100,7 +100,7 @@ router.post(
   "/login",
   csrf.verify,
   passport.authenticate("local", {
-    failureRedirect: REDIRECT_PATH.LOGIN_AUTH,
+    failureRedirect: REDIRECT_PATH.AUTH.LOGIN,
     failureFlash: true,
   }),
   AuthController.handleLocalLogin

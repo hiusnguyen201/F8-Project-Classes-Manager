@@ -10,6 +10,14 @@ const selectorModel = {
   types: models.Type,
   courses: models.Course,
   classes: models.Class,
+  course_modules: models.Course_Module,
+  learning_statuses: models.Learning_Status,
+};
+
+const mimetype = {
+  excel: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  word: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  pdf: "application/pdf",
 };
 
 const selectorRule = {
@@ -129,15 +137,19 @@ module.exports = {
     return async (req, res, next) => {
       const { RULES, MESSAGES } = rulesObj;
       const validations = {};
-
       for (const [name, rulesStr] of Object.entries(RULES)) {
         const rules = rulesStr.split("|");
 
+        let nullable = false;
         for (const rule of rules) {
           const [ruleName, ruleValue] = rule.split(":");
           const funcSelected = selectorRule[ruleName];
 
-          if (!funcSelected) {
+          if (ruleName == "nullable" && !req.body[name]) {
+            nullable = true;
+          }
+
+          if (!funcSelected && !nullable) {
             console.log(
               "\x1b[33m%s\x1b[0m",
               `***** Rule '${rule}' is undefined *****`
@@ -145,24 +157,25 @@ module.exports = {
             continue;
           }
 
-          const { errors } = await funcSelected(
-            name,
-            MESSAGES ? MESSAGES[`${name}.${rule}`] : null,
-            ruleValue ?? null
-          ).run(req);
+          if (ruleName != "nullable" && !nullable) {
+            const { errors } = await funcSelected(
+              name,
+              MESSAGES ? MESSAGES[`${name}.${rule}`] : null,
+              ruleValue ?? null
+            ).run(req);
 
-          if (errors?.length) {
-            validations[name] = errors[0].msg;
-            break;
+            if (errors?.length) {
+              validations[name] = errors[0].msg;
+              break;
+            }
           }
         }
       }
 
-      console.log(validations);
-
       if (Object.keys(validations)?.length) {
         req.flash("oldValues", req.body);
         req.flash("errors", validations);
+        req.flash("method", req.method);
         return res.redirect(req.originalUrl);
       }
 
@@ -170,28 +183,36 @@ module.exports = {
     };
   },
 
-  // Excel
-  fileExcel: () => {
+  file: (exceptType) => {
     return [
       check("file").custom((value, { req }) => {
-        const fileInfo = req.file;
-        const filePath = `./public/uploads/${fileInfo.originalname}`;
+        const files = req.files;
 
-        if (fileInfo.size > 1000000 * +process.env.SIZE_FILE_LIMIT) {
-          throw new Error(MESSAGE_ERROR.FILE.SIZE_FILE_LIMIT);
-        }
+        if (files && files.length) {
+          files.forEach((fileInfo) => {
+            const filePath = `./public/uploads/${fileInfo.originalname}`;
 
-        if (
-          fileInfo.mimetype !==
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ) {
-          try {
-            fs.unlinkSync(filePath);
-            throw new Error(MESSAGE_ERROR.FILE.MIMETYPE_EXCEL_WRONG);
-          } catch (err) {
-            console.log(err);
-            throw new Error(MESSAGE_ERROR.FILE.REMOVE_FILE_UPLOAD_ERROR);
-          }
+            if (fileInfo.size > 2000000 * +process.env.SIZE_FILE_LIMIT) {
+              throw new Error(MESSAGE_ERROR.FILE.SIZE_FILE_LIMIT);
+            }
+
+            exceptType = Array.isArray(exceptType) ? exceptType : [exceptType];
+
+            let count = 0;
+            for (var i = 0; i < exceptType.length; i++) {
+              if (fileInfo.mimetype == mimetype[type]) break;
+              if (count == exceptType.length) {
+                try {
+                  fs.unlinkSync(filePath);
+                  throw new Error(MESSAGE_ERROR.FILE.MIMETYPE_WRONG);
+                } catch (err) {
+                  console.log(err);
+                  throw new Error(MESSAGE_ERROR.FILE.REMOVE_FILE_UPLOAD_ERROR);
+                }
+              }
+              count++;
+            }
+          });
         }
 
         return true;

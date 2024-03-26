@@ -1,4 +1,5 @@
 const createHttpError = require("http-errors");
+const moment = require("moment");
 const {
   RENDER_PATH,
   REDIRECT_PATH,
@@ -31,7 +32,7 @@ module.exports = {
       const { meta, data: courses } =
         await courseService.findAllWithSearchAndPaginate(req.query);
 
-      return res.render(RENDER_PATH.HOME_COURSES_ADMIN, {
+      return res.render(RENDER_PATH.ADMIN.HOME_COURSES, {
         req,
         user: req.user,
         page: meta.page,
@@ -58,7 +59,7 @@ module.exports = {
     try {
       const teachers = await userService.findAllWithTypes("teacher");
 
-      return res.render(RENDER_PATH.CREATE_COURSE, {
+      return res.render(RENDER_PATH.ADMIN.CREATE_COURSE, {
         req,
         user: req.user,
         teachers,
@@ -77,6 +78,32 @@ module.exports = {
     }
   },
 
+  async details(req, res, next) {
+    try {
+      const course = await courseService.findById(req.params.id);
+      if (!course) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.DETAILS_COURSE, {
+        req,
+        user: req.user,
+        title: `Details Course - ${process.env.APP_NAME}`,
+        REDIRECT_PATH,
+        currPage: "courses",
+        course,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
   handleCreateCourse: async (req, res) => {
     try {
       await courseService.create(req.body);
@@ -86,7 +113,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.COURSE.CREATE_COURSE_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.CREATE_COURSE);
+    return res.redirect(req.originalUrl);
   },
 
   edit: async (req, res, next) => {
@@ -96,7 +123,7 @@ module.exports = {
 
       const teachers = await userService.findAllWithTypes(["teacher"]);
 
-      return res.render(RENDER_PATH.EDIT_COURSE, {
+      return res.render(RENDER_PATH.ADMIN.EDIT_COURSE, {
         req,
         user: req.user,
         teachers,
@@ -125,7 +152,7 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.COURSE.EDIT_COURSE_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.EDIT_COURSE + `/${id}`);
+    return res.redirect(req.originalUrl);
   },
 
   handleDeleteCourses: async (req, res) => {
@@ -138,11 +165,11 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.COURSE.DELETE_COURSE_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.HOME_COURSES_ADMIN);
+    return res.redirect(req.originalUrl);
   },
 
   importCoursesPage: async (req, res) => {
-    return res.render(RENDER_PATH.IMPORT_COURSES, {
+    return res.render(RENDER_PATH.ADMIN.IMPORT_COURSES, {
       title: `Import Courses - ${process.env.APP_NAME}`,
       user: req.user,
       REDIRECT_PATH,
@@ -154,14 +181,17 @@ module.exports = {
 
   handleImportCourses: async (req, res) => {
     try {
-      await courseService.importCourses(req.file, FIELDS_IMPORT.COURSE_FIELDS);
+      await courseService.importCourses(
+        req.files[0],
+        FIELDS_IMPORT.COURSE_FIELDS
+      );
       req.flash("success", MESSAGE_SUCCESS.FILE.IMPORT_COURSES_SUCCESS);
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.FILE.IMPORT_COURSES_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.IMPORT_COURSES);
+    return res.redirect(req.originalUrl);
   },
 
   handleExportCourses: async (req, res) => {
@@ -192,7 +222,83 @@ module.exports = {
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.FILE.EXPORT_COURSES_FAILED);
-      return res.redirect(REDIRECT_PATH.HOME_COURSES_ADMIN);
+      return res.redirect(req.originalUrl);
     }
+  },
+
+  createModule: async (req, res) => {
+    return res.render(RENDER_PATH.ADMIN.CREATE_MODULE, {
+      req,
+      user: req.user,
+      oldValues: req.flash("oldValues")[0] || {},
+      errorsValidate: req.flash("errors")[0] || {},
+      title: `Create module - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      courseId: req.params.id,
+      currPage: "modules",
+      success: req.flash("success"),
+      error: req.flash("error"),
+      csrf,
+    });
+  },
+
+  editModule: async (req, res) => {
+    const module = await courseService.getModuleById(req.params.moduleId);
+    if (!module) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+
+    return res.render(RENDER_PATH.ADMIN.EDIT_MODULE, {
+      req,
+      user: req.user,
+      errorsValidate: req.flash("errors")[0] || {},
+      oldValues: req.flash("oldValues")[0] || module || {},
+      title: `Edit module - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      module,
+      courseId: req.params.id,
+      currPage: "modules",
+      success: req.flash("success"),
+      error: req.flash("error"),
+      csrf,
+    });
+  },
+
+  handleCreateModule: async (req, res) => {
+    try {
+      await courseService.createModule(req.body, req.files, req.params.id);
+      req.flash("success", MESSAGE_SUCCESS.COURSE.CREATE_MODULE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.COURSE.CREATE_MODULE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleEditModule: async (req, res) => {
+    try {
+      await courseService.editModule(req.body, req.files, req.params.moduleId);
+      req.flash("success", MESSAGE_SUCCESS.COURSE.EDIT_MODULE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("modalEditModule", true);
+      req.flash("error", MESSAGE_ERROR.COURSE.EDIT_MODULE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleDeleteModules: async (req, res) => {
+    const { id, moduleId } = req.params;
+    try {
+      await courseService.removeModules(
+        Array.isArray(moduleId) ? moduleId : [moduleId]
+      );
+      req.flash("success", MESSAGE_SUCCESS.COURSE.DELETE_MODULE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.COURSE.DELETE_MODULE_FAILED);
+    }
+
+    return res.redirect(REDIRECT_PATH.ADMIN.DETAILS_COURSE + `/${id}`);
   },
 };

@@ -9,20 +9,32 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Class.belongsTo(models.Course, { foreignKey: "courseId" });
-      Class.hasMany(models.Comment, { foreignKey: "id" });
-      Class.hasOne(models.Student_Class, { foreignKey: "id" });
-      Class.hasMany(models.Teacher_Calender, {
+      Class.hasMany(models.Comment, { foreignKey: "classId" });
+      Class.hasMany(models.Student_Class, {
         foreignKey: "classId",
         onDelete: "CASCADE",
+        hooks: true,
       });
 
-      Class.hasMany(models.Student_Attendance, { foreignKey: "id" });
-      Class.hasMany(models.Exercise, { foreignKey: "id" });
+      Class.hasMany(models.Exercise, { foreignKey: "classId" });
+
+      Class.hasMany(models.Teacher_Calendar, {
+        foreignKey: "classId",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
+
+      Class.hasMany(models.Class_Schedule, {
+        foreignKey: "classId",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
 
       Class.belongsToMany(models.User, {
         foreignKey: "classId",
-        through: "class_teachers",
+        through: "classes_teachers",
         onDelete: "CASCADE",
+        hooks: true,
       });
     }
   }
@@ -37,14 +49,9 @@ module.exports = (sequelize, DataTypes) => {
       quantity: DataTypes.INTEGER,
       startDate: DataTypes.DATE,
       endDate: DataTypes.DATE,
-      schedule: DataTypes.TINYINT,
-      timeLearn: DataTypes.STRING(50),
       courseId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
-      deletedAt: {
-        type: DataTypes.DATE,
-      },
     },
     {
       sequelize,

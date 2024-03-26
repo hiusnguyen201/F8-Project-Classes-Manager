@@ -9,7 +9,7 @@ const expressLayouts = require("express-ejs-layouts");
 const passport = require("passport");
 const session = require("express-session");
 var methodOverride = require("method-override");
-var helmet = require("helmet");
+const bodyParser = require("body-parser");
 
 // Passport
 const localPassport = require("./helpers/passports/local.passport");
@@ -45,7 +45,7 @@ app.use(expressLayouts);
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
@@ -72,16 +72,6 @@ passport.use("google", googlePassport);
 passport.use("github", githubPassport);
 passport.use("facebook", facebookPassport);
 
-app.use(
-  methodOverride(function (req, res) {
-    if (req.body && typeof req.body === "object" && "_method" in req.body) {
-      var method = req.body._method;
-      delete req.body._method;
-      return method;
-    }
-  })
-);
-
 app.use("/", (req, res, next) => {
   req.user = {
     id: 91,
@@ -100,6 +90,16 @@ app.use("/", (req, res, next) => {
 
   next();
 });
+
+app.use(
+  methodOverride(function (req, res) {
+    if (req.body && typeof req.body === "object" && "_method" in req.body) {
+      var method = req.body._method;
+      delete req.body._method;
+      return method;
+    }
+  })
+);
 
 app.use("/auth", authRouter);
 

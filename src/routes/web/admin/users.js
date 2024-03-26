@@ -12,6 +12,8 @@ router.get("/", UserController.index);
 
 router.get("/create", UserController.create);
 
+router.get("/details/:id", UserController.details);
+
 router.post(
   "/create",
   csrf.verify,
@@ -35,7 +37,7 @@ router.get("/import", UserController.importUsersPage);
 router.post(
   "/import",
   fileMiddleware,
-  validator.fileExcel(),
+  validator.file("excel"),
   UserController.handleImportUsers
 );
 

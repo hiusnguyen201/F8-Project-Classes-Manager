@@ -8,8 +8,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically./
      */
     static associate(models) {
-      Course_Module.belongsTo(models.Course, { foreignKey: "courseId" });
-      Course_Module.hasMany(models.Module_Document, { foreignKey: "id" });
+      Course_Module.belongsTo(models.Course, {
+        foreignKey: "courseId",
+      });
+      Course_Module.hasMany(models.Module_Document, {
+        foreignKey: "moduleId",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
     }
   }
   Course_Module.init(

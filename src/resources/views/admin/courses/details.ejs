@@ -1,0 +1,195 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
+<div class="card py-1 mx-2 mb-3">
+  <div class="row align-items-center">
+    <div class="col-6">
+      <h3 class="mb-0 ml-3"><%= title.split("-")[0] %></h3>
+    </div>
+    <div class="col-6">
+      <ol class="breadcrumb float-sm-right mb-0">
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_COURSES %>">Courses</a>
+        </li>
+        <li class="breadcrumb-item active">Details</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="card py-3 px-3 mx-2">
+  <div class="row mb-4">
+    <div class="col-3">Name:</div>
+    <div class="col-7"><%= course.name %></div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3">Price:</div>
+    <div class="col-7">
+      <%= +course.price <= 0 ? 'Free' : stringUtil.formatCurrency(course.price)
+      %>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3">Teacher:</div>
+    <div class="col-7">
+      <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER %>/<%= course.User.id %>"
+        ><%= course.User.name %></a
+      >
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3">Try Learn:</div>
+    <div class="col-7">
+      <%= course.tryLearn %>&nbsp;<span style="font-size: 14px">trials</span>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3">Quantity:</div>
+    <div class="col-7">
+      <%= course.quantity%>&nbsp;<span style="font-size: 14px"
+        >users/class</span
+      >
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3">Duration:</div>
+    <div class="col-7">
+      <%= course.duration %>&nbsp;<span style="font-size: 14px">lessons</span>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3">Created At:</div>
+    <div class="col-7">
+      <%= moment(course.createdAt).format("DD/MM/YYYY") %>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-3">Updated At:</div>
+    <div class="col-7">
+      <%= moment(course.updatedAt).format("DD/MM/YYYY") %>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <span class="d-block mb-2">Documents:</span>
+
+      <div class="mb-3 row">
+        <div class="col-3">
+          <a
+            href="<%= req.originalUrl %><%= REDIRECT_PATH.ADMIN.CREATE_MODULE %>"
+            class="btn btn-success w-100 py-2"
+            >Create</a
+          >
+        </div>
+      </div>
+
+      <% if(course.Course_Modules && course.Course_Modules.length) {
+      course.Course_Modules.forEach(moduleObj => { %>
+      <div class="row mb-3">
+        <div class="col-6">
+          <div id="accordion-<%= moduleObj.id %>">
+            <div class="card card-primary py-0 mb-0">
+              <div class="card-header">
+                <h4 class="card-title w-100">
+                  <a
+                    class="d-block w-100 collapsed"
+                    data-toggle="collapse"
+                    href="#moduleObj-<%= moduleObj.id %>"
+                    aria-expanded="false"
+                  >
+                    <%= moduleObj.name %>
+                  </a>
+                </h4>
+              </div>
+              <div
+                id="moduleObj-<%= moduleObj.id %>"
+                class="collapse"
+                data-parent="#accordion-<%= moduleObj.id %>"
+              >
+                <div class="card-body py-2 px-3">
+                  <% if(moduleObj.Module_Documents &&
+                  moduleObj.Module_Documents.length) {
+                  moduleObj.Module_Documents.forEach((document, index) => {%>
+                  <a class="d-block" href="<%= document.pathName %>"
+                    ><%= document.name %></a
+                  >
+                  <%}) } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-2 d-flex justify-content-center align-items-center">
+          <a
+            href="<%= req.originalUrl %><%= REDIRECT_PATH.ADMIN.EDIT_MODULE %>/<%= moduleObj.id %>"
+            class="mx-1 icon-operation"
+            ><i class="fas fa-pen fa-xs"></i
+          ></a>
+          <button
+            class="mx-1 icon-operation"
+            type="button"
+            data-toggle="modal"
+            data-target="#modal-deleteChildren-<%= moduleObj.id %>"
+          >
+            <i class="fas fa-trash fa-xs"></i>
+          </button>
+        </div>
+      </div>
+
+      <%- include("./deleteModule.modal.ejs", {moduleObj}) %> <% })} %>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <span class="d-block mb-2">All Classes:</span>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(course.Classes && course.Classes.length) { for(var i = 0; i <
+          course.Classes.length; i++) {%>
+          <tr>
+            <td>
+              <a
+                href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= course.Classes[i].id %>"
+                ><%= course.Classes[i].name %></a
+              >
+            </td>
+            <td>
+              <%= moment(course.Classes[i].startDate).format("DD/MM/YYYY") %>
+            </td>
+            <td>
+              <%= moment(course.Classes[i].endDate).format("DD/MM/YYYY") %>
+            </td>
+          </tr>
+          <% }} %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

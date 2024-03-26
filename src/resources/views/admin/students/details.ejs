@@ -1,0 +1,70 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
+<div class="card py-1 mx-2 mb-3">
+  <div class="row align-items-center">
+    <div class="col-6">
+      <h3 class="mb-0 ml-3"><%= title.split("-")[0] %></h3>
+    </div>
+    <div class="col-6">
+      <ol class="breadcrumb float-sm-right mb-0">
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_STUDENTS %>">Students</a>
+        </li>
+        <li class="breadcrumb-item active">Details</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="card py-3 px-3 mx-2">
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td width="20%">Name:</td>
+          <td><%= student.name %></td>
+        </tr>
+        <tr>
+          <td width="20%">Email:</td>
+          <td><%= student.email %></td>
+        </tr>
+        <tr>
+          <td width="20%">Phone:</td>
+          <td><%= student.phone %></td>
+        </tr>
+        <tr>
+          <td width="20%">Address:</td>
+          <td><%= student.address %></td>
+        </tr>
+        <tr>
+          <td width="20%">Status:</td>
+          <td><%= student.firstLogin? 'Active' : "Inactive" %></td>
+        </tr>
+        <tr>
+          <td width="20%">Type:</td>
+          <td><%= student.Type.name %></td>
+        </tr>
+        <tr>
+          <td width="20%">Created At:</td>
+          <td><%= moment(user.createdAt).format("DD/MM/YYYY") %></td>
+        </tr>
+        <tr>
+          <td width="20%">Updated At:</td>
+          <td><%= moment(user.updatedAt).format("DD/MM/YYYY") %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

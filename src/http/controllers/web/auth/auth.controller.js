@@ -30,7 +30,7 @@ module.exports = {
       error[0] = MESSAGE_ERROR.USER.MISSING_CREDENTIALS;
     }
 
-    return res.render(RENDER_PATH.LOGIN_AUTH, {
+    return res.render(RENDER_PATH.AUTH.LOGIN, {
       layout: "layouts/auth.layout.ejs",
       title: `Login - ${process.env.APP_NAME} Accounts`,
       error,
@@ -44,11 +44,11 @@ module.exports = {
       const user = req.user;
       await otpService.create(user.id, user.email, user.name);
       req.flash("success", MESSAGE_SUCCESS.OTP.SENDED_OTP);
-      return res.redirect(REDIRECT_PATH.OTP_AUTH);
+      return res.redirect(REDIRECT_PATH.AUTH.OTP);
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.OTP.CREATE_OTP_FAILED);
-      return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+      return res.redirect(REDIRECT_PATH.AUTH.LOGIN);
     }
   },
 
@@ -62,7 +62,7 @@ module.exports = {
       }
     }
 
-    return res.render(RENDER_PATH.OTP_AUTH, {
+    return res.render(RENDER_PATH.AUTH.OTP, {
       layout: "layouts/auth.layout.ejs",
       title: `Verify Otp - ${process.env.APP_NAME} Accounts`,
       REDIRECT_PATH,
@@ -89,14 +89,14 @@ module.exports = {
           const tokenReset = tokenUtil.createTokenByJwt(user.id);
           req.session.firstLogin = loginToken.token;
           return res.redirect(
-            `${REDIRECT_PATH.EMAIL_PASS_RESET}/${tokenReset}`
+            `${REDIRECT_PATH.AUTH.EMAIL_PASS_RESET}/${tokenReset}`
           );
         }
 
         res.cookie("token", req.session.firstLogin);
         return res.redirect(
           classifyRedirect(user.Type.name, [
-            REDIRECT_PATH.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
             REDIRECT_PATH.HOME_TEACHER,
             REDIRECT_PATH.HOME_STUDENT,
           ])
@@ -106,7 +106,7 @@ module.exports = {
       console.log(err);
       req.flash("error", err.message);
     }
-    return res.redirect(REDIRECT_PATH.OTP_AUTH);
+    return res.redirect(REDIRECT_PATH.AUTH.OTP);
   },
 
   handleSocialLogin: async (req, res) => {
@@ -123,7 +123,7 @@ module.exports = {
 
     return res.redirect(
       classifyRedirect(user.Type.name, [
-        REDIRECT_PATH.HOME_ADMIN,
+        REDIRECT_PATH.ADMIN.HOME_ADMIN,
         REDIRECT_PATH.HOME_TEACHER,
         REDIRECT_PATH.HOME_STUDENT,
       ])
@@ -149,7 +149,7 @@ module.exports = {
 
     return res.redirect(
       classifyRedirect(user.Type.name, [
-        REDIRECT_PATH.SECURITY_SETTING_ADMIN,
+        REDIRECT_PATH.ADMIN.SECURITY_SETTING,
         REDIRECT_PATH.SETTINGS_SECURITY_TEACHER,
         REDIRECT_PATH.SETTINGS_SECURITY_STUDENT,
       ])
@@ -168,7 +168,7 @@ module.exports = {
     try {
       res.clearCookie("token");
       await tokenService.remove(tokenCookie);
-      return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+      return res.redirect(REDIRECT_PATH.AUTH.LOGIN);
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.USER.LOGOUT_FAILED);
@@ -178,7 +178,7 @@ module.exports = {
   },
 
   emailResetPass: (req, res) => {
-    return res.render(RENDER_PATH.EMAIL_PASS_RESET, {
+    return res.render(RENDER_PATH.AUTH.EMAIL_PASS_RESET, {
       layout: "layouts/auth.layout.ejs",
       title: `Reset Password - ${process.env.APP_NAME} Accounts`,
       REDIRECT_PATH,
@@ -197,11 +197,11 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.OTHER.SEND_MAIL_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.EMAIL_PASS_RESET);
+    return res.redirect(REDIRECT_PATH.AUTH.EMAIL_PASS_RESET);
   },
 
   resetPassword: async (req, res) => {
-    return res.render(RENDER_PATH.RESET_PASSWORD_LINK, {
+    return res.render(RENDER_PATH.AUTH.CHANGE_PASSWORD, {
       layout: "layouts/auth.layout.ejs",
       title: `Reset Password - ${process.env.APP_NAME} Accounts`,
       REDIRECT_PATH,
@@ -217,7 +217,7 @@ module.exports = {
     const { errors } = validationResult(req);
     if (errors?.length) {
       req.flash("error", errors[0].msg);
-      return res.redirect(REDIRECT_PATH.RESET_PASSWORD_LINK);
+      return res.redirect(REDIRECT_PATH.AUTH.CHANGE_PASSWORD);
     }
 
     const { confirmPassword } = req.body;
@@ -229,13 +229,13 @@ module.exports = {
       delete req.session.firstLogin;
       return res.redirect(
         classifyRedirect(user.Type.name, [
-          REDIRECT_PATH.HOME_ADMIN,
+          REDIRECT_PATH.ADMIN.HOME_ADMIN,
           REDIRECT_PATH.HOME_TEACHER,
           REDIRECT_PATH.HOME_STUDENT,
         ])
       );
     }
 
-    return res.redirect(REDIRECT_PATH.LOGIN_AUTH);
+    return res.redirect(REDIRECT_PATH.AUTH.LOGIN);
   },
 };

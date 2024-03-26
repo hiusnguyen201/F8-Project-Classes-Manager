@@ -108,6 +108,32 @@ const COURSE_RULES = {
   },
 };
 
+const MODULE_RULES = {
+  CREATE: {
+    RULES: {
+      name: "required|string|unique:course_modules,name",
+    },
+    MESSAGES: {
+      "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
+      "name.string": MESSAGE_ERROR.COURSE.INVALID_NAME,
+      "name.unique:course_modules,name":
+        MESSAGE_ERROR.COURSE.NAME_MODULE_EXISTED,
+    },
+  },
+
+  EDIT: {
+    RULES: {
+      name: "required|string|unique:course_modules,name,id,id",
+    },
+    MESSAGES: {
+      "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
+      "name.string": MESSAGE_ERROR.COURSE.INVALID_NAME,
+      "name.unique:course_modules,name,id,id":
+        MESSAGE_ERROR.COURSE.NAME_MODULE_EXISTED,
+    },
+  },
+};
+
 const TEACHER_RULES = {
   CREATE: {
     RULES: {
@@ -180,7 +206,7 @@ const CLASS_RULES = {
       "quantity.integer": MESSAGE_ERROR.CLASS.INVALID_QUANTITY,
       "startDate.required": MESSAGE_ERROR.CLASS.REQUIRED_START_DATE,
       "startDate.string": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
-      "startDate.date": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
+      "startDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
       "schedule.required": MESSAGE_ERROR.CLASS.REQUIRED_SCHEDULE,
       "timeLearnStart.required": MESSAGE_ERROR.CLASS.REQUIRED_TIMELEARN,
       "timeLearnEnd.required": MESSAGE_ERROR.CLASS.REQUIRED_TIMELEARN,
@@ -205,12 +231,62 @@ const CLASS_RULES = {
       "quantity.integer": MESSAGE_ERROR.CLASS.INVALID_QUANTITY,
       "startDate.required": MESSAGE_ERROR.CLASS.REQUIRED_START_DATE,
       "startDate.string": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
-      "startDate.date": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
+      "startDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_START_DATE,
       "schedule.required": MESSAGE_ERROR.CLASS.REQUIRED_SCHEDULE,
       "timeLearnStart.required": MESSAGE_ERROR.CLASS.REQUIRED_TIMELEARN,
       "timeLearnEnd.required": MESSAGE_ERROR.CLASS.REQUIRED_TIMELEARN,
       "courseId.required": MESSAGE_ERROR.CLASS.REQUIRED_COURSE,
       "courseId.integer": MESSAGE_ERROR.CLASS.INVALID_COURSE,
+    },
+  },
+  ADD_STUDENT: {
+    RULES: {
+      student: "required|integer|exists:users,id",
+      status: "required|integer|exists:learning_statuses,id",
+      completeDate: "nullable|string|date:DD/MM/YYYY",
+      dropoutDate: "nullable|string|date:DD/MM/YYYY",
+      recoverDate: "nullable|string|date:DD/MM/YYYY",
+      reason: "nullable|string",
+    },
+    MESSAGES: {
+      "student.required": MESSAGE_ERROR.CLASS.REQUIRED_STUDENT,
+      "student.integer": MESSAGE_ERROR.CLASS.STUDENT_NOT_FOUND,
+      "student.exists:users,id": MESSAGE_ERROR.CLASS.STUDENT_NOT_FOUND,
+      "status.required": MESSAGE_ERROR.CLASS.REQUIRED_STATUS,
+      "status.integer": MESSAGE_ERROR.CLASS.INVALID_STATUS,
+      "status.exists:learning_statuses,id": MESSAGE_ERROR.CLASS.INVALID_STATUS,
+      "completeDate.string": MESSAGE_ERROR.CLASS.INVALID_COMPLETE_DATE,
+      "completeDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_COMPLETE_DATE,
+      "dropoutDate.string": MESSAGE_ERROR.CLASS.INVALID_DROPOUT_DATE,
+      "dropoutDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_DROPOUT_DATE,
+      "recoverDate.string": MESSAGE_ERROR.CLASS.INVALID_RECOVERY_DATE,
+      "recoverDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_RECOVERY_DATE,
+      "reason.string": MESSAGE_ERROR.CLASS.INVALID_REASON,
+    },
+  },
+  EDIT_STUDENT: {
+    RULES: {
+      student: "required|integer|exists:users,id",
+      status: "required|integer|exists:learning_statuses,id",
+      completeDate: "nullable|string|date:DD/MM/YYYY",
+      dropoutDate: "nullable|string|date:DD/MM/YYYY",
+      recoverDate: "nullable|string|date:DD/MM/YYYY",
+      reason: "nullable|string",
+    },
+    MESSAGES: {
+      "student.required": MESSAGE_ERROR.CLASS.REQUIRED_STUDENT,
+      "student.integer": MESSAGE_ERROR.CLASS.STUDENT_NOT_FOUND,
+      "student.exists:users,id": MESSAGE_ERROR.CLASS.STUDENT_NOT_FOUND,
+      "status.required": MESSAGE_ERROR.CLASS.REQUIRED_STATUS,
+      "status.integer": MESSAGE_ERROR.CLASS.INVALID_STATUS,
+      "status.exists:learning_statuses,id": MESSAGE_ERROR.CLASS.INVALID_STATUS,
+      "completeDate.string": MESSAGE_ERROR.CLASS.INVALID_COMPLETE_DATE,
+      "completeDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_COMPLETE_DATE,
+      "dropoutDate.string": MESSAGE_ERROR.CLASS.INVALID_DROPOUT_DATE,
+      "dropoutDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_DROPOUT_DATE,
+      "recoverDate.string": MESSAGE_ERROR.CLASS.INVALID_RECOVERY_DATE,
+      "recoverDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_RECOVERY_DATE,
+      "reason.string": MESSAGE_ERROR.CLASS.INVALID_REASON,
     },
   },
 };
@@ -221,6 +297,7 @@ const RULES_REQUEST = {
   COURSE_RULES,
   TEACHER_RULES,
   CLASS_RULES,
+  MODULE_RULES,
 };
 
 module.exports = {

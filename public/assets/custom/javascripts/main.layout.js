@@ -255,3 +255,15 @@ const selectionRender = document.querySelector(
   "ul.select2-selection__rendered"
 );
 if (selectionRender) observer.observe(selectionRender, { childList: true });
+
+const divClearDate = document.querySelectorAll(
+  ".input-group-append.btn-clearDate"
+);
+
+if (divClearDate && divClearDate.length) {
+  divClearDate.forEach((div) => {
+    div.addEventListener("click", () => {
+      div.parentNode.querySelector("input").value = null;
+    });
+  });
+}

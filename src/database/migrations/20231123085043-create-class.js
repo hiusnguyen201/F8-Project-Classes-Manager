@@ -21,12 +21,6 @@ module.exports = {
       endDate: {
         type: Sequelize.DATE,
       },
-      schedule: {
-        type: Sequelize.TINYINT,
-      },
-      timeLearn: {
-        type: Sequelize.STRING(50),
-      },
       courseId: {
         type: Sequelize.INTEGER,
         references: {

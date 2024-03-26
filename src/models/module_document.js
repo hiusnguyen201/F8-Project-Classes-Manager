@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
+      name: DataTypes.STRING(150),
       pathName: DataTypes.STRING(200),
       moduleId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,

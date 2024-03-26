@@ -11,6 +11,43 @@ const validator = require("../../../utils/validator");
 router.get("/", ClassController.index);
 
 router.get("/create", ClassController.create);
+router.get("/details/:id", ClassController.details);
+
+router.get(
+  "/details/:id/calendars/:calendarId",
+  ClassController.attendancePage
+);
+router.patch(
+  "/details/:id/calendars/:calendarId",
+  csrf.verify,
+  ClassController.handleAttendanceCalendar
+);
+
+router.get("/details/:id/students/add", ClassController.addStudentPage);
+router.post(
+  "/details/:id/students/add",
+  csrf.verify,
+  validator.make(CLASS_RULES.ADD_STUDENT),
+  ClassController.handleAddStudents
+);
+
+router.get(
+  "/details/:id/students/edit/:studentClass",
+  ClassController.editStudentPage
+);
+
+router.patch(
+  "/details/:id/students/edit/:studentClass",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT_STUDENT),
+  ClassController.handleEditStudent
+);
+
+router.delete(
+  "/details/:id/students/delete",
+  csrf.verify,
+  ClassController.handleDeleteStudentsClass
+);
 
 router.post(
   "/create",
@@ -19,10 +56,10 @@ router.post(
   ClassController.handleCreateClass
 );
 
-router.get("/edit/:name", ClassController.edit);
+router.get("/edit/:id", ClassController.edit);
 
 router.patch(
-  "/edit/:name",
+  "/edit/:id",
   csrf.verify,
   validator.make(CLASS_RULES.EDIT),
   ClassController.handleEditClass
@@ -30,13 +67,13 @@ router.patch(
 
 router.delete("/", csrf.verify, ClassController.handleDeleteClasses);
 
-// router.get("/import", ClassController.importClassesPage);
-// router.post(
-//   "/import",
-//   fileMiddleware,
-//   validator.fileExcel(),
-//   ClassController.handleImportClasses
-// );
-// router.get("/export", ClassController.handleExportClasses);
+router.get("/import", ClassController.importClassesPage);
+router.post(
+  "/import",
+  fileMiddleware,
+  validator.file("excel"),
+  ClassController.handleImportClasses
+);
+router.get("/export", ClassController.handleExportClasses);
 
 module.exports = router;

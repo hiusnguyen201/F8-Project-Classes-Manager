@@ -1,0 +1,105 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
+<div class="card py-1 mx-2 mb-3">
+  <div class="row align-items-center">
+    <div class="col-6">
+      <h3 class="mb-0 ml-3"><%= title.split("-")[0] %></h3>
+    </div>
+    <div class="col-6">
+      <ol class="breadcrumb float-sm-right mb-0">
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_TEACHERS %>">Teachers</a>
+        </li>
+        <li class="breadcrumb-item active">Details</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="card py-3 px-3 mx-2">
+  <div class="table-responsive mb-3">
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td width="20%">Name:</td>
+          <td><%= teacher.name %></td>
+        </tr>
+        <tr>
+          <td width="20%">Email:</td>
+          <td><%= teacher.email %></td>
+        </tr>
+        <tr>
+          <td width="20%">Phone:</td>
+          <td><%= teacher.phone %></td>
+        </tr>
+        <tr>
+          <td width="20%">Address:</td>
+          <td><%= teacher.address %></td>
+        </tr>
+        <tr>
+          <td width="20%">Status:</td>
+          <td><%= teacher.firstLogin? 'Active' : "Inactive" %></td>
+        </tr>
+        <tr>
+          <td width="20%">Type:</td>
+          <td><%= teacher.Type.name %></td>
+        </tr>
+        <tr>
+          <td width="20%">Created At:</td>
+          <td><%= moment(user.createdAt).format("DD/MM/YYYY") %></td>
+        </tr>
+        <tr>
+          <td width="20%">Updated At:</td>
+          <td><%= moment(user.updatedAt).format("DD/MM/YYYY") %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mb-3">
+    <span>All classes is joining:</span>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th width="1%">Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(classesJoining && classesJoining.length) {
+        classesJoining.forEach(({id, name, startDate, endDate}) => { %>
+        <tr>
+          <td>
+            <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= id %>"
+              ><%= name %></a
+            >
+          </td>
+          <td><%= moment(startDate).format("DD/MM/YYYY") %></td>
+          <td><%= moment(endDate).format("DD/MM/YYYY") %></td>
+          <td class="d-flex align-items-center justify-content-center">
+            <a
+              href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER %>/<%= teacher.id %><%= REDIRECT_PATH.ADMIN.CALENDARS_TEACHER %>/<%= id %>"
+              class="mx-1 icon-operation"
+              ><i class="fas fa-calendar-alt"></i>
+            </a>
+          </td>
+        </tr>
+        <% })} %>
+      </tbody>
+    </table>
+  </div>
+</div>

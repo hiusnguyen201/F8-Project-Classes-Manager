@@ -26,7 +26,7 @@ module.exports = (req, res, next) => {
       },
     });
 
-    const upload = multer({ storage: storage }).single("file");
+    const upload = multer({ storage: storage }).array("file");
 
     upload(req, res, (err) => {
       if (err instanceof multer.MulterError) {
@@ -40,6 +40,8 @@ module.exports = (req, res, next) => {
         req.flash("error", MESSAGE_ERROR.FILE.UNKNOWN_ERROR_UPLOAD);
         return res.redirect(req.originalUrl);
       }
+
+      console.log(req.body);
       next();
     });
   }

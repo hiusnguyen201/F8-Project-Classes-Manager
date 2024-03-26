@@ -11,6 +11,11 @@ const validator = require("../../../utils/validator");
 router.get("/", TeacherController.index);
 
 router.get("/create", TeacherController.create);
+
+router.get("/details/:id", TeacherController.details);
+
+router.get("/details/:id/calendars/:classId", TeacherController.calendars);
+
 router.post(
   "/create",
   csrf.verify,
@@ -33,7 +38,7 @@ router.get("/import", TeacherController.importTeachersPage);
 router.post(
   "/import",
   fileMiddleware,
-  validator.fileExcel(),
+  validator.file("excel"),
   TeacherController.handleImportTeachers
 );
 

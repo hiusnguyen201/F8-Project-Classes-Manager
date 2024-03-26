@@ -18,7 +18,7 @@
       <div class="modal-content">
         <div class="modal-header align-items-center">
           <h5 class="modal-title">
-            <a href="<%= REDIRECT_PATH.HOME_CLASSES_ADMIN %>"><i
+            <a href="<%= REDIRECT_PATH.ADMIN.HOME_CLASSES %>"><i
               class="fas fa-times mr-3 icon-operation"
             ></i></a>
             <i class="fas fa-chalkboard-teacher mr-2"></i><span>Class</span>
@@ -100,7 +100,7 @@
                   style="width: 100%"
                 >
                   <% if(oldValues?.schedule){ var schedulesStr = (Array.isArray(oldValues.schedule))? oldValues.schedule.join(",") : oldValues.schedule }  %>
-                  <% if(daysOfWeek?.length) { daysOfWeek.forEach((day, index) => { %>
+                  <% if(moment.weekdays()?.length) { moment.weekdays().forEach((day, index) => { %>
                       <option <%= schedulesStr?.includes(`${index}`)? "selected" : "" %> value="<%= index %>"><%= day %></option>
                   <% })} %>
                 </select>
@@ -113,7 +113,13 @@
               </div>
 
               <!-- Row 5 -->
-              <div class="timeLearn" value="<%= (oldValues?.timeLearnStart || '') + " - " +  (oldValues?.timeLearnEnd || '') %>">
+
+              <% const timeLearnStart = [], timeLearnEnd = [] %>
+              <% if(oldValues?.timeLearn) { %>
+                <% const timeLearnArr = oldValues?.timeLearn.split(",") %>
+                <% timeLearnArr.forEach((timeLearn) => { const [start, end] = timeLearn.split(" - "); timeLearnStart.push(start); timeLearnEnd.push(end)}) %>
+              <% } %>
+              <div class="timeLearn" value="<%= (timeLearnStart || '') + " - " +  (timeLearnEnd || '') %>">
                   
               </div>
               <% if(oldValues?.schedule) {%>
@@ -131,7 +137,7 @@
                   </span>
                   <% } %></div>
                   </div>
-                  <% } %>
+                <% } %>
 
               <!-- Row 6 -->
               <div class="mb-3">
@@ -156,7 +162,7 @@
               <!-- Row 7 -->
               <div class="mb-3">
                 <label class="form-label"
-                  >Assistant<span class="required-text">*</span></label
+                  >Assistant</label
                 >
                 <select
                   class="select2 form-control"

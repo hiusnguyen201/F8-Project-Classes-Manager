@@ -22,17 +22,19 @@ module.exports = (sequelize, DataTypes) => {
         through: "users_permissions",
       });
 
-      User.hasOne(models.Course, { foreignKey: "id" });
-      User.hasOne(models.Student_Class, { foreignKey: "id" });
-      User.hasMany(models.Teacher_Calender, { foreignKey: "id" });
+      User.hasMany(models.Course, { foreignKey: "teacherId" });
+      User.hasOne(models.Student_Class, { foreignKey: "studentId" });
+      User.hasMany(models.Teacher_Calendar, { foreignKey: "teacherId" });
 
-      User.hasMany(models.Student_Attendance, { foreignKey: "id" });
+      User.hasMany(models.Student_Attendance, { foreignKey: "studentId" });
       User.hasMany(models.Exercise, { foreignKey: "id" });
       User.hasMany(models.Submit_Exercise, { foreignKey: "id" });
 
       User.belongsToMany(models.Class, {
         foreignKey: "teacherId",
-        through: "class_teachers",
+        through: "classes_teachers",
+        onDelete: "CASCADE",
+        hooks: true,
       });
     }
   }

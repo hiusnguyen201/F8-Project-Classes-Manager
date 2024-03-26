@@ -14,6 +14,9 @@ class CourseService {
   constructor() {
     this.Course = models.Course;
     this.User = models.User;
+    this.Class = models.Class;
+    this.Course_Module = models.Course_Module;
+    this.Module_Document = models.Module_Document;
   }
 
   async findAllWithSearchAndPaginate(queryString) {
@@ -74,16 +77,22 @@ class CourseService {
 
   async findById(id) {
     if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
-    console.log(id);
 
     const course = await this.Course.findOne({
       where: { id },
-      include: {
-        model: this.User,
-        attributes: {
-          exclude: ["password"],
+      include: [
+        {
+          model: this.User,
+          attributes: {
+            exclude: ["password"],
+          },
         },
-      },
+        this.Class,
+        {
+          model: this.Course_Module,
+          include: this.Module_Document,
+        },
+      ],
     });
 
     return course;
@@ -186,6 +195,75 @@ class CourseService {
             data.duration
           );
         }
+      })
+    );
+  }
+
+  async getModuleById(id) {
+    if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
+
+    const module = await this.Course_Module.findByPk(id);
+
+    return module ? module : null;
+  }
+
+  async createModule(data, files, courseId) {
+    const module = await this.Course_Module.create({
+      name: data.name,
+      courseId,
+    });
+
+    if (!module) throw new Error(MESSAGE_ERROR.COURSE.CREATE_MODULE_FAILED);
+    await Promise.all(
+      files.map(async (file) => {
+        console.log(file);
+        return await this.Module_Document.create({
+          moduleId: module.id,
+          pathName: "/uploads/" + file.filename,
+          name: file.filename,
+        });
+      })
+    );
+
+    return true;
+  }
+
+  async editModule(data, files, moduleId) {
+    const module = await this.Course_Module.findByPk(moduleId);
+    if (!module) throw new Error(MESSAGE_ERROR.COURSE.MODULE_NOT_FOUND);
+
+    await module.update({
+      updatedAt: new Date(),
+      name: data.name,
+    });
+
+    if (files && files.length) {
+      await module.removeModule_Documents(module.Module_Document);
+
+      await Promise.all(
+        files.map(async (file) => {
+          return await this.Module_Document.create({
+            moduleId: module.id,
+            name: file.filename,
+            pathName: "/uploads/" + file.filename,
+          });
+        })
+      );
+    }
+
+    return true;
+  }
+
+  async removeModules(listId) {
+    await Promise.all(
+      listId.map(async (id) => {
+        const module = await this.Course_Module.findByPk(id, {
+          include: this.Module_Document,
+        });
+
+        if (!module) throw new Error(MESSAGE_ERROR.COURSE.MODULE_NOT_FOUND);
+
+        await module.destroy();
       })
     );
   }

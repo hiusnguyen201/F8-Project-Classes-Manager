@@ -13,7 +13,7 @@
     <div class="col-6">
       <ol class="breadcrumb float-sm-right mb-0">
         <li class="breadcrumb-item">
-          <a href="<%= REDIRECT_PATH.HOME_ADMIN %>">Home</a>
+          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
         </li>
         <li class="breadcrumb-item active">Classes</li>
       </ol>
@@ -23,10 +23,10 @@
 
 <div class="card-body mx-auto">
   <div class="tab-custom-content d-flex align-items-center">
-    <a href="<%= REDIRECT_PATH.CREATE_CLASS %>" class="btn btn-success mx-2">Create class</a>
+    <a href="<%= REDIRECT_PATH.ADMIN.CREATE_CLASS %>" class="btn btn-success mx-2">Create class</a>
     <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected" class="btn btn-danger mx-2" disabled>Delete selected</button>
-    <a href="<%= REDIRECT_PATH.IMPORT_CLASSES %>" class="btn btn-primary mx-2">Import classes</a>
-    <a href="<%= REDIRECT_PATH.EXPORT_CLASSES %>" class="btn btn-primary mx-2">Export classes (Excel)</a>
+    <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_CLASSES %>" class="btn btn-primary mx-2">Import classes</a>
+    <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_CLASSES %>" class="btn btn-primary mx-2">Export classes (Excel)</a>
   </div>
   <div class="tab-content">
     <div class="card px-2 py-3">
@@ -110,113 +110,39 @@
                 </label>
               </th>
               <th>Name</th>
+              <th>Teacher</th>
               <th>Quantity</th>
               <th>Start Date</th>
               <th>End Date</th>
-              <th>Schedule</th>
-              <th>Teacher</th>
               <th width="1%">Operation</th>
             </tr>
           </thead>
           <tbody>
-            <% if(classes?.length) {%> <% for(var i=0 ; i< classes.length; i++) {if(i===+limit) break;%>
+            <% if(classes?.length) {%> <% classes.forEach((classObj) => {%>
             <tr class="object-row">
               <td width="1%" class="px-1">
                 <label class="checkbox-btn">
-                  <input type="checkbox" class="checkboxChildren" value="<%= classes[i].name %>" />
+                  <input type="checkbox" class="checkboxChildren" value="<%= classObj.id %>" />
                 </label>
               </td>
-              <td><%= classes[i].name %></td>
-              <td><%= classes[i].quantity %></td>
-              <td><%= moment(classes[i].startDate).format("DD/MM/YYYY") %></td>
-              <td><%= moment(classes[i].endDate).format("DD/MM/YYYY")  %></td>
-              <td>
-                  <% const schedules = classes[i].schedule.split(",") %>
-                <% schedules.forEach((schedule, index) => { %>
-                  <%= moment.weekdays(+schedule)%><%= (+schedules.length - 1 === +index) ? '' : ', ' %>
-                <% }) %>
-              </td>
-              <td><a href="#"><%= classes[i].Course.User.name %></a></td>
+              <td><a href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= classObj.id %>"><%= classObj.name %></a></td>
+              <td><a href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER %>/<%= classObj.Course.User.id %>"><%= classObj.Course.User.name %></a></td>
+              <td><%= classObj.quantity %></td>
+              <td><%= moment(classObj.startDate).format("DD/MM/YYYY") %></td>
+              <td><%= moment(classObj.endDate).format("DD/MM/YYYY")  %></td>
               <td width="1%">
                 <div class="d-flex align-items-center justify-content-center">
-                  <a class="mx-1 icon-operation" href="<%= REDIRECT_PATH.EDIT_CLASS + `/${classes[i].name}` %>"><i class="fas fa-pen fa-xs"></i></a>
-                  <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-deleteChildren-<%= classes[i].name %>">
+                  <a class="mx-1 icon-operation" href="<%= REDIRECT_PATH.ADMIN.EDIT_CLASS + `/${classObj.id}` %>"><i class="fas fa-pen fa-xs"></i></a>
+                  <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-deleteChildren-<%= classObj.id %>">
                     <i class="fas fa-trash fa-xs"></i>
                   </button>
                 </div>
               </td>
             </tr>
-            <%- include("../../admin/classes/delete.modal.ejs", {i}) %>
-            <% }} %>
+            <%- include("./delete.modal.ejs", {classObj}) %>
+            <% })} %>
           </tbody>
         </table>
-      </div>
-
-
-      <div class="row align-items-center">
-        <div class="col-6 d-flex align-items-center px-2">
-          <span>Showing <%= (classes && classes?.length)? +offset+1 : +offset %> to <%= +offset + (classes && classes?.length)? classes.length : 0 %> of <%= totalCount %> entries</span>
-        </div>
-        <div class="col-6 px-2 d-flex justify-content-end">
-          <div class="row align-items-center justify-content-end">
-            <% if(totalPage > 0) {%>
-            <nav aria-label="Page navigation">
-              <ul class="pagination justify-content-center my-0">
-                <!-- Start -->
-                <li class="page-item <%= +page===1? 'disabled' : '' %>">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page-1, limit) %>" aria-label="Previous">
-                    <i class="fas fa-chevron-left fa-xs"></i>
-                  </a>
-                </li>
-
-                <% if(+page > 3) {%>
-                <li class="page-item">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, 1, limit) %>">
-                    1
-                  </a>
-                </li>
-                <% } %>
-
-                <!-- Mid -->
-                <% var i = (+page > 3)? +page - 2 : 1 %> <% if(i !== 1) {%>
-                <li class="page-item disabled">
-                  <a class="page-link" href="#">...</a>
-                </li>
-                <% } %> <% for(; i <= (+page +2) && i <= totalPage; i++ ) {%> <% if(i ===
-      +page) {%>
-                <li class="page-item active">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +i, limit) %>"><%= i %></a>
-                </li>
-                <% } else {%>
-                <li class="page-item">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +i, limit) %>"><%= i %></a>
-                </li>
-                <% }%> <% if(i === +page + 2 && i < +totalPage) {%>
-                <li class="page-item disabled">
-                  <a class="page-link" href="#">...</a>
-                </li>
-                <% } %> <% } %>
-
-                <!-- End -->
-                <% if(+page <= +totalPage - 3) {%>
-                <li class="page-item">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +totalPage, limit) %>">
-                    <%= +totalPage %>
-                  </a>
-                </li>
-                <% } %>
-
-                <li class="page-item <%= +page===+totalPage? 'disabled' : '' %>">
-                  <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page+1, limit) %>" aria-label="Next">
-                    <i class="fas fa-chevron-right fa-xs"></i>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-            <% } %>
-          </div>
-
-        </div>
       </div>
     </div>
   </div>
@@ -234,7 +160,7 @@
         "></div>
       <div class="modal-header">
         <h5 class="modal-title" style="border: none; font-size: 22px">
-          Are you sure to delete all class selected ?
+          Are you sure to delete all classes selected ?
         </h5>
       </div>
       <div class="modal-footer justify-content-between">
@@ -244,7 +170,6 @@
         <form action="" method="post">
           <input type="hidden" name="_method" value="DELETE" />
           <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
-          <input type="hidden" name="classId" id="deleteInputBox">
           <button id="btnConfirmDeleteAllChildren" class="btn btn-danger">
             Yes
           </button>

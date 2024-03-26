@@ -78,13 +78,19 @@ const MESSAGE_ERROR = {
     INVALID_DURATION: "Invalid duration",
     REQUIRED_COURSE: "Course is required",
     INVALID_COURSE: "Invalid course",
+    REQUIRED_MODULE: "Module is required",
+    MODULE_NOT_FOUND: "Module not found",
+    NAME_MODULE_EXISTED: "Name is existed",
 
     // Feature
     COURSE_EXISTED: "Course is existed",
     COURSE_NOT_FOUND: "Course not found",
     CREATE_COURSE_FAILED: "Create course failed",
-    EDIT_COURSE_FAILED: "Edit course information failed",
+    EDIT_COURSE_FAILED: "Edit course failed",
     DELETE_COURSE_FAILED: "Delete course failed",
+    CREATE_MODULE_FAILED: "Create module failed",
+    EDIT_MODULE_FAILED: "Edit module failed",
+    DELETE_MODULE_FAILED: "Delete module failed",
   },
 
   CLASS: {
@@ -104,6 +110,18 @@ const MESSAGE_ERROR = {
     REQUIRED_COURSE: "Course is required",
     INVALID_COURSE: "Invalid course",
     INVALID_ASSISTANT: "Invalid assistant",
+    REQUIRED_STUDENT: "Student is required",
+    STUDENT_NOT_FOUND: "Student not found",
+    REQUIRED_DATELEARNING: "Date learning is required",
+    INVALID_DATELEARNING: "Invalid Date learning",
+    REQUIRED_STATUS: "Status is required",
+    INVALID_STATUS: "Invalid status",
+    INVALID_COMPLETE_DATE: "Invalid complete date",
+    INVALID_DROPOUT_DATE: "Invalid dropout date",
+    INVALID_RECOVERY_DATE: "Invalid recovery date",
+    INVALID_REASON: "Invalid reason",
+
+    STUDENT_JOINED: "This student already in class",
 
     // Feature
     CLASS_EXISTED: "Class is existed",
@@ -111,6 +129,10 @@ const MESSAGE_ERROR = {
     CREATE_CLASS_FAILED: "Create class failed",
     EDIT_CLASS_FAILED: "Edit class information failed",
     DELETE_CLASS_FAILED: "Delete class failed",
+    ADD_STUDENT_TO_CLASS_FAILED: "Add student to class failed",
+    EDIT_STUDENT_TO_CLASS_FAILED: "Edit student to class failed",
+    DELETE_STUDENT_CLASS_FAILED: "Delete student failed",
+    EDIT_ATTENDANCE_CALENDAR_FAILED: "Edit attendance failed",
   },
 
   OTHER: {
@@ -126,23 +148,23 @@ const MESSAGE_ERROR = {
   FILE: {
     // Validate
     SIZE_FILE_LIMIT: "File is too large to upload",
-    MIMETYPE_EXCEL_WRONG: "Please upload only excel format",
+    MIMETYPE_WRONG: "File is not right format",
     REMOVE_FILE_UPLOAD_ERROR: "Remove file upload error",
     CREATE_FOLDER_FAILED: "Create folder is failed",
 
     // Upload
     ERROR_MULTER_UPLOAD: "Multer error occurred when uploading",
     UNKNOWN_ERROR_UPLOAD: "Unknown error occurred when uploading",
-
-    // Import
     INVALID_HEADERS: "Invalid headers",
 
     IMPORT_USERS_FAILED: "Import users failed",
-    IMPORT_COURSES_FAILED: "Import courses failed",
-
-    // Export
     EXPORT_USERS_FAILED: "Export users failed",
+
+    IMPORT_COURSES_FAILED: "Import courses failed",
     EXPORT_COURSES_FAILED: "Export courses failed",
+
+    EXPORT_CLASSES_FAILED: "Export classes failed",
+    IMPORT_CLASSES_FAILED: "Import classes failed",
   },
 };
 
@@ -165,6 +187,9 @@ const MESSAGE_SUCCESS = {
 
     EXPORT_COURSES_SUCCESS: "Export courses successfully",
     IMPORT_COURSES_SUCCESS: "Import courses successfully",
+
+    EXPORT_CLASSES_SUCCESS: "Export classes successfully",
+    IMPORT_CLASSES_SUCCESS: "Import classes successfully",
   },
 
   SOCIAL: {
@@ -176,12 +201,19 @@ const MESSAGE_SUCCESS = {
     CREATE_COURSE_SUCCESS: "Create course successfully",
     EDIT_COURSE_SUCCESS: "Edit course successfully",
     DELETE_COURSE_SUCCESS: "Delete course successfully",
+    CREATE_MODULE_SUCCESS: "Create module succesfully",
+    EDIT_MODULE_SUCCESS: "Edit module succesfully",
+    DELETE_MODULE_SUCCESS: "Delete module succesfully",
   },
 
   CLASS: {
     CREATE_CLASS_SUCCESS: "Create class successfully",
     EDIT_CLASS_SUCCESS: "Edit class successfully",
     DELETE_CLASS_SUCCESS: "Delete class successfully",
+    ADD_STUDENT_TO_CLASS_SUCCESS: "Add student to class successfully",
+    EDIT_STUDENT_TO_CLASS_SUCCESS: "Edit student to class successfully",
+    DELETE_STUDENT_CLASS_SUCCESS: "Delete student successfully",
+    EDIT_ATTENDANCE_CALENDAR_SUCCESS: "Edit attendance successfully",
   },
 };
 
