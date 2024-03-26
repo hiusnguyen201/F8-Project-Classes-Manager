@@ -160,7 +160,7 @@
         "></div>
       <div class="modal-header">
         <h5 class="modal-title" style="border: none; font-size: 22px">
-          Are you sure to delete all class selected ?
+          Are you sure to delete all classes selected ?
         </h5>
       </div>
       <div class="modal-footer justify-content-between">
@@ -170,7 +170,6 @@
         <form action="" method="post">
           <input type="hidden" name="_method" value="DELETE" />
           <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
-          <input type="hidden" name="classId" id="deleteInputBox">
           <button id="btnConfirmDeleteAllChildren" class="btn btn-danger">
             Yes
           </button>

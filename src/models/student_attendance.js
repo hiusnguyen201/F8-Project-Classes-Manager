@@ -9,7 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Student_Attendance.belongsTo(models.User, { foreignKey: "studentId" });
-      Student_Attendance.belongsTo(models.Class, { foreignKey: "classId" });
+      Student_Attendance.belongsTo(models.Teacher_Calendar, {
+        foreignKey: "calendarId",
+      });
     }
   }
   Student_Attendance.init(
@@ -19,10 +21,9 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      dateLearning: DataTypes.DATE,
       status: DataTypes.TINYINT,
       studentId: DataTypes.INTEGER,
-      classId: DataTypes.INTEGER,
+      calendarId: DataTypes.INTEGER,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },

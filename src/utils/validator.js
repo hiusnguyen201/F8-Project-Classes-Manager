@@ -11,6 +11,7 @@ const selectorModel = {
   courses: models.Course,
   classes: models.Class,
   course_modules: models.Course_Module,
+  learning_statuses: models.Learning_Status,
 };
 
 const mimetype = {
@@ -136,15 +137,19 @@ module.exports = {
     return async (req, res, next) => {
       const { RULES, MESSAGES } = rulesObj;
       const validations = {};
-
       for (const [name, rulesStr] of Object.entries(RULES)) {
         const rules = rulesStr.split("|");
 
+        let nullable = false;
         for (const rule of rules) {
           const [ruleName, ruleValue] = rule.split(":");
           const funcSelected = selectorRule[ruleName];
 
-          if (!funcSelected) {
+          if (ruleName == "nullable" && !req.body[name]) {
+            nullable = true;
+          }
+
+          if (!funcSelected && !nullable) {
             console.log(
               "\x1b[33m%s\x1b[0m",
               `***** Rule '${rule}' is undefined *****`
@@ -152,15 +157,17 @@ module.exports = {
             continue;
           }
 
-          const { errors } = await funcSelected(
-            name,
-            MESSAGES ? MESSAGES[`${name}.${rule}`] : null,
-            ruleValue ?? null
-          ).run(req);
+          if (ruleName != "nullable" && !nullable) {
+            const { errors } = await funcSelected(
+              name,
+              MESSAGES ? MESSAGES[`${name}.${rule}`] : null,
+              ruleValue ?? null
+            ).run(req);
 
-          if (errors?.length) {
-            validations[name] = errors[0].msg;
-            break;
+            if (errors?.length) {
+              validations[name] = errors[0].msg;
+              break;
+            }
           }
         }
       }

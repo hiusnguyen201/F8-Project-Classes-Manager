@@ -13,6 +13,16 @@ router.get("/", ClassController.index);
 router.get("/create", ClassController.create);
 router.get("/details/:id", ClassController.details);
 
+router.get(
+  "/details/:id/calendars/:calendarId",
+  ClassController.attendancePage
+);
+router.patch(
+  "/details/:id/calendars/:calendarId",
+  csrf.verify,
+  ClassController.handleAttendanceCalendar
+);
+
 router.get("/details/:id/students/add", ClassController.addStudentPage);
 router.post(
   "/details/:id/students/add",
@@ -22,20 +32,21 @@ router.post(
 );
 
 router.get(
-  "/details/:id/students/edit/:studentAttendance",
+  "/details/:id/students/edit/:studentClass",
   ClassController.editStudentPage
 );
 
 router.patch(
-  "/details/:id/students/edit/:studentAttendance",
+  "/details/:id/students/edit/:studentClass",
   csrf.verify,
   validator.make(CLASS_RULES.EDIT_STUDENT),
   ClassController.handleEditStudent
 );
 
 router.delete(
-  "/details/:id/students/delete/:studentAttendance",
-  ClassController.handleDeleteStudentsAttendance
+  "/details/:id/students/delete",
+  csrf.verify,
+  ClassController.handleDeleteStudentsClass
 );
 
 router.post(

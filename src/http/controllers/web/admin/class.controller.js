@@ -10,9 +10,7 @@ const {
   MESSAGE_INFO,
 } = require("../../../../constants/message.constant");
 const { STATUS_CODE } = require("../../../../constants/status.constant");
-const {
-  STUDENT_ATTENDANCE_STATUS,
-} = require("../../../../constants/setting.constant");
+const { ATTENDANCE_STATUS } = require("../../../../constants/setting.constant");
 const {
   FILE_NAME_EXPORT,
   SHEET_HEADERS_EXPORT,
@@ -32,6 +30,9 @@ const userService = new UserService();
 
 const ClassService = require("../../../services/class.service");
 const classService = new ClassService();
+
+const LearningStatus = require("../../../services/learningStatus.service");
+const learningStatusService = new LearningStatus();
 
 module.exports = {
   index: async (req, res, next) => {
@@ -108,7 +109,6 @@ module.exports = {
         csrf,
         stringUtil,
         moment,
-        STUDENT_ATTENDANCE_STATUS,
       });
     } catch (err) {
       console.log(err);
@@ -233,7 +233,6 @@ module.exports = {
                 timeLearns = "";
 
               Class_Schedules.map((scheduleObj, index) => {
-                console.log(scheduleObj.timeLearn);
                 schedules += moment.weekdays(scheduleObj.schedule);
                 timeLearns += scheduleObj.timeLearn;
                 if (index != Class_Schedules.length - 1) {
@@ -270,6 +269,7 @@ module.exports = {
       }
 
       const students = await userService.findAllWithTypes("student");
+      const learningStatuses = await learningStatusService.findAll();
 
       return res.render(RENDER_PATH.ADMIN.ADD_STUDENT_CLASS, {
         req,
@@ -277,6 +277,7 @@ module.exports = {
         title: `Add Student - ${process.env.APP_NAME}`,
         REDIRECT_PATH,
         students,
+        learningStatuses,
         currPage: "classes",
         success: req.flash("success"),
         error: req.flash("error"),
@@ -285,7 +286,6 @@ module.exports = {
         errorsValidate: req.flash("errors")[0] || {},
         stringUtil,
         moment,
-        STUDENT_ATTENDANCE_STATUS,
       });
     } catch (err) {
       console.log(err);
@@ -299,7 +299,7 @@ module.exports = {
       req.flash("success", MESSAGE_SUCCESS.CLASS.ADD_STUDENT_TO_CLASS_SUCCESS);
     } catch (err) {
       console.log(err);
-      req.flash("error", err);
+      req.flash("error", err.message);
     }
 
     return res.redirect(req.originalUrl);
@@ -307,17 +307,19 @@ module.exports = {
 
   editStudentPage: async (req, res, next) => {
     try {
-      const { id, studentAttendance } = req.params;
+      const { id, studentClass } = req.params;
 
       const classObj = await classService.findById(id);
       if (!classObj) return next(createHttpError(STATUS_CODE.NOT_FOUND));
 
-      const studentAttendanceEdit =
-        await classService.findStudentAttendanceByPk(studentAttendance);
-      if (!studentAttendanceEdit)
+      const studentClassEdit = await classService.findStudentInClass(
+        studentClass
+      );
+      if (!studentClassEdit)
         return next(createHttpError(STATUS_CODE.NOT_FOUND));
 
       const students = await userService.findAllWithTypes("student");
+      const learningStatuses = await learningStatusService.findAll();
 
       return res.render(RENDER_PATH.ADMIN.EDIT_STUDENT_CLASS, {
         req,
@@ -325,15 +327,15 @@ module.exports = {
         title: `Edit Student - ${process.env.APP_NAME}`,
         REDIRECT_PATH,
         students,
+        learningStatuses,
         currPage: "classes",
         success: req.flash("success"),
         error: req.flash("error"),
         csrf,
-        oldValues: req.flash("oldValues")[0] || studentAttendanceEdit || {},
+        oldValues: req.flash("oldValues")[0] || studentClassEdit || {},
         errorsValidate: req.flash("errors")[0] || {},
         stringUtil,
         moment,
-        STUDENT_ATTENDANCE_STATUS,
       });
     } catch (err) {
       console.log(err);
@@ -346,7 +348,7 @@ module.exports = {
       await classService.editStudent(
         req.body,
         req.params.id,
-        req.params.studentAttendance
+        req.params.studentClass
       );
       req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_STUDENT_TO_CLASS_SUCCESS);
     } catch (err) {
@@ -356,23 +358,51 @@ module.exports = {
     return res.redirect(req.originalUrl);
   },
 
-  handleDeleteStudentsAttendance: async (req, res) => {
-    const { id, studentAttendance } = req.params;
+  handleDeleteStudentsClass: async (req, res) => {
+    const { id } = req.body;
+    const { id: classId } = req.params;
     try {
-      await classService.removeStudentsAttendance(
-        Array.isArray(studentAttendance)
-          ? studentAttendance
-          : [studentAttendance]
-      );
+      await classService.removeStudentsClass(Array.isArray(id) ? id : [id]);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_STUDENT_CLASS_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_STUDENT_CLASS_FAILED);
+    }
+
+    return res.redirect(REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classId}`);
+  },
+
+  attendancePage: async (req, res) => {
+    const { calendarId } = req.params;
+
+    const calendar = await classService.findCalendarById(calendarId);
+
+    return res.render(RENDER_PATH.ADMIN.CALENDAR_ATTENDANCES, {
+      req,
+      user: req.user,
+      title: `Attendance - ${process.env.APP_NAME}`,
+      REDIRECT_PATH,
+      ATTENDANCE_STATUS,
+      currPage: "classes",
+      calendar,
+      success: req.flash("success"),
+      error: req.flash("error"),
+      csrf,
+    });
+  },
+
+  handleAttendanceCalendar: async (req, res) => {
+    try {
+      await classService.updateAttendance(req.body, req.params.calendarId);
       req.flash(
         "success",
-        MESSAGE_SUCCESS.CLASS.DELETE_STUDENT_ATTENDANCE_SUCCESS
+        MESSAGE_SUCCESS.CLASS.EDIT_ATTENDANCE_CALENDAR_SUCCESS
       );
     } catch (err) {
       console.log(err);
-      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_STUDENT_ATTENDANCE_FAILED);
+      req.flash("error", MESSAGE_ERROR.CLASS.EDIT_ATTENDANCE_CALENDAR_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${id}`);
+    return res.redirect(req.originalUrl);
   },
 };

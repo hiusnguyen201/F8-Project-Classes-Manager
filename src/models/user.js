@@ -23,10 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       User.hasMany(models.Course, { foreignKey: "teacherId" });
-      User.hasOne(models.Student_Class, { foreignKey: "id" });
-      User.hasMany(models.Teacher_Calender, { foreignKey: "id" });
+      User.hasOne(models.Student_Class, { foreignKey: "studentId" });
+      User.hasMany(models.Teacher_Calendar, { foreignKey: "teacherId" });
 
-      User.hasMany(models.Student_Attendance, { foreignKey: "id" });
+      User.hasMany(models.Student_Attendance, { foreignKey: "studentId" });
       User.hasMany(models.Exercise, { foreignKey: "id" });
       User.hasMany(models.Submit_Exercise, { foreignKey: "id" });
 

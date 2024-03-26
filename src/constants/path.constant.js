@@ -37,6 +37,7 @@ const REDIRECT_PATH = {
 
     HOME_CLASSES: "/admin/classes",
     DETAILS_CLASS: "/admin/classes/details",
+    CALENDARS_CLASS: "/calendars",
     ADD_STUDENT_CLASS: "/students/add",
     EDIT_STUDENT_CLASS: "/students/edit",
     DELETE_STUDENT_CLASS: "/students/delete",
@@ -115,6 +116,7 @@ const RENDER_PATH = {
     DETAILS_CLASS: "admin/classes/details",
     ADD_STUDENT_CLASS: "admin/classes/addStudent",
     EDIT_STUDENT_CLASS: "admin/classes/editStudent",
+    CALENDAR_ATTENDANCES: "admin/classes/calendarsAttendance",
     CREATE_CLASS: "admin/classes/create",
     EDIT_CLASS: "admin/classes/edit",
     IMPORT_CLASSES: "admin/classes/import",

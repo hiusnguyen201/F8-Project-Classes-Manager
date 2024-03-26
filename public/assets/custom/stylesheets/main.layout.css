@@ -549,6 +549,10 @@ input:focus-visible {
   width: 90%;
 }
 
+.btn-clearDate {
+  cursor: pointer;
+}
+
 @media (max-width: 769px) {
   .row {
     flex-direction: column;

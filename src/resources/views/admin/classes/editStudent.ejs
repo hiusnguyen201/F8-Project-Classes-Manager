@@ -21,7 +21,7 @@
             ></a>
             <i class="fas fa-user mr-2"></i><span>Student</span>
           </h5>
-          <button type="submit" class="btn btn-success py-2">Add</button>
+          <button type="submit" class="btn btn-success py-2">Save</button>
         </div>
         <div class="modal-body">
           <div class="card-body mx-auto">
@@ -35,7 +35,7 @@
                   <option value="">--- Select a students ---</option>
                   <% if(students?.length) {students.forEach(({id, email}) => {
                   %>
-                  <option <%= (+oldValues.student || +oldValues.studentId) === +id ? 'selected' : ''%> value="<%= id %>"><%= email %></option>
+                  <option <%= (oldValues.student ?? oldValues.studentId) == id ? 'selected' : ''%> value="<%= id %>"><%= email %></option>
                   <% })} %>
                 </select>
 
@@ -46,40 +46,12 @@
 
               <div class="mb-3">
                 <label class="form-label"
-                  >Date Learning<span class="required-text">*</span></label
-                >
-                <div class="input-group date">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">
-                      <i class="fa fa-calendar"></i>
-                    </div>
-                  </div>
-                  <input
-                    type="text"
-                    name="dateLearning"
-                    class="form-control datetimepicker-input"
-                    id="startDatePicker"
-                    value="<%= moment(oldValues.dateLearning).format("DD/MM/YYYY") %>"
-                  />
-                </div>
-
-                <% if(errorsValidate.dateLearning){ %>
-                <span class="text-danger">
-                  <%= errorsValidate.dateLearning %>
-                </span>
-                <% } %>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label"
                   >Status<span class="required-text">*</span></label
                 >
                 <div class="input-group">
                   <select name="status" class="form-control">
-                    <% if(STUDENT_ATTENDANCE_STATUS &&
-                    STUDENT_ATTENDANCE_STATUS.length){STUDENT_ATTENDANCE_STATUS.forEach((status,
-                    index) => { %>
-                    <option <%= oldValues.status == index ? 'selected' : '' %> value="<%= index %>"><%= status %></option>
+                    <% if(learningStatuses && learningStatuses.length) { learningStatuses.forEach((status) => { %>
+                      <option <%= (oldValues.status ?? oldValues.statusId)  == status.id ? 'selected' : '' %> value="<%= status.id %>"><%= status.name %></option>
                     <% })} %>
                   </select>
                 </div>
@@ -89,7 +61,106 @@
                 <% } %>
               </div>
 
+              <div class="mb-3">
+                <label class="form-label"
+                  >Complete date</label
+                >
+                <div class="input-group date">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    name="completeDate"
+                    class="form-control datetimepicker-input"
+                    id="startDatePicker"
+                    value="<%= oldValues.completeDate? moment(oldValues.completeDate).format("DD/MM/YYYY") : null %>"
+                  />
+                  <div class="input-group-append btn-clearDate">
+                    <div class="input-group-text">
+                      <i class="fas fa-times"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <% if(errorsValidate.completeDate){ %>
+                <span class="text-danger">
+                  <%= errorsValidate.completeDate %>
+                </span>
+                <% } %>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label"
+                  >Dropout date</label
+                >
+                <div class="input-group date">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    name="dropoutDate"
+                    class="form-control datetimepicker-input"
+                    id="startDatePicker"
+                    value="<%= oldValues.dropoutDate? moment(oldValues.dropoutDate).format("DD/MM/YYYY") : null %>"
+                  />
+                  <div class="input-group-append btn-clearDate">
+                    <div class="input-group-text">
+                      <i class="fas fa-times"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <% if(errorsValidate.dropoutDate){ %>
+                <span class="text-danger">
+                  <%= errorsValidate.dropoutDate %>
+                </span>
+                <% } %>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label"
+                  >Recover date</label
+                >
+                <div class="input-group date">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    name="recoverDate"
+                    class="form-control datetimepicker-input"
+                    id="startDatePicker"
+                    value="<%= oldValues.recoverDate? moment(oldValues.recoverDate).format("DD/MM/YYYY") : null %>"
+                  />
+                  <div class="input-group-append btn-clearDate">
+                    <div class="input-group-text">
+                      <i class="fas fa-times"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <% if(errorsValidate.recoveryDate){ %>
+                <span class="text-danger">
+                  <%= errorsValidate.recoveryDate %>
+                </span>
+                <% } %>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Reason</label>
+                <input type="text" name="reason" class="form-control" value="<%= oldValues.reason %>">
+              </div>
+
               <input type="hidden" name="_method" value="PATCH" />
+              <input type="hidden" name="oldStudentId" value="<%= oldValues.studentId %>">
               <input
                 type="hidden"
                 name="csrfToken"

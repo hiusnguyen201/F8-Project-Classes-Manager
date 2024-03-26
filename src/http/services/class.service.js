@@ -15,8 +15,10 @@ class ClassService {
     this.Course = models.Course;
     this.User = models.User;
     this.ClassSchedule = models.Class_Schedule;
-    this.TeacherCalender = models.Teacher_Calender;
+    this.TeacherCalendar = models.Teacher_Calendar;
     this.StudentAttendance = models.Student_Attendance;
+    this.StudentClass = models.Student_Class;
+    this.LearningStatus = models.Learning_Status;
   }
 
   async findAllWithSearchAndPaginate(queryString) {
@@ -80,9 +82,10 @@ class ClassService {
           include: this.User,
         },
         {
-          model: this.StudentAttendance,
-          include: this.User,
+          model: this.StudentClass,
+          include: [this.User, this.LearningStatus],
         },
+        this.TeacherCalendar,
       ],
     });
 
@@ -161,7 +164,7 @@ class ClassService {
           const dayNeeded = data.startDate.clone().weekday(+schedule);
           while (dayNeeded.diff(endDate) <= 0) {
             if (dayNeeded.diff(data.startDate) >= 0) {
-              await this.TeacherCalender.create(
+              await this.TeacherCalendar.create(
                 {
                   scheduleDate: dayNeeded,
                   teacherId: course.User.id,
@@ -245,7 +248,7 @@ class ClassService {
         { transaction }
       );
 
-      await this.TeacherCalender.destroy(
+      await this.TeacherCalendar.destroy(
         {
           where: {
             classId: classObj.id,
@@ -263,6 +266,7 @@ class ClassService {
           startDate: data.startDate,
           endDate,
           courseId: data.courseId,
+          updatedAt: new Date(),
         },
         { transaction }
       );
@@ -283,7 +287,7 @@ class ClassService {
           const dayNeeded = data.startDate.clone().weekday(+schedule);
           while (dayNeeded.diff(endDate) <= 0) {
             if (dayNeeded.diff(data.startDate) >= 0) {
-              await this.TeacherCalender.create(
+              await this.TeacherCalendar.create(
                 {
                   scheduleDate: dayNeeded,
                   teacherId: course.User.id,
@@ -321,7 +325,7 @@ class ClassService {
     await Promise.all(
       listId.map(async (id) => {
         const classObj = await this.Class.findByPk(id, {
-          include: [this.ClassSchedule, this.User, this.TeacherCalender],
+          include: [this.ClassSchedule, this.User, this.TeacherCalendar],
         });
 
         await this.ClassSchedule.destroy({
@@ -330,7 +334,7 @@ class ClassService {
           },
         });
 
-        await this.TeacherCalender.destroy({
+        await this.TeacherCalendar.destroy({
           where: {
             classId: classObj.id,
           },
@@ -397,63 +401,140 @@ class ClassService {
   }
 
   async addStudent(data, classId) {
-    const existStudentAttendance = await this.StudentAttendance.findOne({
+    const existStudentInClass = await this.StudentClass.findOne({
       where: {
         classId,
         studentId: data.student,
       },
     });
 
-    if (existStudentAttendance)
-      throw new Error(MESSAGE_ERROR.CLASS.STUDENT_ATTENDANCED);
+    if (existStudentInClass)
+      throw new Error(MESSAGE_ERROR.CLASS.STUDENT_JOINED);
 
-    const studentAttendance = await this.StudentAttendance.create({
-      studentId: data.student,
-      dateLearning: moment(data.dateLearning, "DD/MM/YYYY"),
-      status: data.status,
-      classId,
-    });
+    let transaction = await sequelizeInstance.transaction();
+    try {
+      const studentClass = await this.StudentClass.create(
+        {
+          studentId: data.student,
+          statusId: data.status,
+          classId,
+          completeDate: data.completeDate
+            ? moment(data.completeDate, "DD/MM/YYYY")
+            : null,
+          dropoutDate: data.dropoutDate
+            ? moment(data.dropoutDate, "DD/MM/YYYY")
+            : null,
+          recoveryDate: data.recoveryDate
+            ? moment(data.recoveryDate, "DD/MM/YYYY")
+            : null,
+          reason: data.reason || null,
+        },
+        { transaction }
+      );
 
-    if (!studentAttendance) {
+      if (!studentClass) {
+        throw new Error(MESSAGE_ERROR.CLASS.ADD_STUDENT_TO_CLASS_FAILED);
+      }
+
+      const calendars = await this.TeacherCalendar.findAll({
+        where: {
+          classId,
+        },
+      });
+
+      if (!calendars || !calendars.length)
+        throw new Error(MESSAGE_ERROR.CLASS.ADD_STUDENT_TO_CLASS_FAILED);
+
+      await Promise.all(
+        calendars.map(async (calendar) => {
+          await this.StudentAttendance.create(
+            {
+              studentId: data.student,
+              calendarId: calendar.id,
+            },
+            { transaction }
+          );
+        })
+      );
+
+      await transaction.commit();
+      return studentClass;
+    } catch (err) {
+      console.log(err);
+      if (transaction) await transaction.rollback();
       throw new Error(MESSAGE_ERROR.CLASS.ADD_STUDENT_TO_CLASS_FAILED);
     }
-
-    return studentAttendance;
   }
 
-  async findStudentAttendanceByPk(id) {
+  async findStudentInClass(id) {
     if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
 
-    const studentAttendance = await this.StudentAttendance.findByPk(id);
+    const studentClass = await this.StudentClass.findByPk(id);
 
-    return studentAttendance ? studentAttendance : null;
+    return studentClass ? studentClass : null;
   }
 
-  async editStudent(data, classId, studentAttendanceId) {
-    const existStudentAttendance = await this.StudentAttendance.findOne({
+  async editStudent(data, classId, studentClassId) {
+    const existStudentAttendance = await this.StudentClass.findOne({
       where: {
         classId,
         studentId: data.student,
         [Op.not]: {
-          id: studentAttendanceId,
+          id: studentClassId,
         },
       },
     });
 
     if (existStudentAttendance)
-      throw new Error(MESSAGE_ERROR.CLASS.STUDENT_ATTENDANCED);
+      throw new Error(MESSAGE_ERROR.CLASS.STUDENT_JOINED);
 
-    const status = await this.StudentAttendance.update(
+    const status = await this.StudentClass.update(
       {
         studentId: data.student,
-        dateLearning: moment(data.dateLearning, "DD/MM/YYYY"),
         status: data.status,
+        completeDate: data.completeDate
+          ? moment(data.completeDate, "DD/MM/YYYY")
+          : null,
+        dropoutDate: data.dropoutDate
+          ? moment(data.dropoutDate, "DD/MM/YYYY")
+          : null,
+        recoverDate: data.recoverDate
+          ? moment(data.recoverDate, "DD/MM/YYYY")
+          : null,
+        reason: data.reason || null,
+        updatedAt: new Date(),
       },
       {
         where: {
-          id: studentAttendanceId,
+          id: studentClassId,
         },
       }
+    );
+
+    const calendars = await this.TeacherCalendar.findAll({
+      where: {
+        classId,
+      },
+    });
+
+    if (!calendars || !calendars.length)
+      throw new Error(MESSAGE_ERROR.CLASS.ADD_STUDENT_TO_CLASS_FAILED);
+
+    await Promise.all(
+      calendars.map(async (calendar) => {
+        const existStudentAttendance = await this.StudentAttendance.findOne({
+          where: {
+            studentId: data.oldStudentId,
+            calendarId: calendar.id,
+          },
+        });
+
+        if (existStudentAttendance) {
+          await existStudentAttendance.update({
+            studentId: data.student,
+          });
+        }
+      })
     );
 
     if (!status)
@@ -462,15 +543,52 @@ class ClassService {
     return status;
   }
 
-  async removeStudentsAttendance(listId) {
+  async removeStudentsClass(listId) {
     await Promise.all(
       listId.map(async (id) => {
-        const studentAttendance = await this.StudentAttendance.findByPk(id);
+        const studentClass = await this.StudentClass.findByPk(id);
 
-        if (!studentAttendance)
+        if (!studentClass)
           throw new Error(MESSAGE_ERROR.CLASS.STUDENT_NOT_FOUND);
 
-        await studentAttendance.destroy();
+        await this.StudentAttendance.destroy({
+          where: {
+            studentId: studentClass.studentId,
+          },
+        });
+
+        await studentClass.destroy();
+      })
+    );
+  }
+
+  async findCalendarById(id) {
+    if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
+
+    const calendar = await this.TeacherCalendar.findByPk(id, {
+      include: {
+        model: this.StudentAttendance,
+        include: this.User,
+      },
+    });
+
+    return calendar ? calendar : null;
+  }
+
+  async updateAttendance(data, calendarId) {
+    await Promise.all(
+      data.studentId.map(async (id, index) => {
+        await this.StudentAttendance.update(
+          {
+            status: data.status[index] ? data.status[index] : null,
+          },
+          {
+            where: {
+              calendarId,
+              studentId: id,
+            },
+          }
+        );
       })
     );
   }
