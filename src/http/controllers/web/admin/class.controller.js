@@ -44,7 +44,7 @@ module.exports = {
         req,
         user: req.user,
         page: meta.page,
-        title: `Manage Classes - ${process.env.APP_NAME}`,
+        title: `Manage Classes`,
         REDIRECT_PATH,
         totalCount: meta.count,
         offset: meta.offset,
@@ -57,6 +57,78 @@ module.exports = {
         csrf,
         moment,
         stringUtil,
+        breadcrumb: {
+          items: ["Home", "Classes"],
+          paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  manageStudentsPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.MANAGE_STUDENTS_CLASS, {
+        req,
+        user: req.user,
+        title: `Manage Students`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        breadcrumb: {
+          items: ["Home", "Classes", "Details", "Students"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+          ],
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  manageCalendarsPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.MANAGE_CALENDARS_CLASS, {
+        req,
+        user: req.user,
+        title: `Manage Calendars`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        breadcrumb: {
+          items: ["Home", "Classes", "Details", "Calendars"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+          ],
+        },
       });
     } catch (err) {
       console.log(err);
@@ -76,7 +148,7 @@ module.exports = {
         assistants,
         oldValues: req.flash("oldValues")[0] || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Create Class - ${process.env.APP_NAME}`,
+        title: `Create Class`,
         REDIRECT_PATH,
         currPage: "classes",
         success: req.flash("success"),
@@ -100,7 +172,7 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.DETAILS_CLASS, {
         req,
         user: req.user,
-        title: `Details Class - ${process.env.APP_NAME}`,
+        title: `Details Class`,
         REDIRECT_PATH,
         currPage: "classes",
         classObj,
@@ -109,6 +181,13 @@ module.exports = {
         csrf,
         stringUtil,
         moment,
+        breadcrumb: {
+          items: ["Home", "Classes", "Details"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+          ],
+        },
       });
     } catch (err) {
       console.log(err);
@@ -143,7 +222,7 @@ module.exports = {
         assistants,
         oldValues: req.flash("oldValues")[0] || classEdit || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Edit Class - ${process.env.APP_NAME}`,
+        title: `Edit Class`,
         REDIRECT_PATH,
         currPage: "classes",
         success: req.flash("success"),
@@ -185,12 +264,19 @@ module.exports = {
 
   importClassesPage: async (req, res) => {
     return res.render(RENDER_PATH.ADMIN.IMPORT_CLASSES, {
-      title: `Import Classes - ${process.env.APP_NAME}`,
+      title: `Import Classes`,
       user: req.user,
       REDIRECT_PATH,
       currPage: "classes",
       error: req.flash("error"),
       success: req.flash("success"),
+      breadcrumb: {
+        items: ["Home", "Classes", "Import"],
+        paths: [
+          REDIRECT_PATH.ADMIN.HOME_ADMIN,
+          REDIRECT_PATH.ADMIN.HOME_CLASSES,
+        ],
+      },
     });
   },
 
@@ -274,7 +360,7 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.ADD_STUDENT_CLASS, {
         req,
         user: req.user,
-        title: `Add Student - ${process.env.APP_NAME}`,
+        title: `Add Student`,
         REDIRECT_PATH,
         students,
         learningStatuses,
@@ -324,7 +410,7 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.EDIT_STUDENT_CLASS, {
         req,
         user: req.user,
-        title: `Edit Student - ${process.env.APP_NAME}`,
+        title: `Edit Student`,
         REDIRECT_PATH,
         students,
         learningStatuses,
@@ -360,7 +446,6 @@ module.exports = {
 
   handleDeleteStudentsClass: async (req, res) => {
     const { id } = req.body;
-    const { id: classId } = req.params;
     try {
       await classService.removeStudentsClass(Array.isArray(id) ? id : [id]);
       req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_STUDENT_CLASS_SUCCESS);
@@ -369,18 +454,18 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.CLASS.DELETE_STUDENT_CLASS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classId}`);
+    return res.redirect(req.originalUrl);
   },
 
   attendancePage: async (req, res) => {
-    const { calendarId } = req.params;
+    const { calendarId, id } = req.params;
 
     const calendar = await classService.findCalendarById(calendarId);
 
     return res.render(RENDER_PATH.ADMIN.CALENDAR_ATTENDANCES, {
       req,
       user: req.user,
-      title: `Attendance - ${process.env.APP_NAME}`,
+      title: `Manage Attendances`,
       REDIRECT_PATH,
       ATTENDANCE_STATUS,
       currPage: "classes",
@@ -388,6 +473,17 @@ module.exports = {
       success: req.flash("success"),
       error: req.flash("error"),
       csrf,
+      breadcrumb: {
+        items: ["Home", "Classes", "Details", "Calendars", "Attendances"],
+        paths: [
+          REDIRECT_PATH.ADMIN.HOME_ADMIN,
+          REDIRECT_PATH.ADMIN.HOME_CLASSES,
+          REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${id}`,
+          REDIRECT_PATH.ADMIN.DETAILS_CLASS +
+            `/${id}` +
+            REDIRECT_PATH.ADMIN.MANAGE_CALENDARS_CLASS,
+        ],
+      },
     });
   },
 

@@ -39,7 +39,11 @@ module.exports = {
         req,
         user: req.user,
         page: meta.page,
-        title: `Manage Users - ${process.env.APP_NAME}`,
+        title: `Manage Users`,
+        breadcrumb: {
+          items: ["Home", "Users"],
+          paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
+        },
         REDIRECT_PATH,
         totalCount: meta.count,
         offset: meta.offset,
@@ -68,8 +72,15 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.DETAILS_USER, {
         req,
         user: req.user,
-        title: `Details User - ${process.env.APP_NAME}`,
+        title: `Details User`,
         REDIRECT_PATH,
+        breadcrumb: {
+          items: ["Home", "Users", "Details"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_USERS,
+          ],
+        },
         currPage: "users",
         admin,
         success: req.flash("success"),
@@ -90,7 +101,7 @@ module.exports = {
       user: req.user,
       oldValues: req.flash("oldValues")[0] || {},
       errorsValidate: req.flash("errors")[0] || {},
-      title: `Create User - ${process.env.APP_NAME}`,
+      title: `Create User`,
       REDIRECT_PATH,
       currPage: "users",
       success: req.flash("success"),
@@ -124,7 +135,7 @@ module.exports = {
         user: req.user,
         oldValues: req.flash("oldValues")[0] || userEdit || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Edit User - ${process.env.APP_NAME}`,
+        title: `Edit User`,
         REDIRECT_PATH,
         currPage: "users",
         success: req.flash("success"),
@@ -165,12 +176,16 @@ module.exports = {
 
   importUsersPage(req, res) {
     return res.render(RENDER_PATH.ADMIN.IMPORT_USERS, {
-      title: `Import Users - ${process.env.APP_NAME}`,
+      title: `Import Users`,
       user: req.user,
       REDIRECT_PATH,
       currPage: "users",
       error: req.flash("error"),
       success: req.flash("success"),
+      breadcrumb: {
+        items: ["Home", "Users", "Import"],
+        paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN, REDIRECT_PATH.ADMIN.HOME_USERS],
+      },
     });
   },
 

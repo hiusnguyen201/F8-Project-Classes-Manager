@@ -36,13 +36,17 @@ module.exports = {
         req,
         user: req.user,
         page: meta.page,
-        title: `Manage Courses - ${process.env.APP_NAME}`,
+        title: `Manage Courses`,
         REDIRECT_PATH,
         totalCount: meta.count,
         offset: meta.offset,
         limit: meta.limit,
         currPage: "courses",
         courses,
+        breadcrumb: {
+          items: ["Home", "Courses"],
+          paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
+        },
         totalPage: meta.totalPage,
         success: req.flash("success"),
         error: req.flash("error"),
@@ -65,7 +69,7 @@ module.exports = {
         teachers,
         oldValues: req.flash("oldValues")[0] || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Create course - ${process.env.APP_NAME}`,
+        title: `Create course`,
         REDIRECT_PATH,
         currPage: "courses",
         success: req.flash("success"),
@@ -88,7 +92,7 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.DETAILS_COURSE, {
         req,
         user: req.user,
-        title: `Details Course - ${process.env.APP_NAME}`,
+        title: `Details Course`,
         REDIRECT_PATH,
         currPage: "courses",
         course,
@@ -97,6 +101,13 @@ module.exports = {
         csrf,
         stringUtil,
         moment,
+        breadcrumb: {
+          items: ["Home", "Courses", "Details"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_COURSES,
+          ],
+        },
       });
     } catch (err) {
       console.log(err);
@@ -129,7 +140,7 @@ module.exports = {
         teachers,
         oldValues: req.flash("oldValues")[0] || courseEdit || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Edit course - ${process.env.APP_NAME}`,
+        title: `Edit course`,
         REDIRECT_PATH,
         currPage: "courses",
         success: req.flash("success"),
@@ -170,12 +181,19 @@ module.exports = {
 
   importCoursesPage: async (req, res) => {
     return res.render(RENDER_PATH.ADMIN.IMPORT_COURSES, {
-      title: `Import Courses - ${process.env.APP_NAME}`,
+      title: `Import Courses`,
       user: req.user,
       REDIRECT_PATH,
       currPage: "courses",
       error: req.flash("error"),
       success: req.flash("success"),
+      breadcrumb: {
+        items: ["Home", "Courses", "Import"],
+        paths: [
+          REDIRECT_PATH.ADMIN.HOME_ADMIN,
+          REDIRECT_PATH.ADMIN.HOME_COURSES,
+        ],
+      },
     });
   },
 
@@ -232,7 +250,7 @@ module.exports = {
       user: req.user,
       oldValues: req.flash("oldValues")[0] || {},
       errorsValidate: req.flash("errors")[0] || {},
-      title: `Create module - ${process.env.APP_NAME}`,
+      title: `Create module`,
       REDIRECT_PATH,
       courseId: req.params.id,
       currPage: "modules",
@@ -251,7 +269,7 @@ module.exports = {
       user: req.user,
       errorsValidate: req.flash("errors")[0] || {},
       oldValues: req.flash("oldValues")[0] || module || {},
-      title: `Edit module - ${process.env.APP_NAME}`,
+      title: `Edit module`,
       REDIRECT_PATH,
       module,
       courseId: req.params.id,

@@ -25,7 +25,7 @@ module.exports = {
     try {
       const userEdit = await userService.findById(req.user.id);
       return res.render(RENDER_PATH.ADMIN.PROFILE_SETTING, {
-        title: `Settings - ${process.env.APP_NAME}`,
+        title: `Settings`,
         req,
         user: req.user,
         oldValues: req.flash("oldValues")[0] || userEdit || {},
@@ -64,7 +64,7 @@ module.exports = {
       );
 
       return res.render(RENDER_PATH.ADMIN.SECURITY_SETTING, {
-        title: `Settings - ${process.env.APP_NAME}`,
+        title: `Settings`,
         req,
         user,
         listSocials: LIST_SOCIALS,
@@ -100,7 +100,7 @@ module.exports = {
   password: async (req, res, next) => {
     try {
       return res.render(RENDER_PATH.ADMIN.PASSWORD_SETTING, {
-        title: `Settings - ${process.env.APP_NAME}`,
+        title: `Settings`,
         req,
         user: req.user,
         errorsValidate: req.flash("errors")[0] || {},

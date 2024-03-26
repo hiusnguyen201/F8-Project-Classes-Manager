@@ -8,7 +8,7 @@ module.exports = {
     return res.render(RENDER_PATH.ADMIN.HOME_ADMIN, {
       req,
       user: req.user,
-      title: `Home - ${process.env.APP_NAME}`,
+      title: `Home`,
       REDIRECT_PATH,
       currPage: "dashboard",
     });

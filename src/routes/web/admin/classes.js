@@ -13,42 +13,6 @@ router.get("/", ClassController.index);
 router.get("/create", ClassController.create);
 router.get("/details/:id", ClassController.details);
 
-router.get(
-  "/details/:id/calendars/:calendarId",
-  ClassController.attendancePage
-);
-router.patch(
-  "/details/:id/calendars/:calendarId",
-  csrf.verify,
-  ClassController.handleAttendanceCalendar
-);
-
-router.get("/details/:id/students/add", ClassController.addStudentPage);
-router.post(
-  "/details/:id/students/add",
-  csrf.verify,
-  validator.make(CLASS_RULES.ADD_STUDENT),
-  ClassController.handleAddStudents
-);
-
-router.get(
-  "/details/:id/students/edit/:studentClass",
-  ClassController.editStudentPage
-);
-
-router.patch(
-  "/details/:id/students/edit/:studentClass",
-  csrf.verify,
-  validator.make(CLASS_RULES.EDIT_STUDENT),
-  ClassController.handleEditStudent
-);
-
-router.delete(
-  "/details/:id/students/delete",
-  csrf.verify,
-  ClassController.handleDeleteStudentsClass
-);
-
 router.post(
   "/create",
   csrf.verify,
@@ -75,5 +39,42 @@ router.post(
   ClassController.handleImportClasses
 );
 router.get("/export", ClassController.handleExportClasses);
+
+// Manage Students
+router.get("/details/:id/students", ClassController.manageStudentsPage);
+router.get("/details/:id/students/add", ClassController.addStudentPage);
+router.post(
+  "/details/:id/students/add",
+  csrf.verify,
+  validator.make(CLASS_RULES.ADD_STUDENT),
+  ClassController.handleAddStudents
+);
+router.get(
+  "/details/:id/students/edit/:studentClass",
+  ClassController.editStudentPage
+);
+router.patch(
+  "/details/:id/students/edit/:studentClass",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT_STUDENT),
+  ClassController.handleEditStudent
+);
+router.delete(
+  "/details/:id/students",
+  csrf.verify,
+  ClassController.handleDeleteStudentsClass
+);
+
+// Manage Calendars
+router.get("/details/:id/calendars", ClassController.manageCalendarsPage);
+router.get(
+  "/details/:id/calendars/:calendarId",
+  ClassController.attendancePage
+);
+router.patch(
+  "/details/:id/calendars/:calendarId",
+  csrf.verify,
+  ClassController.handleAttendanceCalendar
+);
 
 module.exports = router;

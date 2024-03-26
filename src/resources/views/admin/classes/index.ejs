@@ -5,21 +5,7 @@
     <input type="hidden" disabled class="toastMessageSuccess" value="<%= success %>">
     <% } %>
 
-<div class="card py-1 mx-2">
-  <div class="row align-items-center">
-    <div class="col-6">
-      <h3 class="mb-0 ml-3"><%= title.split("-")[0] %></h3>
-    </div>
-    <div class="col-6">
-      <ol class="breadcrumb float-sm-right mb-0">
-        <li class="breadcrumb-item">
-          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
-        </li>
-        <li class="breadcrumb-item active">Classes</li>
-      </ol>
-    </div>
-  </div>
-</div>
+<%- include("../parts/breadcrumb") %>
 
 <div class="card-body mx-auto">
   <div class="tab-custom-content d-flex align-items-center">
@@ -29,7 +15,7 @@
     <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_CLASSES %>" class="btn btn-primary mx-2">Export classes (Excel)</a>
   </div>
   <div class="tab-content">
-    <div class="card px-2 py-3">
+    <div class="card px-3 py-3">
       <div class="row align-items-center">
         <div class="col-6 d-flex align-items-center px-2">
           <span class="mx-2">Show</span>
@@ -144,6 +130,8 @@
           </tbody>
         </table>
       </div>
+
+    <%- include("../parts/paginate", {arrObj: classes}) %>
     </div>
   </div>
 </div>

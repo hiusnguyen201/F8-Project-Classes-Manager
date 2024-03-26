@@ -41,13 +41,17 @@ module.exports = {
         req,
         user: req.user,
         page: meta.page,
-        title: `Manage Teachers - ${process.env.APP_NAME}`,
+        title: `Manage Teachers`,
         REDIRECT_PATH,
         totalCount: meta.count,
         offset: meta.offset,
         limit: meta.limit,
         currPage: "teachers",
         teachers,
+        breadcrumb: {
+          items: ["Home", "Teachers"],
+          paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
+        },
         totalPage: meta.totalPage,
         success: req.flash("success"),
         error: req.flash("error"),
@@ -73,7 +77,7 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.DETAILS_TEACHER, {
         req,
         user: req.user,
-        title: `Details Teacher - ${process.env.APP_NAME}`,
+        title: `Details Teacher`,
         REDIRECT_PATH,
         currPage: "teachers",
         classesJoining,
@@ -81,6 +85,13 @@ module.exports = {
         success: req.flash("success"),
         error: req.flash("error"),
         csrf,
+        breadcrumb: {
+          items: ["Home", "Teachers", "Details"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_TEACHERS,
+          ],
+        },
         stringUtil,
         moment,
       });
@@ -116,7 +127,7 @@ module.exports = {
         req,
         user: req.user,
         teacher,
-        title: `Calendars Teacher - ${process.env.APP_NAME}`,
+        title: `Calendars Teacher`,
         REDIRECT_PATH,
         dataCanlendar,
         currPage: "teachers",
@@ -141,7 +152,7 @@ module.exports = {
         user: req.user,
         oldValues: req.flash("oldValues")[0] || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Create Teacher - ${process.env.APP_NAME}`,
+        title: `Create Teacher`,
         REDIRECT_PATH,
         currPage: "teachers",
         success: req.flash("success"),
@@ -177,7 +188,7 @@ module.exports = {
         user: req.user,
         oldValues: req.flash("oldValues")[0] || teacherEdit || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Edit Teacher - ${process.env.APP_NAME}`,
+        title: `Edit Teacher`,
         REDIRECT_PATH,
         currPage: "teachers",
         success: req.flash("success"),
@@ -219,9 +230,16 @@ module.exports = {
 
   importTeachersPage: async (req, res) => {
     return res.render(RENDER_PATH.ADMIN.IMPORT_TEACHERS, {
-      title: `Import Teachers - ${process.env.APP_NAME}`,
+      title: `Import Teachers`,
       user: req.user,
       REDIRECT_PATH,
+      breadcrumb: {
+        items: ["Home", "Teachers", "Import"],
+        paths: [
+          REDIRECT_PATH.ADMIN.HOME_ADMIN,
+          REDIRECT_PATH.ADMIN.HOME_TEACHERS,
+        ],
+      },
       currPage: "teachers",
       error: req.flash("error"),
       success: req.flash("success"),

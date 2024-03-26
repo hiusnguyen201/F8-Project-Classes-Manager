@@ -130,6 +130,22 @@ const selectorRule = {
       hourFormat: "hour24",
     });
   },
+
+  min: (name, error, value) => {
+    return check(name).custom((data, { req }) => {
+      if (Number.isInteger(+data)) {
+        if (+data < value)
+          throw new Error(
+            error || `This field must have value minimum is ${value}`
+          );
+      } else if (Array.isArray(data)) {
+        if (data.length < value)
+          throw new Error(
+            error || `This field must have length minimum is ${value}`
+          );
+      }
+    });
+  },
 };
 
 module.exports = {

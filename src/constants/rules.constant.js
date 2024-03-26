@@ -62,7 +62,7 @@ const COURSE_RULES = {
       teacherId: "required|integer|exists:users,id",
       tryLearn: "required|integer",
       quantity: "required|integer",
-      duration: "required|integer",
+      duration: "required|integer|min:1",
     },
     MESSAGES: {
       "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
@@ -88,7 +88,7 @@ const COURSE_RULES = {
       teacherId: "required|integer|exists:users,id",
       tryLearn: "required|integer",
       quantity: "required|integer",
-      duration: "required|integer",
+      duration: "required|integer|min:1",
     },
     MESSAGES: {
       "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
