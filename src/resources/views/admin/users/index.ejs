@@ -16,17 +16,25 @@
   <% } %> <%- include("../parts/breadcrumb") %>
 
         <div class="card-body mx-auto">
-          <div class="tab-custom-content d-flex align-items-center">
-            <a href="<%= REDIRECT_PATH.ADMIN.CREATE_USER %>" class="btn btn-success mx-2">Create user</a>
-            <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected"
-              class="btn btn-danger mx-2" disabled>Delete selected</button>
-            <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_USERS %>" class="btn btn-primary mx-2">Import users</a>
-            <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_USERS %>" class="btn btn-primary mx-2">Export users (Excel)</a>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.CREATE_USER %>" class="btn btn-success w-100 py-2">Create user</a>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected"
+              class="btn btn-danger w-100 py-2" disabled>Delete selected</button>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_USERS %>" class="btn btn-primary w-100 py-2">Import users</a>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_USERS %>" class="btn btn-primary w-100 py-2">Export users</a>
+            </div>
           </div>
           <div class="tab-content">
             <div class="card px-3 py-3">
-              <div class="row align-items-center">
-                <div class="col-6 d-flex align-items-center px-2">
+              <div class="row justify-content-between">
+                <div class="col-xs-12 col-sm-6 row align-items-center mb-3">
                   <span class="mx-2">Show</span>
                   <select class="form-control" style="width: 60px;
                 padding: 4px;
@@ -50,7 +58,7 @@
                   </select>
                   <span class="mx-2">entries</span>
                 </div>
-                <div class="col-6 d-flex justify-content-end">
+                <div class="col-xs-12 col-sm-6 justify-content-end d-flex mb-3">
                   <form method="get" class="mx-1">
                     <div class="input-group" style="max-width: 300px;">
                       <input type="text" class="form-control" style="border-right: none;" name="keyword"
@@ -91,7 +99,7 @@
                 </div>
               </div>
 
-              <div class="table-responsive mt-3">
+              <div class="table-responsive mb-3">
                 <table class="table table-bordered">
                   <thead>
                     <tr>

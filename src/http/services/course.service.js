@@ -19,6 +19,11 @@ class CourseService {
     this.Module_Document = models.Module_Document;
   }
 
+  async countAll() {
+    const count = await this.Course.count();
+    return count;
+  }
+
   async findAllWithSearchAndPaginate(queryString) {
     let { page = 1, limit = 10, keyword } = queryString;
 

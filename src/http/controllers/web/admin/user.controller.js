@@ -41,7 +41,7 @@ module.exports = {
         page: meta.page,
         title: `Manage Users`,
         breadcrumb: {
-          items: ["Home", "Users"],
+          items: ["Dashboard", "Users"],
           paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
         },
         REDIRECT_PATH,
@@ -75,7 +75,7 @@ module.exports = {
         title: `Details User`,
         REDIRECT_PATH,
         breadcrumb: {
-          items: ["Home", "Users", "Details"],
+          items: ["Dashboard", "Users", "Details"],
           paths: [
             REDIRECT_PATH.ADMIN.HOME_ADMIN,
             REDIRECT_PATH.ADMIN.HOME_USERS,
@@ -183,7 +183,7 @@ module.exports = {
       error: req.flash("error"),
       success: req.flash("success"),
       breadcrumb: {
-        items: ["Home", "Users", "Import"],
+        items: ["Dashboard", "Users", "Import"],
         paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN, REDIRECT_PATH.ADMIN.HOME_USERS],
       },
     });

@@ -8,16 +8,24 @@
 <%- include("../parts/breadcrumb") %>
 
 <div class="card-body mx-auto">
-  <div class="tab-custom-content d-flex align-items-center">
-    <a href="<%= REDIRECT_PATH.ADMIN.CREATE_COURSE %>" class="btn btn-success mx-2">Create course</a>
-    <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected" class="btn btn-danger mx-2" disabled>Delete selected</button>
-    <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_COURSES %>" class="btn btn-primary mx-2">Import courses</a>
-    <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_COURSES %>" class="btn btn-primary mx-2">Export courses (Excel)</a>
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+    <a href="<%= REDIRECT_PATH.ADMIN.CREATE_COURSE %>" class="btn btn-success w-100 py-2">Create course</a>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+    <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected" class="btn btn-danger w-100 py-2" disabled>Delete selected</button>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+    <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_COURSES %>" class="btn btn-primary w-100 py-2">Import courses</a>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+    <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_COURSES %>" class="btn btn-primary w-100 py-2">Export courses</a>
+    </div>
   </div>
   <div class="tab-content">
     <div class="card px-3 py-3">
         <div class="row align-items-center">
-          <div class="col-6 d-flex align-items-center px-2">
+          <div class="col-xs-12 col-sm-6 mb-3 d-flex align-items-center px-2">
             <span class="mx-2">Show</span>
             <select class="form-control" style="width: 60px;
                 padding: 4px;
@@ -37,15 +45,16 @@
             </select>
             <span class="mx-2">entries</span>
           </div>
-          <div class="col-6 px-2 d-flex justify-content-end">
-            <form action="">
-              <div class="input-group mx-2" style="max-width: 300px;">
-                <input type="text" class="form-control" style="border-right: none;" name="keyword" value="<%= req.query.keyword %>" placeholder="Keyword...">
-                <div class="input-group-append">
-                  <button type="submit" class="input-group-text"><i class="fas fa-search"></i></button>
-                </div>
-              </div>
-            </form>
+          <div class="col-xs-12 col-sm-6 mb-3 px-2 d-flex justify-content-end">
+            <form method="get" class="mx-1">
+                    <div class="input-group" style="max-width: 300px;">
+                      <input type="text" class="form-control" style="border-right: none;" name="keyword"
+                        value="<%= req.query.keyword %>" placeholder="Keyword...">
+                      <div class="input-group-append">
+                        <button type="submit" class="input-group-text"><i class="fas fa-search"></i></button>
+                      </div>
+                    </div>
+                  </form>
             <button type="button" class="btn mx-2 btn-default">
               <i class="fas fa-filter fa-xs"></i>
             </button>
@@ -86,7 +95,7 @@
           </div>
         </div>
 
-        <div class="table-responsive mt-3">
+        <div class="table-responsive mb-3">
           <table class="table table-bordered">
             <thead>
               <tr>

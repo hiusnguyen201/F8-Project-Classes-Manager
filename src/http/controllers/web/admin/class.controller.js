@@ -58,7 +58,7 @@ module.exports = {
         moment,
         stringUtil,
         breadcrumb: {
-          items: ["Home", "Classes"],
+          items: ["Dashboard", "Classes"],
           paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
         },
       });
@@ -88,7 +88,7 @@ module.exports = {
         stringUtil,
         moment,
         breadcrumb: {
-          items: ["Home", "Classes", "Details", "Students"],
+          items: ["Dashboard", "Classes", "Details", "Students"],
           paths: [
             REDIRECT_PATH.ADMIN.HOME_ADMIN,
             REDIRECT_PATH.ADMIN.HOME_CLASSES,
@@ -122,7 +122,7 @@ module.exports = {
         stringUtil,
         moment,
         breadcrumb: {
-          items: ["Home", "Classes", "Details", "Calendars"],
+          items: ["Dashboard", "Classes", "Details", "Calendars"],
           paths: [
             REDIRECT_PATH.ADMIN.HOME_ADMIN,
             REDIRECT_PATH.ADMIN.HOME_CLASSES,
@@ -182,7 +182,7 @@ module.exports = {
         stringUtil,
         moment,
         breadcrumb: {
-          items: ["Home", "Classes", "Details"],
+          items: ["Dashboard", "Classes", "Details"],
           paths: [
             REDIRECT_PATH.ADMIN.HOME_ADMIN,
             REDIRECT_PATH.ADMIN.HOME_CLASSES,
@@ -271,7 +271,7 @@ module.exports = {
       error: req.flash("error"),
       success: req.flash("success"),
       breadcrumb: {
-        items: ["Home", "Classes", "Import"],
+        items: ["Dashboard", "Classes", "Import"],
         paths: [
           REDIRECT_PATH.ADMIN.HOME_ADMIN,
           REDIRECT_PATH.ADMIN.HOME_CLASSES,
@@ -474,7 +474,7 @@ module.exports = {
       error: req.flash("error"),
       csrf,
       breadcrumb: {
-        items: ["Home", "Classes", "Details", "Calendars", "Attendances"],
+        items: ["Dashboard", "Classes", "Details", "Calendars", "Attendances"],
         paths: [
           REDIRECT_PATH.ADMIN.HOME_ADMIN,
           REDIRECT_PATH.ADMIN.HOME_CLASSES,

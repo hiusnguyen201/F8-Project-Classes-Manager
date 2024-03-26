@@ -47,7 +47,7 @@ module.exports = {
         currPage: "students",
         students,
         breadcrumb: {
-          items: ["Home", "Students"],
+          items: ["Dashboard", "Students"],
           paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
         },
         totalPage: meta.totalPage,

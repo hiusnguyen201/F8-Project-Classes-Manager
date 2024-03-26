@@ -49,7 +49,7 @@ module.exports = {
         currPage: "teachers",
         teachers,
         breadcrumb: {
-          items: ["Home", "Teachers"],
+          items: ["Dashboard", "Teachers"],
           paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
         },
         totalPage: meta.totalPage,
@@ -86,7 +86,7 @@ module.exports = {
         error: req.flash("error"),
         csrf,
         breadcrumb: {
-          items: ["Home", "Teachers", "Details"],
+          items: ["Dashboard", "Teachers", "Details"],
           paths: [
             REDIRECT_PATH.ADMIN.HOME_ADMIN,
             REDIRECT_PATH.ADMIN.HOME_TEACHERS,
@@ -234,7 +234,7 @@ module.exports = {
       user: req.user,
       REDIRECT_PATH,
       breadcrumb: {
-        items: ["Home", "Teachers", "Import"],
+        items: ["Dashboard", "Teachers", "Import"],
         paths: [
           REDIRECT_PATH.ADMIN.HOME_ADMIN,
           REDIRECT_PATH.ADMIN.HOME_TEACHERS,

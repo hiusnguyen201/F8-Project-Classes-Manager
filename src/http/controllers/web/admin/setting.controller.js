@@ -25,7 +25,7 @@ module.exports = {
     try {
       const userEdit = await userService.findById(req.user.id);
       return res.render(RENDER_PATH.ADMIN.PROFILE_SETTING, {
-        title: `Settings`,
+        title: `Profile`,
         req,
         user: req.user,
         oldValues: req.flash("oldValues")[0] || userEdit || {},
@@ -36,6 +36,10 @@ module.exports = {
         error: req.flash("error"),
         success: req.flash("success"),
         stringUtil,
+        breadcrumb: {
+          items: ["Dashboard", "Settings"],
+          paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
+        },
       });
     } catch (err) {
       console.log(err);
@@ -64,7 +68,7 @@ module.exports = {
       );
 
       return res.render(RENDER_PATH.ADMIN.SECURITY_SETTING, {
-        title: `Settings`,
+        title: `Security`,
         req,
         user,
         listSocials: LIST_SOCIALS,
@@ -75,6 +79,10 @@ module.exports = {
         error: req.flash("error"),
         success: req.flash("success"),
         stringUtil,
+        breadcrumb: {
+          items: ["Dashboard", "Settings"],
+          paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
+        },
       });
     } catch (err) {
       console.log(err);
@@ -100,7 +108,7 @@ module.exports = {
   password: async (req, res, next) => {
     try {
       return res.render(RENDER_PATH.ADMIN.PASSWORD_SETTING, {
-        title: `Settings`,
+        title: `Password`,
         req,
         user: req.user,
         errorsValidate: req.flash("errors")[0] || {},
@@ -110,6 +118,10 @@ module.exports = {
         error: req.flash("error"),
         success: req.flash("success"),
         stringUtil,
+        breadcrumb: {
+          items: ["Dashboard", "Settings"],
+          paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
+        },
       });
     } catch (err) {
       console.log(err);

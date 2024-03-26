@@ -21,6 +21,11 @@ class ClassService {
     this.LearningStatus = models.Learning_Status;
   }
 
+  async countAll() {
+    const count = await this.Class.count();
+    return count;
+  }
+
   async findAllWithSearchAndPaginate(queryString) {
     let { page = 1, limit = 10, keyword } = queryString;
 

@@ -44,7 +44,7 @@ module.exports = {
         currPage: "courses",
         courses,
         breadcrumb: {
-          items: ["Home", "Courses"],
+          items: ["Dashboard", "Courses"],
           paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
         },
         totalPage: meta.totalPage,
@@ -102,7 +102,7 @@ module.exports = {
         stringUtil,
         moment,
         breadcrumb: {
-          items: ["Home", "Courses", "Details"],
+          items: ["Dashboard", "Courses", "Details"],
           paths: [
             REDIRECT_PATH.ADMIN.HOME_ADMIN,
             REDIRECT_PATH.ADMIN.HOME_COURSES,
@@ -188,7 +188,7 @@ module.exports = {
       error: req.flash("error"),
       success: req.flash("success"),
       breadcrumb: {
-        items: ["Home", "Courses", "Import"],
+        items: ["Dashboard", "Courses", "Import"],
         paths: [
           REDIRECT_PATH.ADMIN.HOME_ADMIN,
           REDIRECT_PATH.ADMIN.HOME_COURSES,
