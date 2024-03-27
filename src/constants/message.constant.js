@@ -120,8 +120,16 @@ const MESSAGE_ERROR = {
     INVALID_DROPOUT_DATE: "Invalid dropout date",
     INVALID_RECOVERY_DATE: "Invalid recovery date",
     INVALID_REASON: "Invalid reason",
+    REQUIRED_TITLE: "Title is required",
+    INVALID_TITLE: "Invalid title",
+    EXISTED_TITLE: "Title is existed",
+    REQUIRED_TEACHER: "Teacher is required",
+    TEACHER_NOT_FOUND: "Teacher is not found",
+    INVALID_CONTENT: "Invalid content",
+    INVALID_ATTACHMENT: "Invalid attachment",
 
     STUDENT_JOINED: "This student already in class",
+    EXERCISE_NOT_FOUND: "Exercise is not found",
 
     // Feature
     CLASS_EXISTED: "Class is existed",
@@ -133,6 +141,9 @@ const MESSAGE_ERROR = {
     EDIT_STUDENT_TO_CLASS_FAILED: "Edit student to class failed",
     DELETE_STUDENT_CLASS_FAILED: "Delete student failed",
     EDIT_ATTENDANCE_CALENDAR_FAILED: "Edit attendance failed",
+    CREATE_EXERCISE_FAILED: "Create exercise failed",
+    EDIT_EXERCISE_FAILED: "Edit exercise failed",
+    DELETE_EXERCISE_FAILED: "Delete exercise failed",
   },
 
   OTHER: {
@@ -214,6 +225,9 @@ const MESSAGE_SUCCESS = {
     EDIT_STUDENT_TO_CLASS_SUCCESS: "Edit student to class successfully",
     DELETE_STUDENT_CLASS_SUCCESS: "Delete student successfully",
     EDIT_ATTENDANCE_CALENDAR_SUCCESS: "Edit attendance successfully",
+    CREATE_EXERCISE_SUCCESS: "Create exercise successfully",
+    EDIT_EXERCISE_SUCCESS: "Edit exercise successfully",
+    DELETE_EXERCISE_SUCCESS: "Delete exercise successfully",
   },
 };
 

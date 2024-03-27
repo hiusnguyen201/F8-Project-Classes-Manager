@@ -289,6 +289,50 @@ const CLASS_RULES = {
       "reason.string": MESSAGE_ERROR.CLASS.INVALID_REASON,
     },
   },
+  CREATE_EXERCISE: {
+    RULES: {
+      title: "required|string|min:4|max:200|unique:exercises,title",
+      teacher: "required|integer|min:1|exists:users,id",
+      content: "nullable|string",
+      attachment: "nullable|string|max:200",
+    },
+    MESSAGES: {
+      "title.required": "Title is required",
+      "title.string": "Title must be characters",
+      "title.min:4": "Title must has a minimum length of 4",
+      "title.max:200": "Title must has a maximum length of 200",
+      "title.unique:exercises,title": "Title is existed",
+      "teacher.required": "Teacher is required",
+      "teacher.integer": "Teacher is not found",
+      "teacher.min:1": "Teacher is not found",
+      "teacher.exists:users,id": "Teacher is not found",
+      "content.string": "Content must be characters",
+      "attachment.string": "Attachment must be characters",
+      "attachment.max:200": "Attachment must has a maximum length of 200",
+    },
+  },
+  EDIT_EXERCISE: {
+    RULES: {
+      title: "required|string|min:4|max:200|unique:exercises,title,id,id",
+      teacher: "required|integer|min:1|exists:users,id",
+      content: "nullable|string",
+      attachment: "nullable|string|max:200",
+    },
+    MESSAGES: {
+      "title.required": "Title is required",
+      "title.string": "Title must be characters",
+      "title.min:4": "Title must has a minimum length of 4",
+      "title.max:200": "Title must has a maximum length of 200",
+      "title.unique:exercises,title,id,id": "Title is existed",
+      "teacher.required": "Teacher is required",
+      "teacher.integer": "Teacher is not found",
+      "teacher.min:1": "Teacher is not found",
+      "teacher.exists:users,id": "Teacher is not found",
+      "content.string": "Content must be characters",
+      "attachment.string": "Attachment must be characters",
+      "attachment.max:200": "Attachment must has a maximum length of 200",
+    },
+  },
 };
 
 const RULES_REQUEST = {

@@ -77,4 +77,29 @@ router.patch(
   ClassController.handleAttendanceCalendar
 );
 
+// Manage Exercises
+router.get("/details/:id/exercises", ClassController.manageExercisesPage);
+router.get("/details/:id/exercises/create", ClassController.createExercisePage);
+router.post(
+  "/details/:id/exercises/create",
+  csrf.verify,
+  validator.make(CLASS_RULES.CREATE_EXERCISE),
+  ClassController.handleCreateExercise
+);
+router.get(
+  "/details/:id/exercises/edit/:exerciseId",
+  ClassController.editExercisePage
+);
+router.patch(
+  "/details/:id/exercises/edit/:exerciseId",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT_EXERCISE),
+  ClassController.handleEditExercise
+);
+router.delete(
+  "/details/:id/exercises",
+  csrf.verify,
+  ClassController.handleDeleteExercises
+);
+
 module.exports = router;

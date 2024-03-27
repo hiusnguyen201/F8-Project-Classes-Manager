@@ -50,6 +50,11 @@ const REDIRECT_PATH = {
     EDIT_STUDENT_CLASS: "/students/edit",
     DELETE_STUDENT_CLASS: "/students/delete",
     MANAGE_CALENDARS_CLASS: "/calendars",
+    MANAGE_EXERCISES_CLASS: "/exercises",
+    CREATE_EXERCISE_CLASS: "/exercises/create",
+    DETAILS_EXERCISE_CLASS: "/exercises/details",
+    EDIT_EXERCISE_CLASS: "/exercises/edit",
+    MANAGE_QUESTIONS_CLASS: "/questions",
 
     PROFILE_SETTING: "/admin/settings/profile",
     SECURITY_SETTING: "/admin/settings/security",
@@ -125,6 +130,9 @@ const RENDER_PATH = {
     EDIT_STUDENT_CLASS: "admin/classes/editStudent",
     MANAGE_CALENDARS_CLASS: "admin/classes/manageCalendars",
     CALENDAR_ATTENDANCES: "admin/classes/calendarsAttendance",
+    MANAGE_EXERCISES_CLASS: "admin/classes/manageExercises",
+    CREATE_EXERCISE_CLASS: "admin/classes/createExercise",
+    EDIT_EXERCISE_CLASS: "admin/classes/editExercise",
 
     PROFILE_SETTING: "admin/settings/profile",
     SECURITY_SETTING: "admin/settings/security",

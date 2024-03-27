@@ -136,6 +136,43 @@ module.exports = {
     }
   },
 
+  manageExercisesPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      const exercises = await classObj.getExercises();
+
+      return res.render(RENDER_PATH.ADMIN.MANAGE_EXERCISES_CLASS, {
+        req,
+        user: req.user,
+        title: `Manage Exercises`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        exercises,
+        breadcrumb: {
+          items: ["Dashboard", "Classes", "Details", "Exercises"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+          ],
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
   create: async (req, res) => {
     try {
       const courses = await courseService.findAll();
@@ -160,6 +197,95 @@ module.exports = {
       console.log(err);
       return next(createHttpError(STATUS_CODE.SERVER_ERROR));
     }
+  },
+
+  createExercisePage: async (req, res) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      const teachers = await userService.findAllWithTypes("teacher");
+
+      return res.render(RENDER_PATH.ADMIN.CREATE_EXERCISE_CLASS, {
+        req,
+        user: req.user,
+        title: `Create Exercise`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        teachers,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  editExercisePage: async (req, res) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+      const exerciseEdit = await classService.findExerciseById(
+        req.params.exerciseId
+      );
+
+      const teachers = await userService.findAllWithTypes("teacher");
+
+      return res.render(RENDER_PATH.ADMIN.EDIT_EXERCISE_CLASS, {
+        req,
+        user: req.user,
+        title: `Edit Exercise`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        teachers,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        oldValues: req.flash("oldValues")[0] || exerciseEdit || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  handleCreateExercise: async (req, res) => {
+    try {
+      await classService.createExercise(req.body, req.params.id);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.CREATE_EXERCISE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.CREATE_EXERCISE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleEditExercise: async (req, res) => {
+    try {
+      await classService.updatedExercise(req.body, req.params.exerciseId);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_EXERCISE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.EDIT_EXERCISE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
   },
 
   details: async (req, res, next) => {
@@ -452,6 +578,19 @@ module.exports = {
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.CLASS.DELETE_STUDENT_CLASS_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleDeleteExercises: async (req, res) => {
+    const { id } = req.body;
+    try {
+      await classService.deleteExercise(Array.isArray(id) ? id : [id]);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_EXERCISE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_EXERCISE_FAILED);
     }
 
     return res.redirect(req.originalUrl);

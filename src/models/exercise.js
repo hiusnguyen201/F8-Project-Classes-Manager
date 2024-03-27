@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Exercise.belongsTo(models.Class, { foreignKey: "classId" });
       Exercise.belongsTo(models.User, { foreignKey: "teacherId" });
-      Exercise.hasMany(models.Submit_Exercise, { foreignKey: "id" });
+      Exercise.hasMany(models.Submit_Exercise, {
+        foreignKey: "id",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
     }
   }
   Exercise.init(

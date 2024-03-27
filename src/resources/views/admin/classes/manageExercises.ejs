@@ -1,0 +1,167 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %> <%- include("../parts/breadcrumb") %>
+
+<div class="card py-3 px-3 mx-2">
+  <div class="row">
+    <div class="col-xs-12 col-md-6 mb-3 col-lg-3">
+      <a
+        href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= classObj.id %><%= REDIRECT_PATH.ADMIN.CREATE_EXERCISE_CLASS %>"
+        class="btn btn-success w-100 py-2"
+        >Create</a
+      >
+    </div>
+    <div class="col-xs-12 col-md-6 mb-3 col-lg-3">
+      <button
+        type="button"
+        data-toggle="modal"
+        data-target="#btnDeleteAllChildrenSelected"
+        class="btn btn-danger w-100 py-2"
+        disabled
+      >
+        Delete selected
+      </button>
+    </div>
+  </div>
+  <div class="table-responsive-lg">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th width="1%" class="px-1">
+            <label class="checkbox-btn">
+              <input type="checkbox" class="checkboxParent" />
+            </label>
+          </th>
+          <th>Name</th>
+          <th width="20%">Posted</th>
+          <th width="1%">Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(exercises && exercises.length) { exercises.forEach(exercise => {
+        %>
+        <tr>
+          <td width="1%" class="px-1 align-middle">
+            <label class="checkbox-btn">
+              <input
+                style="cursor: pointer"
+                type="checkbox"
+                class="checkboxChildren"
+                value="<%= exercise.id %>"
+              />
+            </label>
+          </td>
+          <td class="align-middle">
+            <div id="accordionExercise<%= exercise.id %>">
+              <div class="card card-primary mb-0">
+                <div class="card-header">
+                  <h4 class="card-title w-100">
+                    <a
+                      class="d-block w-100 collapsed"
+                      data-toggle="collapse"
+                      href="#collapseExercise-<%= exercise.id %>"
+                      aria-expanded="false"
+                    >
+                      <%= exercise.title %>
+                    </a>
+                  </h4>
+                </div>
+                <div
+                  id="collapseExercise-<%= exercise.id %>"
+                  class="collapse"
+                  data-parent="#accordionExercise<%= exercise.id %>"
+                >
+                  <div class="card-body py-3 px-3 mt-2">
+                    <div class="row">
+                      <div class="col-xs-12 col-md-8 mb-2">
+                        <%= exercise.content %>
+                      </div>
+                      <div class="col-xs-12 col-md-4 mb-2">
+                        <%= exercise.getSubmit_Exercises().length || 0 %>
+                        Submited
+                      </div>
+                    </div>
+                    <hr />
+                    <div class="d-grid">
+                      <a
+                        class="btn btn-default"
+                        href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %><%= req.params.id %><%= REDIRECT_PATH.ADMIN.DETAILS_EXERCISE_CLASS %>/<%= exercise.id %>"
+                        >View Details</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="align-middle">
+            <%= moment(exercise.createdAt).format("DD/MM/YYYY") %>
+          </td>
+          <td width="1%" class="align-middle">
+            <div class="d-flex align-items-center justify-content-center">
+              <a
+                class="mx-1 icon-operation"
+                href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= req.params.id %><%= REDIRECT_PATH.ADMIN.EDIT_EXERCISE_CLASS + `/${exercise.id}` %>"
+                ><i class="fas fa-pen fa-xs"></i
+              ></a>
+              <button
+                class="mx-1 icon-operation"
+                type="button"
+                data-toggle="modal"
+                data-target="#modal-deleteChildren-<%= exercise.id %>"
+              >
+                <i class="fas fa-trash fa-xs"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <%- include("./deleteExercise.modal.ejs", {exercise}) %> <% }) } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="btnDeleteAllChildrenSelected" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div
+        class="line"
+        style="
+          width: 100%;
+          height: 5px;
+          background-color: #6246ea;
+          border-top-right-radius: 0.3rem;
+          border-top-left-radius: 0.3rem;
+        "
+      ></div>
+      <div class="modal-header">
+        <h5 class="modal-title" style="border: none; font-size: 22px">
+          Are you sure to delete all exercises selected ?
+        </h5>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          No
+        </button>
+        <form action="" method="post">
+          <input type="hidden" name="_method" value="DELETE" />
+          <input
+            type="hidden"
+            name="csrfToken"
+            value="<%= csrf.createToken() %>"
+          />
+          <button id="btnConfirmDeleteAllChildren" class="btn btn-danger">
+            Yes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

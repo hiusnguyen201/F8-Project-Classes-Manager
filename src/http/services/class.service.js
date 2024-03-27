@@ -19,6 +19,7 @@ class ClassService {
     this.StudentAttendance = models.Student_Attendance;
     this.StudentClass = models.Student_Class;
     this.LearningStatus = models.Learning_Status;
+    this.Exercise = models.Exercise;
   }
 
   async countAll() {
@@ -68,6 +69,12 @@ class ClassService {
       meta: { page, offset, totalPage, limit, count },
       data: classes,
     };
+  }
+
+  async findExerciseById(id) {
+    if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
+    const exercise = await this.Exercise.findByPk(id);
+    return exercise ? exercise : null;
   }
 
   async findById(id) {
@@ -594,6 +601,49 @@ class ClassService {
             },
           }
         );
+      })
+    );
+  }
+
+  async createExercise(data, classId) {
+    const exercise = await this.Exercise.create({
+      title: data.title,
+      attachment: data.attachment,
+      content: data.content,
+      teacherId: data.teacher,
+      classId,
+    });
+
+    return exercise ? exercise : null;
+  }
+
+  async updatedExercise(data, id) {
+    const status = await this.Exercise.update(
+      {
+        title: data.title,
+        attachment: data.attachment,
+        content: data.content,
+        teacherId: data.teacher,
+        updatedAt: new Date(),
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+
+    return status ? 1 : 0;
+  }
+
+  async deleteExercise(listId) {
+    await Promise.all(
+      listId.map(async (id) => {
+        await this.Exercise.destroy({
+          where: {
+            id,
+          },
+        });
       })
     );
   }
