@@ -47,24 +47,6 @@
               </div>
 
               <div class="mb-3">
-                <label class="form-label">Teacher</label>
-                <select name="teacher" class="form-control">
-                  <option value="">--- Select teacher ---</option>
-                  <% if(teachers && teachers.length) {
-                  teachers.forEach((teacher) => { %>
-                  <option <%= oldValues.teacher == teacher.id ? "selected" : '' %> value="<%= teacher.id %>">
-                    <%= teacher.email %>
-                  </option>
-                  <% })} %>
-                </select>
-                <% if(errorsValidate['teacher']){ %>
-                <span class="text-danger">
-                  <%= errorsValidate['teacher'] %>
-                </span>
-                <% } %>
-              </div>
-
-              <div class="mb-3">
                 <label class="form-label">Content</label>
                 <textarea
                   name="content"
@@ -72,7 +54,9 @@
                   rows="8"
                   class="form-control"
                   style="resize: none"
-                ><%= oldValues.content %></textarea>
+                >
+<%= oldValues.content %></textarea
+                >
                 <% if(errorsValidate['content']){ %>
                 <span class="text-danger">
                   <%= errorsValidate['content'] %>
@@ -82,7 +66,12 @@
 
               <div class="mb-3">
                 <label class="form-label">Attachment</label>
-                <input type="text" name="attachment" class="form-control" value="<%= oldValues.attachment %>"/>
+                <input
+                  type="text"
+                  name="attachment"
+                  class="form-control"
+                  value="<%= oldValues.attachment %>"
+                />
               </div>
 
               <input type="hidden" name="_method" value="POST" />

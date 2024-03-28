@@ -13,7 +13,7 @@
   <div class="row">
     <div class="col-xs-12 col-md-6 mb-3 col-lg-3">
       <a
-        href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= classObj.id %><%= REDIRECT_PATH.ADMIN.CREATE_EXERCISE_CLASS %>"
+        href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= classObj.id %><%= REDIRECT_PATH.ADMIN.CREATE_QUESTION_CLASS %>"
         class="btn btn-success w-100 py-2"
         >Create</a
       >
@@ -39,14 +39,15 @@
               <input type="checkbox" class="checkboxParent" />
             </label>
           </th>
-          <th>Name</th>
+          <th>Title</th>
+          <th>Posted By</th>
           <th width="20%">Posted</th>
           <th width="1%">Operation</th>
         </tr>
       </thead>
       <tbody>
-        <% if(classObj.Exercises && classObj.Exercises.length) {
-        classObj.Exercises.forEach(exercise => { %>
+        <% if(questions && questions.length) { questions.forEach(question => {
+        %>
         <tr>
           <td width="1%" class="px-1 align-middle">
             <label class="checkbox-btn">
@@ -54,74 +55,39 @@
                 style="cursor: pointer"
                 type="checkbox"
                 class="checkboxChildren"
-                value="<%= exercise.id %>"
+                value="<%= question.id %>"
               />
             </label>
           </td>
           <td class="align-middle">
-            <div id="accordionExercise<%= exercise.id %>">
-              <div class="card card-primary mb-0">
-                <div class="card-header">
-                  <h4 class="card-title w-100">
-                    <a
-                      class="d-block w-100 collapsed"
-                      data-toggle="collapse"
-                      href="#collapseExercise-<%= exercise.id %>"
-                      aria-expanded="false"
-                    >
-                      <%= exercise.title %>
-                    </a>
-                  </h4>
-                </div>
-                <div
-                  id="collapseExercise-<%= exercise.id %>"
-                  class="collapse"
-                  data-parent="#accordionExercise<%= exercise.id %>"
-                >
-                  <div class="card-body py-3 px-3 mt-2">
-                    <div class="row">
-                      <div class="col-xs-12 col-md-8 mb-2">
-                        <%= exercise.content %>
-                      </div>
-                      <div class="col-xs-12 col-md-4 mb-2">
-                        <%= exercise.Submit_Exercises.length || 0 %> Submited
-                      </div>
-                    </div>
-                    <hr />
-                    <div class="d-grid">
-                      <a
-                        class="btn btn-default"
-                        href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= req.params.id %><%= REDIRECT_PATH.ADMIN.DETAILS_EXERCISE_CLASS %>/<%= exercise.id %>"
-                        >View Details</a
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <a
+              href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= req.params.id %><%= REDIRECT_PATH.ADMIN.DETAILS_QUESTION_CLASS + `/${question.id}` %>"
+              ><%= question.title %></a
+            >
           </td>
+          <td class="align-middle"><%= question.User.name %></td>
           <td class="align-middle">
-            <%= moment(exercise.createdAt).fromNow() %>
+            <%= moment(question.createdAt).fromNow() %>
           </td>
           <td width="1%" class="align-middle">
             <div class="d-flex align-items-center justify-content-center">
               <a
                 class="mx-1 icon-operation"
-                href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= req.params.id %><%= REDIRECT_PATH.ADMIN.EDIT_EXERCISE_CLASS + `/${exercise.id}` %>"
+                href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= req.params.id %><%= REDIRECT_PATH.ADMIN.EDIT_QUESTION_CLASS + `/${question.id}` %>"
                 ><i class="fas fa-pen fa-xs"></i
               ></a>
               <button
                 class="mx-1 icon-operation"
                 type="button"
                 data-toggle="modal"
-                data-target="#modal-deleteChildren-<%= exercise.id %>"
+                data-target="#modal-deleteChildren-<%= question.id %>"
               >
                 <i class="fas fa-trash fa-xs"></i>
               </button>
             </div>
           </td>
         </tr>
-        <%- include("./deleteExercise.modal.ejs", {exercise}) %> <% }) } %>
+        <%- include("./deleteQuestion.modal.ejs", {question}) %> <% }) } %>
       </tbody>
     </table>
   </div>
@@ -142,7 +108,7 @@
       ></div>
       <div class="modal-header">
         <h5 class="modal-title" style="border: none; font-size: 22px">
-          Are you sure to delete all exercises selected ?
+          Are you sure to delete all questions selected ?
         </h5>
       </div>
       <div class="modal-footer justify-content-between">

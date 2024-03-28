@@ -144,6 +144,15 @@ const MESSAGE_ERROR = {
     CREATE_EXERCISE_FAILED: "Create exercise failed",
     EDIT_EXERCISE_FAILED: "Edit exercise failed",
     DELETE_EXERCISE_FAILED: "Delete exercise failed",
+    CREATE_SUBMIT_EXERCISE_FAILED: "Create submit exercise failed",
+    EDIT_SUBMIT_EXERCISE_FAILED: "Edit submit exercise failed",
+    DELETE_SUBMIT_EXERCISE_FAILED: "Delete submit exercise failed",
+    CREATE_QUESTION_FAILED: "Create question failed",
+    EDIT_QUESTION_FAILED: "Edit question failed",
+    DELETE_QUESTION_FAILED: "Delete question failed",
+    CREATE_COMMENT_FAILED: "Create comment failed",
+    EDIT_COMMENT_FAILED: "Edit comment failed",
+    DELETE_COMMENT_FAILED: "Delete comment failed",
   },
 
   OTHER: {
@@ -228,6 +237,15 @@ const MESSAGE_SUCCESS = {
     CREATE_EXERCISE_SUCCESS: "Create exercise successfully",
     EDIT_EXERCISE_SUCCESS: "Edit exercise successfully",
     DELETE_EXERCISE_SUCCESS: "Delete exercise successfully",
+    CREATE_SUBMIT_EXERCISE_SUCCESS: "Submit exercise successfully",
+    EDIT_SUBMIT_EXERCISE_SUCCESS: "Edit submit exercise successfully",
+    DELETE_SUBMIT_EXERCISE_SUCCESS: "Delete submit exercise successfully",
+    CREATE_QUESTION_SUCCESS: "Create question successfully",
+    EDIT_QUESTION_SUCCESS: "Edit question successfully",
+    DELETE_QUESTION_SUCCESS: "Delete question successfully",
+    CREATE_COMMENT_SUCCESS: "Create comment successfully",
+    EDIT_COMMENT_SUCCESS: "Edit comment successfully",
+    DELETE_COMMENT_SUCCESS: "Delete comment successfully",
   },
 };
 

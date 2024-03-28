@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       Exercise.belongsTo(models.Class, { foreignKey: "classId" });
       Exercise.belongsTo(models.User, { foreignKey: "teacherId" });
       Exercise.hasMany(models.Submit_Exercise, {
-        foreignKey: "id",
+        foreignKey: "exerciseId",
         onDelete: "CASCADE",
         hooks: true,
       });

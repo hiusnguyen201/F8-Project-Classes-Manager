@@ -9,14 +9,23 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Class.belongsTo(models.Course, { foreignKey: "courseId" });
-      Class.hasMany(models.Comment, { foreignKey: "classId" });
+
+      Class.hasMany(models.Comment, {
+        foreignKey: "classId",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
       Class.hasMany(models.Student_Class, {
         foreignKey: "classId",
         onDelete: "CASCADE",
         hooks: true,
       });
 
-      Class.hasMany(models.Exercise, { foreignKey: "classId" });
+      Class.hasMany(models.Exercise, {
+        foreignKey: "classId",
+        onDelete: "CASCADE",
+        hooks: true,
+      });
 
       Class.hasMany(models.Teacher_Calendar, {
         foreignKey: "classId",

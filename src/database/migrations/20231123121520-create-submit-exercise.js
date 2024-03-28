@@ -9,9 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      content: {
-        type: Sequelize.TEXT,
-      },
       attachment: {
         type: Sequelize.STRING(200),
       },

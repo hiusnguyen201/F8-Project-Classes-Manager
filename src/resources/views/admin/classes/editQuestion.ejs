@@ -16,10 +16,10 @@
         <div class="modal-header align-items-center">
           <h5 class="modal-title">
             <a
-              href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= req.params.id %><%=  REDIRECT_PATH.ADMIN.MANAGE_EXERCISES_CLASS %>"
+              href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= req.params.id %><%=  REDIRECT_PATH.ADMIN.MANAGE_QUESTIONS_CLASS %>"
               ><i class="fas fa-times mr-3 icon-operation"></i
             ></a>
-            <i class="fas fa-clipboard-list mr-2"></i><span>Exercise</span>
+            <i class="fas fa-clipboard-list mr-2"></i><span>Question</span>
           </h5>
           <button type="submit" class="btn btn-success py-2">Save</button>
         </div>
@@ -62,16 +62,6 @@
                   <%= errorsValidate['content'] %>
                 </span>
                 <% } %>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">Attachment</label>
-                <input
-                  type="text"
-                  name="attachment"
-                  class="form-control"
-                  value="<%= oldValues.attachment %>"
-                />
               </div>
 
               <input type="hidden" name="id" value="<%= oldValues.id %>" />

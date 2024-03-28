@@ -269,6 +269,18 @@ body {
   outline: unset;
 }
 
+.icon-title {
+  background-color: #6246ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+  color: #fffffe;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+}
+
 .modal-edit {
   padding-right: 0 !important;
 }
@@ -556,6 +568,10 @@ input:focus-visible {
   .col-xs-12 {
     text-align: center;
     justify-content: center !important;
+  }
+
+  .icon-title {
+    display: none;
   }
 
   .breadcrumb {

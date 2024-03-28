@@ -79,6 +79,10 @@ router.patch(
 
 // Manage Exercises
 router.get("/details/:id/exercises", ClassController.manageExercisesPage);
+router.get(
+  "/details/:id/exercises/details/:exerciseId",
+  ClassController.detailsExercisePage
+);
 router.get("/details/:id/exercises/create", ClassController.createExercisePage);
 router.post(
   "/details/:id/exercises/create",
@@ -100,6 +104,73 @@ router.delete(
   "/details/:id/exercises",
   csrf.verify,
   ClassController.handleDeleteExercises
+);
+
+// Submit Exercise
+router.post(
+  "/details/:id/exercises/details/:exerciseId",
+  csrf.verify,
+  validator.make(CLASS_RULES.CREATE_SUBMIT_EXERCISE),
+  ClassController.handleCreateSubmitExercise
+);
+router.patch(
+  "/details/:id/exercises/details/:exerciseId",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT_SUBMIT_EXERCISE),
+  ClassController.handleEditSubmitExercise
+);
+router.delete(
+  "/details/:id/exercises/details/:exerciseId",
+  csrf.verify,
+  ClassController.handleDeleteSubmitExercise
+);
+
+// Manage Questions
+router.get("/details/:id/questions", ClassController.manageQuestionsPage);
+router.delete(
+  "/details/:id/questions",
+  csrf.verify,
+  ClassController.handleDeleteQuestions
+);
+router.get("/details/:id/questions/create", ClassController.createQuestionPage);
+router.post(
+  "/details/:id/questions/create",
+  csrf.verify,
+  validator.make(CLASS_RULES.CREATE_QUESTION),
+  ClassController.handleCreateQuestion
+);
+router.get(
+  "/details/:id/questions/edit/:questionId",
+  ClassController.editQuestionPage
+);
+router.patch(
+  "/details/:id/questions/edit/:questionId",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT_QUESTION),
+  ClassController.handleEditQuestion
+);
+router.get(
+  "/details/:id/questions/details/:questionId",
+  ClassController.detailsQuestionPage
+);
+
+// Comments
+router.post(
+  "/details/:id/questions/details/:commentId",
+  csrf.verify,
+  validator.make(CLASS_RULES.CREATE_COMMENT),
+  ClassController.handleCreateComment
+);
+router.patch(
+  "/details/:id/questions/details/:commentId",
+  csrf.verify,
+  validator.make(CLASS_RULES.EDIT_COMMENT),
+  ClassController.handleEditComment
+);
+router.delete(
+  "/details/:id/questions/details/:commentId",
+  csrf.verify,
+  ClassController.handleDeleteComments
 );
 
 module.exports = router;
