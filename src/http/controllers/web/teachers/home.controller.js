@@ -5,7 +5,7 @@ const {
 module.exports = {
   index: (req, res) => {
     return res.render(RENDER_PATH.HOME_TEACHER, {
-      title: `Home - ${process.env.APP_NAME}`,
+      title: `Home`,
       user: req.user,
       REDIRECT_PATH,
     });

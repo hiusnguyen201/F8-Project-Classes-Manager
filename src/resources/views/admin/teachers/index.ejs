@@ -1,250 +1,197 @@
-<div class="card py-1 mx-2">
-  <div class="row align-items-center">
-    <div class="col-6">
-      <h3 class="mb-0 ml-3"><%= title.split("-")[0] %></h3>
-    </div>
-    <div class="col-6">
-      <ol class="breadcrumb float-sm-right mb-0">
-        <li class="breadcrumb-item">
-          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
-        </li>
-        <li class="breadcrumb-item active">Users</li>
-      </ol>
-    </div>
-  </div>
-</div>
-
 <div class="card-body mx-auto">
-  <div class="tab-custom-content d-flex align-items-center">
-    <a href="<%= REDIRECT_PATH.ADMIN.CREATE_TEACHER %>" class="btn btn-success mx-2">Create teacher</a>
-    <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected" class="btn btn-danger mx-2" disabled>Delete selected</button>
-    <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_TEACHERS %>" class="btn btn-primary mx-2">Import teachers</a>
-    <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_TEACHERS %>" class="btn btn-primary mx-2">Export teachers (Excel)</a>
-  </div>
-  <div class="tab-content">
-    <% if(error?.length) { %>
-    <input type="hidden" disabled class="toastMessageError" value="<%= error %>">
-    <% } %>
-    <% if(success?.length) { %>
-    <input type="hidden" disabled class="toastMessageSuccess" value="<%= success %>">
-    <% } %>
-    
-    <div class="card px-2 py-3">
-        <div class="row align-items-center">
-          <div class="col-6 d-flex align-items-center px-2">
-            <span class="mx-2">Show</span>
-            <select class="form-control" style="width: 60px;
+  <% if(error?.length) { %>
+  <input
+    type="hidden"
+    disabled
+    class="toastMessageError"
+    value="<%= error %>"
+  />
+  <% } %> <% if(success?.length) { %>
+  <input
+    type="hidden"
+    disabled
+    class="toastMessageSuccess"
+    value="<%= success %>"
+  />
+  <% } %> <%- include("../parts/breadcrumb") %>
+  
+          <div class="card-body mx-auto">
+            <div class="row">
+              <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.CREATE_TEACHER %>" class="btn btn-success w-100 py-2">Create teacher</a>
+              </div>
+              <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+                <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected" class="btn btn-danger w-100 py-2" disabled>Delete selected</button>
+              </div>
+              <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_TEACHERS %>" class="btn btn-primary w-100 py-2">Import teachers</a>
+              </div>
+              <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_TEACHERS %>" class="btn btn-primary w-100 py-2">Export teachers</a>
+              </div>
+            </div>
+            <div class="tab-content">
+              <div class="card px-3 py-3">
+                <div class="row align-items-center">
+                  <div class="col-xs-12 col-sm-6 mb-3 d-flex align-items-center px-2">
+                    <span class="mx-2">Show</span>
+                    <select class="form-control" style="width: 60px;
                 padding: 4px;
                 font-size: 16px;" onchange="window.location.href = this.value">
-              <option <%=+limit===10? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 10) %>">
-                10
-              </option>
-              <option <%=+limit===25? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 25) %>">
-                25
-              </option>
-              <option <%=+limit===50? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 50) %>">
-                50
-              </option>
-              <option <%=+limit===100? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 100) %>">
-                100
-              </option>
-            </select>
-            <span class="mx-2">entries</span>
-          </div>
-          <div class="col-6 px-2 d-flex justify-content-end">
-            <form action="">
-              <div class="input-group mx-2" style="max-width: 300px;">
-                <input type="text" class="form-control" style="border-right: none;" name="keyword" value="<%= req.query.keyword %>" placeholder="Keyword...">
-                <div class="input-group-append">
-                  <button type="submit" class="input-group-text"><i class="fas fa-search"></i></button>
-                </div>
-              </div>
-            </form>
-            <button type="button" class="btn mx-2 btn-default">
-              <i class="fas fa-filter fa-xs"></i>
-            </button>
-            <div class="btn-group btn-hidden-column-group">
-              <button type="button" class="btn btn-default"><i class="fas fa-plus"></i>
-              </button>
-              <div class="dropdown-hidden-column">
-                <div class="row">
-                  <div class="col d-flex align-items-center">
-                    <input type="checkbox" checked name="nameCol">
-                    <label class="mb-0 ml-2" for="">Name</label>
+                      <option <%=+limit===10? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 10) %>
+                          ">
+                          10
+                      </option>
+                      <option <%=+limit===25? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 25) %>
+                          ">
+                          25
+                      </option>
+                      <option <%=+limit===50? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 50) %>
+                          ">
+                          50
+                      </option>
+                      <option <%=+limit===100? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, page, 100)
+                          %>">
+                          100
+                      </option>
+                    </select>
+                    <span class="mx-2">entries</span>
                   </div>
-                  <div class="col d-flex align-items-center">
-                    <input type="checkbox" checked name="emailCol">
-                    <label class="mb-0 ml-2" for="">Email</label>
-                  </div>
-                  <div class="w-100 mb-3"></div>
-                  <div class="col d-flex align-items-center">
-                    <input type="checkbox" checked name="phoneCol">
-                    <label class="mb-0 ml-2" for="">Phone</label>
-                  </div>
-                  <div class="col d-flex align-items-center">
-                    <input type="checkbox" checked name="addressCol">
-                    <label class="mb-0 ml-2" for="">Address</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="table-responsive mt-3">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th width="1%" class="px-">
-                  <label class="checkbox-btn">
-                    <input type="checkbox" class="checkboxParent" />
-                  </label>
-                </th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Type</th>
-                <th width="1%">Operation</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if(teachers?.length) {%>
-              <% for(var i=0 ; i< teachers.length; i++) {%>
-              <% if(i===+limit) break;%>
-              <tr class="object-row">
-                <td width="1%" class="px-">
-                  <label class="checkbox-btn">
-                    <input type="checkbox" class="checkboxChildren" value="<%= teachers[i].id %>" />
-                  </label>
-                </td>
-                <td>
-                  <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER + `/${teachers[i].id}` %>"><%= teachers[i].name %></a>
-                </td>
-                <td>
-                  <%= teachers[i].email %>
-                </td>
-                <td>
-                  <%= teachers[i].phone %>
-                </td>
-                <td>
-                  <%= teachers[i].address %>
-                </td>
-                <td>
-                  <%= teachers[i].Type.name %>
-                </td>
-                <td width="1%">
-                  <div class="d-flex align-items-center justify-content-center">
-                    <a class="mx-1 icon-operation" href="<%= REDIRECT_PATH.ADMIN.EDIT_TEACHER + `/${teachers[i].id}` %>"><i class="fas fa-pen fa-xs"></i></a>
-                    <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-deleteChildren-<%= teachers[i].id %>">
-                      <i class="fas fa-trash fa-xs"></i>
+                  <div class="col-xs-12 col-sm-6 mb-3 px-2 d-flex justify-content-end">
+                    <form method="get" class="mx-1">
+                    <div class="input-group" style="max-width: 300px;">
+                      <input type="text" class="form-control" style="border-right: none;" name="keyword"
+                        value="<%= req.query.keyword %>" placeholder="Keyword...">
+                      <div class="input-group-append">
+                        <button type="submit" class="input-group-text"><i class="fas fa-search"></i></button>
+                      </div>
+                    </div>
+                  </form>
+                    <button type="button" class="btn mx-2 btn-default">
+                      <i class="fas fa-filter fa-xs"></i>
                     </button>
+                    <div class="btn-group btn-hidden-column-group">
+                      <button type="button" class="btn btn-default"><i class="fas fa-plus"></i>
+                      </button>
+                      <div class="dropdown-hidden-column">
+                        <div class="row">
+                          <div class="col d-flex align-items-center">
+                            <input type="checkbox" checked name="nameCol">
+                            <label class="mb-0 ml-2" for="">Name</label>
+                          </div>
+                          <div class="col d-flex align-items-center">
+                            <input type="checkbox" checked name="emailCol">
+                            <label class="mb-0 ml-2" for="">Email</label>
+                          </div>
+                          <div class="w-100 mb-3"></div>
+                          <div class="col d-flex align-items-center">
+                            <input type="checkbox" checked name="phoneCol">
+                            <label class="mb-0 ml-2" for="">Phone</label>
+                          </div>
+                          <div class="col d-flex align-items-center">
+                            <input type="checkbox" checked name="addressCol">
+                            <label class="mb-0 ml-2" for="">Address</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </td>
-              </tr>
-              <%- include("../../admin/teachers/delete.modal.ejs", {i}) %>
-              <% }} %>
-            </tbody>
-          </table>
-        </div>
+                </div>
 
+                <div class="table-responsive mb-3">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th width="1%" class="px-">
+                          <label class="checkbox-btn">
+                            <input type="checkbox" class="checkboxParent" />
+                          </label>
+                        </th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Type</th>
+                        <th width="1%">Operation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if(teachers?.length) {%>
+                        <% for(var i=0 ; i< teachers.length; i++) {%>
+                          <% if(i===+limit) break;%>
+                            <tr class="object-row">
+                              <td width="1%" class="px-">
+                                <label class="checkbox-btn">
+                                  <input type="checkbox" class="checkboxChildren" value="<%= teachers[i].id %>" />
+                                </label>
+                              </td>
+                              <td>
+                                <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_TEACHER + `/${teachers[i].id}` %>">
+                                  <%= teachers[i].name %>
+                                </a>
+                              </td>
+                              <td>
+                                <%= teachers[i].email %>
+                              </td>
+                              <td>
+                                <%= teachers[i].phone %>
+                              </td>
+                              <td>
+                                <%= teachers[i].address %>
+                              </td>
+                              <td>
+                                <%= teachers[i].Type.name %>
+                              </td>
+                              <td width="1%">
+                                <div class="d-flex align-items-center justify-content-center">
+                                  <a class="mx-1 icon-operation"
+                                    href="<%= REDIRECT_PATH.ADMIN.EDIT_TEACHER + `/${teachers[i].id}` %>"><i
+                                      class="fas fa-pen fa-xs"></i></a>
+                                  <button class="mx-1 icon-operation" type="button" data-toggle="modal"
+                                    data-target="#modal-deleteChildren-<%= teachers[i].id %>">
+                                    <i class="fas fa-trash fa-xs"></i>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            <%- include("../../admin/teachers/delete.modal.ejs", {i}) %>
+                              <% }} %>
+                    </tbody>
+                  </table>
+                </div>
 
-        <div class="row align-items-center">
-          <div class="col-6 d-flex align-items-center px-2">
-            <span>Showing <%= (teachers && teachers?.length)? +offset+1 : +offset %> to <%= +offset + (teachers && teachers?.length)? teachers.length : 0 %> of <%= totalCount %> entries</span>
-          </div>
-          <div class="col-6 px-2 d-flex justify-content-end">
-            <div class="row align-items-center justify-content-end">
-              <% if(totalPage > 0) {%>
-              <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center my-0">
-                  <!-- Start -->
-                  <li class="page-item <%= +page===1? 'disabled' : '' %>">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page-1, limit) %>" aria-label="Previous">
-                      <i class="fas fa-chevron-left fa-xs"></i>
-                    </a>
-                  </li>
-
-                  <% if(+page > 3) {%>
-                  <li class="page-item">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, 1, limit) %>">
-                      1
-                    </a>
-                  </li>
-                  <% } %>
-
-                  <!-- Mid -->
-                  <% var i = (+page > 3)? +page - 2 : 1 %> <% if(i !== 1) {%>
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#">...</a>
-                  </li>
-                  <% } %> <% for(; i <= (+page +2) && i <= totalPage; i++ ) {%> <% if(i ===
-      +page) {%>
-                  <li class="page-item active">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +i, limit) %>"><%= i %></a>
-                  </li>
-                  <% } else {%>
-                  <li class="page-item">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +i, limit) %>"><%= i %></a>
-                  </li>
-                  <% }%> <% if(i === +page + 2 && i < +totalPage) {%>
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#">...</a>
-                  </li>
-                  <% } %> <% } %>
-
-                  <!-- End -->
-                  <% if(+page <= +totalPage - 3) {%>
-                  <li class="page-item">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +totalPage, limit) %>">
-                      <%= +totalPage %>
-                    </a>
-                  </li>
-                  <% } %>
-
-                  <li class="page-item <%= +page===+totalPage? 'disabled' : '' %>">
-                    <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page+1, limit) %>" aria-label="Next">
-                      <i class="fas fa-chevron-right fa-xs"></i>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-              <% } %>
+                <%- include("../parts/paginate", {arrObj: teachers}) %>
+              </div>
             </div>
-
           </div>
-        </div>
-      </div>
-  </div>
-</div>
 
-<div class="modal fade" id="btnDeleteAllChildrenSelected" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="line" style="
+          <div class="modal fade" id="btnDeleteAllChildrenSelected" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="line" style="
           width: 100%;
           height: 5px;
           background-color: #6246ea;
           border-top-right-radius: 0.3rem;
           border-top-left-radius: 0.3rem;
         "></div>
-      <div class="modal-header">
-        <h5 class="modal-title" style="border: none; font-size: 22px">
-          Are you sure to delete all teachers selected ?
-        </h5>
-      </div>
-      <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
-          No
-        </button>
-        <form action="" method="post">
-          <input type="hidden" name="_method" value="DELETE" />
-          <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
-          <button id="btnConfirmDeleteAllChildren" class="btn btn-danger">
-            Yes
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+                <div class="modal-header">
+                  <h5 class="modal-title" style="border: none; font-size: 22px">
+                    Are you sure to delete all teachers selected ?
+                  </h5>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">
+                    No
+                  </button>
+                  <form action="" method="post">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <input type="hidden" name="csrfToken" value="<%= csrf.createToken() %>" />
+                    <button id="btnConfirmDeleteAllChildren" class="btn btn-danger">
+                      Yes
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>

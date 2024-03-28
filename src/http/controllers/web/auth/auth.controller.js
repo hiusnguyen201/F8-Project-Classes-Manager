@@ -32,7 +32,7 @@ module.exports = {
 
     return res.render(RENDER_PATH.AUTH.LOGIN, {
       layout: "layouts/auth.layout.ejs",
-      title: `Login - ${process.env.APP_NAME} Accounts`,
+      title: `Login Accounts`,
       error,
       csrf,
       REDIRECT_PATH,
@@ -64,7 +64,7 @@ module.exports = {
 
     return res.render(RENDER_PATH.AUTH.OTP, {
       layout: "layouts/auth.layout.ejs",
-      title: `Verify Otp - ${process.env.APP_NAME} Accounts`,
+      title: `Verify Otp Accounts`,
       REDIRECT_PATH,
       success: req.flash("success"),
       error,
@@ -180,7 +180,7 @@ module.exports = {
   emailResetPass: (req, res) => {
     return res.render(RENDER_PATH.AUTH.EMAIL_PASS_RESET, {
       layout: "layouts/auth.layout.ejs",
-      title: `Reset Password - ${process.env.APP_NAME} Accounts`,
+      title: `Reset Password Accounts`,
       REDIRECT_PATH,
       error: req.flash("error"),
       success: req.flash("success"),
@@ -203,7 +203,7 @@ module.exports = {
   resetPassword: async (req, res) => {
     return res.render(RENDER_PATH.AUTH.CHANGE_PASSWORD, {
       layout: "layouts/auth.layout.ejs",
-      title: `Reset Password - ${process.env.APP_NAME} Accounts`,
+      title: `Reset Password Accounts`,
       REDIRECT_PATH,
       error: req.flash("error"),
       csrf,

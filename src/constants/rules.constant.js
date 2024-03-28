@@ -62,7 +62,7 @@ const COURSE_RULES = {
       teacherId: "required|integer|exists:users,id",
       tryLearn: "required|integer",
       quantity: "required|integer",
-      duration: "required|integer",
+      duration: "required|integer|min:1",
     },
     MESSAGES: {
       "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
@@ -88,7 +88,7 @@ const COURSE_RULES = {
       teacherId: "required|integer|exists:users,id",
       tryLearn: "required|integer",
       quantity: "required|integer",
-      duration: "required|integer",
+      duration: "required|integer|min:1",
     },
     MESSAGES: {
       "name.required": MESSAGE_ERROR.COURSE.REQUIRED_NAME,
@@ -287,6 +287,109 @@ const CLASS_RULES = {
       "recoverDate.string": MESSAGE_ERROR.CLASS.INVALID_RECOVERY_DATE,
       "recoverDate.date:DD/MM/YYYY": MESSAGE_ERROR.CLASS.INVALID_RECOVERY_DATE,
       "reason.string": MESSAGE_ERROR.CLASS.INVALID_REASON,
+    },
+  },
+  CREATE_EXERCISE: {
+    RULES: {
+      title: "required|string|min:4|max:200|unique:exercises,title",
+      content: "required|string",
+      attachment: "nullable|string|max:200",
+    },
+    MESSAGES: {
+      "title.required": "Title is required",
+      "title.string": "Title must be characters",
+      "title.min:4": "Title must has a minimum length of 4",
+      "title.max:200": "Title must has a maximum length of 200",
+      "title.unique:exercises,title": "Title is existed",
+      "content.required": "Content is required",
+      "content.string": "Content must be characters",
+      "attachment.string": "Attachment must be characters",
+      "attachment.max:200": "Attachment must has a maximum length of 200",
+    },
+  },
+  EDIT_EXERCISE: {
+    RULES: {
+      title: "required|string|min:4|max:200|unique:exercises,title,id,id",
+      content: "nullable|string",
+      attachment: "nullable|string|max:200",
+    },
+    MESSAGES: {
+      "title.required": "Title is required",
+      "title.string": "Title must be characters",
+      "title.min:4": "Title must has a minimum length of 4",
+      "title.max:200": "Title must has a maximum length of 200",
+      "title.unique:exercises,title": "Title is existed",
+      "content.string": "Content must be characters",
+      "attachment.string": "Attachment must be characters",
+      "attachment.max:200": "Attachment must has a maximum length of 200",
+    },
+  },
+  CREATE_SUBMIT_EXERCISE: {
+    RULES: {
+      attachment: "required|string|max:200",
+    },
+    MESSAGES: {
+      "attachment.required": "Attachment is required",
+      "attachment.string": "Attachment must be characters",
+      "attachment.max:200": "Attachment must has a maximum length of 200",
+    },
+  },
+  EDIT_SUBMIT_EXERCISE: {
+    RULES: {
+      attachment: "required|string|max:200",
+    },
+    MESSAGES: {
+      "attachment.required": "Attachment is required",
+      "attachment.string": "Attachment must be characters",
+      "attachment.max:200": "Attachment must has a maximum length of 200",
+    },
+  },
+
+  CREATE_QUESTION: {
+    RULES: {
+      title: "required|string|min:4|max:200",
+      content: "nullable|string",
+    },
+    MESSAGES: {
+      "title.required": "Title is required",
+      "title.string": "Title must be characters",
+      "title.min:4": "Title must has a minimum length of 4",
+      "title.max:200": "Title must has a maximum length of 200",
+      "content.required": "Content is required",
+      "content.string": "Content must be characters",
+    },
+  },
+  EDIT_QUESTION: {
+    RULES: {
+      title: "required|string|min:4|max:200",
+      content: "nullable|string",
+    },
+    MESSAGES: {
+      "title.required": "Title is required",
+      "title.string": "Title must be characters",
+      "title.min:4": "Title must has a minimum length of 4",
+      "title.max:200": "Title must has a maximum length of 200",
+      "content.required": "Content is required",
+      "content.string": "Content must be characters",
+    },
+  },
+
+  CREATE_COMMENT: {
+    RULES: {
+      content: "string",
+    },
+    MESSAGES: {
+      "content.required": "Content is required",
+      "content.string": "Content must be characters",
+    },
+  },
+  EDIT_COMMENT: {
+    RULES: {
+      content: "string",
+    },
+    MESSAGES: {
+      "content.required": "Content is required",
+      "content.string": "Content must be characters",
     },
   },
 };

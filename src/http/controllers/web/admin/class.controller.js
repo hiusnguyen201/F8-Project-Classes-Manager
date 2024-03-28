@@ -44,7 +44,7 @@ module.exports = {
         req,
         user: req.user,
         page: meta.page,
-        title: `Manage Classes - ${process.env.APP_NAME}`,
+        title: `Manage Classes`,
         REDIRECT_PATH,
         totalCount: meta.count,
         offset: meta.offset,
@@ -57,6 +57,10 @@ module.exports = {
         csrf,
         moment,
         stringUtil,
+        breadcrumb: {
+          items: ["Dashboard", "Classes"],
+          paths: [REDIRECT_PATH.ADMIN.HOME_ADMIN],
+        },
       });
     } catch (err) {
       console.log(err);
@@ -64,7 +68,234 @@ module.exports = {
     }
   },
 
-  create: async (req, res) => {
+  detailsExercisePage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      const exercise = await classService.findExerciseById(
+        req.params.exerciseId
+      );
+      if (!exercise) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+
+      return res.render(RENDER_PATH.ADMIN.DETAILS_EXERCISE_CLASS, {
+        req,
+        user: req.user,
+        title: `Details Exercise`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        exercise,
+        moment,
+        breadcrumb: {
+          items: ["Dashboard", "Classes", "Details", "Exercises", "Details"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS +
+              `/${classObj.id}` +
+              REDIRECT_PATH.ADMIN.MANAGE_EXERCISES_CLASS,
+          ],
+        },
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  detailsQuestionPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      const question = await classService.findQuestionById(
+        req.params.questionId
+      );
+      if (!question) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      const comments = await classService.findAllCommentsByQuestionId(
+        req.params.questionId
+      );
+
+      return res.render(RENDER_PATH.ADMIN.DETAILS_QUESTION_CLASS, {
+        req,
+        user: req.user,
+        title: `Details Question`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        comments,
+        breadcrumb: {
+          items: ["Dashboard", "Classes", "Details", "Questions", "Details"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS +
+              `/${classObj.id}` +
+              REDIRECT_PATH.ADMIN.MANAGE_QUESTIONS_CLASS,
+          ],
+        },
+        question,
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  manageStudentsPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.MANAGE_STUDENTS_CLASS, {
+        req,
+        user: req.user,
+        title: `Manage Students`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        breadcrumb: {
+          items: ["Dashboard", "Classes", "Details", "Students"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+          ],
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  manageCalendarsPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.MANAGE_CALENDARS_CLASS, {
+        req,
+        user: req.user,
+        title: `Manage Calendars`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        breadcrumb: {
+          items: ["Dashboard", "Classes", "Details", "Calendars"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+          ],
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  manageExercisesPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.MANAGE_EXERCISES_CLASS, {
+        req,
+        user: req.user,
+        title: `Manage Exercises`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        breadcrumb: {
+          items: ["Dashboard", "Classes", "Details", "Exercises"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+          ],
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  manageQuestionsPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      const questions = await classService.findAllComments(classObj.id, null);
+
+      return res.render(RENDER_PATH.ADMIN.MANAGE_QUESTIONS_CLASS, {
+        req,
+        user: req.user,
+        title: `Manage Questions`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        stringUtil,
+        moment,
+        breadcrumb: {
+          items: ["Dashboard", "Classes", "Details", "Questions"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classObj.id}`,
+          ],
+        },
+        questions,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  create: async (req, res, next) => {
     try {
       const courses = await courseService.findAll();
       const assistants = await userService.findAllWithTypes("assistant");
@@ -76,7 +307,7 @@ module.exports = {
         assistants,
         oldValues: req.flash("oldValues")[0] || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Create Class - ${process.env.APP_NAME}`,
+        title: `Create Class`,
         REDIRECT_PATH,
         currPage: "classes",
         success: req.flash("success"),
@@ -88,6 +319,173 @@ module.exports = {
       console.log(err);
       return next(createHttpError(STATUS_CODE.SERVER_ERROR));
     }
+  },
+
+  createExercisePage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+      return res.render(RENDER_PATH.ADMIN.CREATE_EXERCISE_CLASS, {
+        req,
+        user: req.user,
+        title: `Create Exercise`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  createQuestionPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) {
+        return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      }
+
+      return res.render(RENDER_PATH.ADMIN.CREATE_QUESTION_CLASS, {
+        req,
+        user: req.user,
+        title: `Create Question`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        oldValues: req.flash("oldValues")[0] || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  editExercisePage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      const exerciseEdit = await classService.findExerciseById(
+        req.params.exerciseId
+      );
+      if (!exerciseEdit) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+
+      return res.render(RENDER_PATH.ADMIN.EDIT_EXERCISE_CLASS, {
+        req,
+        user: req.user,
+        title: `Edit Exercise`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        oldValues: req.flash("oldValues")[0] || exerciseEdit || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  editQuestionPage: async (req, res, next) => {
+    try {
+      const classObj = await classService.findById(req.params.id);
+      if (!classObj) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+      const questionEdit = await classService.findQuestionById(
+        req.params.questionId
+      );
+      if (!questionEdit) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+
+      return res.render(RENDER_PATH.ADMIN.EDIT_QUESTION_CLASS, {
+        req,
+        user: req.user,
+        title: `Edit Question`,
+        REDIRECT_PATH,
+        currPage: "classes",
+        classObj,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        oldValues: req.flash("oldValues")[0] || questionEdit || {},
+        errorsValidate: req.flash("errors")[0] || {},
+        csrf,
+        stringUtil,
+        moment,
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
+  },
+
+  handleCreateExercise: async (req, res) => {
+    try {
+      await classService.createExercise(req.body, req.params.id, req.user);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.CREATE_EXERCISE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.CREATE_EXERCISE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleEditExercise: async (req, res) => {
+    try {
+      await classService.updateExercise(req.body, req.params.exerciseId);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_EXERCISE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.EDIT_EXERCISE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleEditQuestion: async (req, res) => {
+    try {
+      await classService.updateQuestion(req.body, req.params.questionId);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_QUESTION_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.EDIT_QUESTION_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleCreateQuestion: async (req, res) => {
+    try {
+      await classService.createQuestion(
+        { ...req.body, classId: req.params.id },
+        req.user
+      );
+
+      req.flash("success", MESSAGE_SUCCESS.CLASS.CREATE_QUESTION_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.CREATE_QUESTION_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
   },
 
   details: async (req, res, next) => {
@@ -100,7 +498,7 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.DETAILS_CLASS, {
         req,
         user: req.user,
-        title: `Details Class - ${process.env.APP_NAME}`,
+        title: `Details Class`,
         REDIRECT_PATH,
         currPage: "classes",
         classObj,
@@ -109,6 +507,13 @@ module.exports = {
         csrf,
         stringUtil,
         moment,
+        breadcrumb: {
+          items: ["Dashboard", "Classes", "Details"],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+          ],
+        },
       });
     } catch (err) {
       console.log(err);
@@ -143,7 +548,7 @@ module.exports = {
         assistants,
         oldValues: req.flash("oldValues")[0] || classEdit || {},
         errorsValidate: req.flash("errors")[0] || {},
-        title: `Edit Class - ${process.env.APP_NAME}`,
+        title: `Edit Class`,
         REDIRECT_PATH,
         currPage: "classes",
         success: req.flash("success"),
@@ -183,14 +588,34 @@ module.exports = {
     return res.redirect(req.originalUrl);
   },
 
+  handleDeleteQuestions: async (req, res) => {
+    try {
+      const { id } = req.body;
+      await classService.removeQuestions(Array.isArray(id) ? id : [id]);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_QUESTION_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_QUESTION_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
   importClassesPage: async (req, res) => {
     return res.render(RENDER_PATH.ADMIN.IMPORT_CLASSES, {
-      title: `Import Classes - ${process.env.APP_NAME}`,
+      title: `Import Classes`,
       user: req.user,
       REDIRECT_PATH,
       currPage: "classes",
       error: req.flash("error"),
       success: req.flash("success"),
+      breadcrumb: {
+        items: ["Dashboard", "Classes", "Import"],
+        paths: [
+          REDIRECT_PATH.ADMIN.HOME_ADMIN,
+          REDIRECT_PATH.ADMIN.HOME_CLASSES,
+        ],
+      },
     });
   },
 
@@ -261,7 +686,7 @@ module.exports = {
     }
   },
 
-  addStudentPage: async (req, res) => {
+  addStudentPage: async (req, res, next) => {
     try {
       const classObj = await classService.findById(req.params.id);
       if (!classObj) {
@@ -274,7 +699,7 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.ADD_STUDENT_CLASS, {
         req,
         user: req.user,
-        title: `Add Student - ${process.env.APP_NAME}`,
+        title: `Add Student`,
         REDIRECT_PATH,
         students,
         learningStatuses,
@@ -324,7 +749,7 @@ module.exports = {
       return res.render(RENDER_PATH.ADMIN.EDIT_STUDENT_CLASS, {
         req,
         user: req.user,
-        title: `Edit Student - ${process.env.APP_NAME}`,
+        title: `Edit Student`,
         REDIRECT_PATH,
         students,
         learningStatuses,
@@ -360,7 +785,6 @@ module.exports = {
 
   handleDeleteStudentsClass: async (req, res) => {
     const { id } = req.body;
-    const { id: classId } = req.params;
     try {
       await classService.removeStudentsClass(Array.isArray(id) ? id : [id]);
       req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_STUDENT_CLASS_SUCCESS);
@@ -369,26 +793,61 @@ module.exports = {
       req.flash("error", MESSAGE_ERROR.CLASS.DELETE_STUDENT_CLASS_FAILED);
     }
 
-    return res.redirect(REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${classId}`);
+    return res.redirect(req.originalUrl);
   },
 
-  attendancePage: async (req, res) => {
-    const { calendarId } = req.params;
+  handleDeleteExercises: async (req, res) => {
+    const { id } = req.body;
+    try {
+      await classService.deleteExercise(Array.isArray(id) ? id : [id]);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_EXERCISE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_EXERCISE_FAILED);
+    }
 
-    const calendar = await classService.findCalendarById(calendarId);
+    return res.redirect(req.originalUrl);
+  },
 
-    return res.render(RENDER_PATH.ADMIN.CALENDAR_ATTENDANCES, {
-      req,
-      user: req.user,
-      title: `Attendance - ${process.env.APP_NAME}`,
-      REDIRECT_PATH,
-      ATTENDANCE_STATUS,
-      currPage: "classes",
-      calendar,
-      success: req.flash("success"),
-      error: req.flash("error"),
-      csrf,
-    });
+  attendancePage: async (req, res, next) => {
+    try {
+      const { calendarId, id } = req.params;
+      const calendar = await classService.findCalendarById(calendarId);
+      if (!calendar) return next(createHttpError(STATUS_CODE.NOT_FOUND));
+
+      return res.render(RENDER_PATH.ADMIN.CALENDAR_ATTENDANCES, {
+        req,
+        user: req.user,
+        title: `Manage Attendances`,
+        REDIRECT_PATH,
+        ATTENDANCE_STATUS,
+        currPage: "classes",
+        calendar,
+        success: req.flash("success"),
+        error: req.flash("error"),
+        csrf,
+        breadcrumb: {
+          items: [
+            "Dashboard",
+            "Classes",
+            "Details",
+            "Calendars",
+            "Attendances",
+          ],
+          paths: [
+            REDIRECT_PATH.ADMIN.HOME_ADMIN,
+            REDIRECT_PATH.ADMIN.HOME_CLASSES,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS + `/${id}`,
+            REDIRECT_PATH.ADMIN.DETAILS_CLASS +
+              `/${id}` +
+              REDIRECT_PATH.ADMIN.MANAGE_CALENDARS_CLASS,
+          ],
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createHttpError(STATUS_CODE.SERVER_ERROR));
+    }
   },
 
   handleAttendanceCalendar: async (req, res) => {
@@ -401,6 +860,89 @@ module.exports = {
     } catch (err) {
       console.log(err);
       req.flash("error", MESSAGE_ERROR.CLASS.EDIT_ATTENDANCE_CALENDAR_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleCreateSubmitExercise: async (req, res) => {
+    try {
+      await classService.createSubmitExercise(req.body, req.user);
+      req.flash(
+        "success",
+        MESSAGE_SUCCESS.CLASS.CREATE_SUBMIT_EXERCISE_SUCCESS
+      );
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.CREATE_SUBMIT_EXERCISE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleEditSubmitExercise: async (req, res) => {
+    try {
+      await classService.updateSubmitExercise(req.body);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_SUBMIT_EXERCISE_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.EDIT_SUBMIT_EXERCISE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleDeleteSubmitExercise: async (req, res) => {
+    try {
+      await classService.deleteSubmitExercise(req.body);
+      req.flash(
+        "success",
+        MESSAGE_SUCCESS.CLASS.DELETE_SUBMIT_EXERCISE_SUCCESS
+      );
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_SUBMIT_EXERCISE_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleCreateComment: async (req, res) => {
+    try {
+      await classService.createComment(
+        req.body,
+        req.params.commentId,
+        req.params.id,
+        req.user
+      );
+      req.flash("success", MESSAGE_SUCCESS.CLASS.CREATE_COMMENT_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.CREATE_COMMENT_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleEditComment: async (req, res) => {
+    try {
+      await classService.editComment(req.body);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.EDIT_COMMENT_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.EDIT_COMMENT_FAILED);
+    }
+
+    return res.redirect(req.originalUrl);
+  },
+
+  handleDeleteComments: async (req, res) => {
+    try {
+      await classService.deleteComment(req.body);
+      req.flash("success", MESSAGE_SUCCESS.CLASS.DELETE_COMMENT_SUCCESS);
+    } catch (err) {
+      console.log(err);
+      req.flash("error", MESSAGE_ERROR.CLASS.DELETE_COMMENT_FAILED);
     }
 
     return res.redirect(req.originalUrl);

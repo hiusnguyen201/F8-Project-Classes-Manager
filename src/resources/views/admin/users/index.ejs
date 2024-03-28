@@ -1,65 +1,64 @@
-<% if(error?.length) { %>
-  <input type="hidden" disabled class="toastMessageError" value="<%= error %>">
-  <% } %>
-    <% if(success?.length) { %>
-      <input type="hidden" disabled class="toastMessageSuccess" value="<%= success %>">
-      <% } %>
-
-        <div class="card py-1 mx-2">
-          <div class="row align-items-center">
-            <div class="col-6">
-              <h3 class="mb-0 ml-3">
-                <%= title.split("-")[0] %>
-              </h3>
-            </div>
-            <div class="col-6">
-              <ol class="breadcrumb float-sm-right mb-0">
-                <li class="breadcrumb-item">
-                  <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
-                </li>
-                <li class="breadcrumb-item active">Users</li>
-              </ol>
-            </div>
-          </div>
-        </div>
+<div class="card-body mx-auto">
+  <% if(error?.length) { %>
+  <input
+    type="hidden"
+    disabled
+    class="toastMessageError"
+    value="<%= error %>"
+  />
+  <% } %> <% if(success?.length) { %>
+  <input
+    type="hidden"
+    disabled
+    class="toastMessageSuccess"
+    value="<%= success %>"
+  />
+  <% } %> <%- include("../parts/breadcrumb") %>
 
         <div class="card-body mx-auto">
-
-          <div class="tab-custom-content d-flex align-items-center">
-            <a href="<%= REDIRECT_PATH.ADMIN.CREATE_USER %>" class="btn btn-success mx-2">Create user</a>
-            <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected"
-              class="btn btn-danger mx-2" disabled>Delete selected</button>
-            <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_USERS %>" class="btn btn-primary mx-2">Import users</a>
-            <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_USERS %>" class="btn btn-primary mx-2">Export users (Excel)</a>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.CREATE_USER %>" class="btn btn-success w-100 py-2">Create user</a>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <button type="button" data-toggle="modal" data-target="#btnDeleteAllChildrenSelected"
+              class="btn btn-danger w-100 py-2" disabled>Delete selected</button>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.IMPORT_USERS %>" class="btn btn-primary w-100 py-2">Import users</a>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+              <a href="<%= REDIRECT_PATH.ADMIN.EXPORT_USERS %>" class="btn btn-primary w-100 py-2">Export users</a>
+            </div>
           </div>
           <div class="tab-content">
-            <div class="card px-2 py-3">
-              <div class="row align-items-center">
-                <div class="col-6 d-flex align-items-center px-2">
+            <div class="card px-3 py-3">
+              <div class="row justify-content-between">
+                <div class="col-xs-12 col-sm-6 row align-items-center mb-3">
                   <span class="mx-2">Show</span>
                   <select class="form-control" style="width: 60px;
                 padding: 4px;
                 font-size: 16px;" onchange="window.location.href = this.value">
-                    <option <%=+limit===10? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, +page, 10)
-                        %>">
+                    <option <%=+limit===10? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, +page, 10) %>
+                        ">
                         10
                     </option>
-                    <option <%=+limit===25? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, +page, 25)
-                        %>">
+                    <option <%=+limit===25? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, +page, 25) %>
+                        ">
                         25
                     </option>
-                    <option <%=+limit===50? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, +page, 50)
-                        %>">
+                    <option <%=+limit===50? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, +page, 50) %>
+                        ">
                         50
                     </option>
-                    <option <%=+limit===100? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, +page,
-                        100) %>">
+                    <option <%=+limit===100? 'selected' : '' %> value="?<%= stringUtil.getPaginateUrl(req, +page, 100)
+                        %>">
                         100
                     </option>
                   </select>
                   <span class="mx-2">entries</span>
                 </div>
-                <div class="col-6 px-2 d-flex justify-content-end">
+                <div class="col-xs-12 col-sm-6 justify-content-end d-flex mb-3">
                   <form method="get" class="mx-1">
                     <div class="input-group" style="max-width: 300px;">
                       <input type="text" class="form-control" style="border-right: none;" name="keyword"
@@ -100,7 +99,7 @@
                 </div>
               </div>
 
-              <div class="table-responsive mt-3">
+              <div class="table-responsive mb-3">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
@@ -129,7 +128,9 @@
                                 <% } %>
                             </td>
                             <td>
-                              <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_USER + `/${users[i].id}` %>"><%= users[i].name %></a>
+                              <a href="<%= REDIRECT_PATH.ADMIN.DETAILS_USER + `/${users[i].id}` %>">
+                                <%= users[i].name %>
+                              </a>
                             </td>
                             <td>
                               <%= users[i].email %>
@@ -161,85 +162,7 @@
                 </table>
               </div>
 
-
-              <div class="row align-items-center">
-                <div class="col-6 d-flex align-items-center px-2">
-                  <span>Showing <%= (users && users?.length)? +offset+1 : +offset %> to <%= +offset + (users && users?.length)? users.length : 0 %> of <%=
-                          totalCount %> entries</span>
-                </div>
-                <div class="col-6 px-2 d-flex justify-content-end">
-                  <div class="row align-items-center justify-content-end">
-                    <% if(totalPage> 0) {%>
-                      <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center my-0">
-                          <!-- Start -->
-                          <li class="page-item <%= +page===1? 'disabled' : '' %>">
-                            <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, +page-1, limit) %>"
-                              aria-label="Previous">
-                              <i class="fas fa-chevron-left fa-xs"></i>
-                            </a>
-                          </li>
-
-                          <% if(+page> 3) {%>
-                            <li class="page-item">
-                              <a class="page-link" href="?<%= stringUtil.getPaginateUrl(req, 1, +limit) %>">
-                                1
-                              </a>
-                            </li>
-                            <% } %>
-
-                              <!-- Mid -->
-                              <% var i=(+page> 3)? +page - 2 : 1 %> <% if(i !==1) {%>
-                                  <li class="page-item disabled">
-                                    <a class="page-link" href="#">...</a>
-                                  </li>
-                                  <% } %>
-                                    <% for(; i <=(+page +2) && i <=totalPage; i++ ) {%>
-                                      <% if(i===+page) {%>
-                                        <li class="page-item active">
-                                          <a class="page-link"
-                                            href="?<%= stringUtil.getPaginateUrl(req, +i, +limit) %>">
-                                            <%= i %>
-                                          </a>
-                                        </li>
-                                        <% } else {%>
-                                          <li class="page-item">
-                                            <a class="page-link"
-                                              href="?<%= stringUtil.getPaginateUrl(req, +i, +limit) %>">
-                                              <%= i %>
-                                            </a>
-                                          </li>
-                                          <% }%>
-                                            <% if(i===+page + 2 && i < +totalPage) {%>
-                                              <li class="page-item disabled">
-                                                <a class="page-link" href="#">...</a>
-                                              </li>
-                                              <% } %>
-                                                <% } %>
-
-                                                  <!-- End -->
-                                                  <% if(+page <= +totalPage - 3) {%>
-                                                    <li class="page-item">
-                                                      <a class="page-link"
-                                                        href="?<%= stringUtil.getPaginateUrl(req, +totalPage, +limit) %>">
-                                                        <%= +totalPage %>
-                                                      </a>
-                                                    </li>
-                                                    <% } %>
-
-                                                      <li class="page-item <%= +page===+totalPage? 'disabled' : '' %>">
-                                                        <a class="page-link"
-                                                          href="?<%= stringUtil.getPaginateUrl(req, +page+1, +limit) %>"
-                                                          aria-label="Next">
-                                                          <i class="fas fa-chevron-right fa-xs"></i>
-                                                        </a>
-                                                      </li>
-                        </ul>
-                      </nav>
-                      <% } %>
-                  </div>
-                </div>
-              </div>
+              <%- include("../parts/paginate", {arrObj: users}) %>
             </div>
           </div>
         </div>

@@ -1,1 +1,78 @@
-<%= user.name %>
+<%- include("../parts/breadcrumb") %>
+
+<div class="row mx-2">
+  <div class="col-sm-12 col-md-6 col-lg-4">
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3><%= countAdmin %></h3>
+        <p>Users</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <a href="<%= REDIRECT_PATH.ADMIN.HOME_USERS %>" class="small-box-footer"
+        >More info <i class="fas fa-arrow-circle-right"></i
+      ></a>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4">
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h3><%= countTeacher %></h3>
+        <p>Teachers</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <a
+        href="<%= REDIRECT_PATH.ADMIN.HOME_TEACHERS %>"
+        class="small-box-footer"
+        >More info <i class="fas fa-arrow-circle-right"></i
+      ></a>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4">
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3><%= countStudent %></h3>
+        <p>Students</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <a
+        href="<%= REDIRECT_PATH.ADMIN.HOME_STUDENTS %>"
+        class="small-box-footer"
+        >More info <i class="fas fa-arrow-circle-right"></i
+      ></a>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4">
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3><%= countCourse %></h3>
+        <p>Courses</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-book"></i>
+      </div>
+      <a href="<%= REDIRECT_PATH.ADMIN.HOME_COURSES %>" class="small-box-footer"
+        >More info <i class="fas fa-arrow-circle-right"></i
+      ></a>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4">
+    <div class="small-box bg-gray">
+      <div class="inner">
+        <h3><%= countClass %></h3>
+        <p>Classes</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-chalkboard-teacher"></i>
+      </div>
+      <a href="<%= REDIRECT_PATH.ADMIN.HOME_CLASSES %>" class="small-box-footer"
+        >More info <i class="fas fa-arrow-circle-right"></i
+      ></a>
+    </div>
+  </div>
+</div>

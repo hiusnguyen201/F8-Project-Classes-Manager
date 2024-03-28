@@ -269,6 +269,18 @@ body {
   outline: unset;
 }
 
+.icon-title {
+  background-color: #6246ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+  color: #fffffe;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+}
+
 .modal-edit {
   padding-right: 0 !important;
 }
@@ -444,7 +456,6 @@ body {
 
 .tab-content h5 {
   padding-bottom: 8px;
-  margin-top: 20px;
   font-size: 22px;
   font-weight: 600;
   border-bottom: 1px solid #ccc;
@@ -553,63 +564,29 @@ input:focus-visible {
   cursor: pointer;
 }
 
-@media (max-width: 769px) {
-  .row {
-    flex-direction: column;
+@media (max-width: 600px) {
+  .col-xs-12 {
+    text-align: center;
+    justify-content: center !important;
   }
 
-  .alert.alert-danger {
-    margin-top: 20px;
+  .icon-title {
+    display: none;
   }
 
-  .col-6.col-sm-4,
-  .col-7.col-sm-8 {
-    max-width: unset !important;
+  .breadcrumb {
+    justify-content: center;
     width: 100%;
   }
 
-  .tab-pane_group {
-    width: 90%;
+  .page-link {
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
   }
 
-  .tab-pane_password {
-    width: 100%;
-  }
-
-  #vert-tabs-tab {
-    width: 100%;
-  }
-}
-
-@media (max-width: 426px) {
-  .row {
-    flex-direction: column;
-  }
-
-  .tab-pane_group {
-    width: 100%;
-  }
-
-  .tab-pane_group .col-9 {
-    max-width: 100%;
-  }
-
-  .col-6.col-sm-4,
-  .col-7.col-sm-8 {
-    max-width: unset !important;
-    width: 100%;
-  }
-
-  .card-body {
-    padding: 0rem;
-  }
-
-  .content-wrapper > .content,
   .container-fluid {
-    padding: 0;
-  }
-
-  .tab-pane_group {
-    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
   }
 }

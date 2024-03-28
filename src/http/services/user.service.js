@@ -25,6 +25,19 @@ class UserService {
     this.Type = models.Type;
   }
 
+  async countWithType(type) {
+    const count = await this.User.count({
+      include: {
+        model: this.Type,
+        where: {
+          name: type,
+        },
+      },
+    });
+
+    return count;
+  }
+
   async findById(id) {
     if (!id || !Number.isInteger(+id) || !(+id > 0)) {
       return null;

@@ -7,26 +7,7 @@
   class="toastMessageSuccess"
   value="<%= success %>"
 />
-<% } %>
-
-<div class="card py-1 mx-2 mb-3">
-  <div class="row align-items-center">
-    <div class="col-6">
-      <h3 class="mb-0 ml-3"><%= title.split("-")[0] %></h3>
-    </div>
-    <div class="col-6">
-      <ol class="breadcrumb float-sm-right mb-0">
-        <li class="breadcrumb-item">
-          <a href="<%= REDIRECT_PATH.ADMIN.HOME_ADMIN %>">Home</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a href="<%= REDIRECT_PATH.ADMIN.HOME_COURSES %>">Courses</a>
-        </li>
-        <li class="breadcrumb-item active">Details</li>
-      </ol>
-    </div>
-  </div>
-</div>
+<% } %> <%- include("../parts/breadcrumb") %>
 
 <div class="card py-3 px-3 mx-2">
   <div class="row mb-4">

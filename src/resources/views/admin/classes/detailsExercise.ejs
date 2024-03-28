@@ -1,0 +1,94 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %> <%- include("../parts/breadcrumb") %>
+
+<div class="card px-5 py-4 mx-2">
+        <div class="row align-items-center mb-2">
+            <i class="fas fa-clipboard-list icon-title mx-3"></i>
+            <h2 class="mb-0"><%= exercise.title %></h2>
+        </div>
+      <span
+        ><%= exercise.User.name %><span class="mx-2">•</span>Created&nbsp;<%=
+        moment(exercise.createdAt).fromNow() %></span
+      >
+      <hr />
+      <label for="">Content:</label>
+      <%= exercise.content %>
+      <% if(exercise.attachment) {%>
+      <hr />
+      <label for="">Attachment:</label>
+       <%= exercise.attachment %> <% } %>
+      <hr />
+      <label class="mb-3 d-block"
+        ><i class="fas fa-users mr-2"></i><span><%= exercise.Submit_Exercises.length? exercise.Submit_Exercises.length : ''%> Submited</span></label
+      >
+
+      <% if(exercise.Submit_Exercises && exercise.Submit_Exercises.length) { exercise.Submit_Exercises.forEach(submitEx => {%>
+       <form action="" method="post">
+         <div class="row align-items-center">
+          <div class="col-3">
+            <%= submitEx.User.name %>
+          </div>
+          <div class="col-7">
+            <input type="text" name="attachment" class="form-control" value="<%= submitEx.attachment %>">
+          </div>
+          <div class="col-2">
+            <div class="d-flex align-items-center justify-content-center">
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="submitExerciseId" value="<%= submitEx.id %>">
+                <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= csrf.createToken() %>"
+              />
+                <button class="mx-1 icon-operation" type="submit">
+                    <i class="fas fa-pen fa-xs"></i>
+                </button>
+                <button class="mx-1 icon-operation" type="button" data-toggle="modal" data-target="#modal-deleteChildren-<%= submitEx.id %>">
+                    <i class="fas fa-trash fa-xs"></i>
+                </button>
+            </div>
+          </div>
+        </div>
+       </form>
+        <hr>
+        <%- include("./deleteSubmitExercise.modal.ejs", {submitEx}) %>
+    <% })} %>
+
+      <form action="" method="post">
+        <div class="row align-items-center">
+          <div class="col-11">
+            <input
+              name="attachment" 
+              class="form-control"
+              placeholder="Attachment..."
+            ></input>
+            <% if(errorsValidate['attachment']){ %>
+                <span class="text-danger">
+                  <%= errorsValidate['attachment'] %>
+                </span>
+                <% } %>
+          </div>
+          <div class="col-1">
+              <input type="hidden" name="_method" value="POST" />
+              <input
+                type="hidden"
+                name="csrfToken"
+                value="<%= csrf.createToken() %>"
+              />
+                <div class="row justify-content-center">
+                    <button class="mx-1 icon-operation" type="submit">
+              <i class="fas fa-angle-right fa-lg"></i>
+            </button>
+                </div>
+          </div>
+        </div>
+      </form>
+</div>

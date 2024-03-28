@@ -19,6 +19,14 @@ class ClassService {
     this.StudentAttendance = models.Student_Attendance;
     this.StudentClass = models.Student_Class;
     this.LearningStatus = models.Learning_Status;
+    this.Exercise = models.Exercise;
+    this.SubmitExercise = models.Submit_Exercise;
+    this.Comment = models.Comment;
+  }
+
+  async countAll() {
+    const count = await this.Class.count();
+    return count;
   }
 
   async findAllWithSearchAndPaginate(queryString) {
@@ -65,6 +73,20 @@ class ClassService {
     };
   }
 
+  async findExerciseById(id) {
+    if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
+    const exercise = await this.Exercise.findByPk(id, {
+      include: [
+        this.User,
+        {
+          model: this.SubmitExercise,
+          include: this.User,
+        },
+      ],
+    });
+    return exercise ? exercise : null;
+  }
+
   async findById(id) {
     if (!id || !Number.isInteger(+id) || !(+id > 0)) return null;
 
@@ -86,6 +108,10 @@ class ClassService {
           include: [this.User, this.LearningStatus],
         },
         this.TeacherCalendar,
+        {
+          model: this.Exercise,
+          include: this.SubmitExercise,
+        },
       ],
     });
 
@@ -324,27 +350,14 @@ class ClassService {
   async removeClasses(listId) {
     await Promise.all(
       listId.map(async (id) => {
-        const classObj = await this.Class.findByPk(id, {
-          include: [this.ClassSchedule, this.User, this.TeacherCalendar],
-        });
-
-        await this.ClassSchedule.destroy({
-          where: {
-            classId: classObj.id,
-          },
-        });
-
-        await this.TeacherCalendar.destroy({
-          where: {
-            classId: classObj.id,
-          },
-        });
-
-        await classObj.removeUsers(classObj.Users);
-
+        const classObj = await this.Class.findByPk(id);
         if (!classObj) throw new Error(MESSAGE_ERROR.CLASS.CLASS_NOT_FOUND);
-
-        await classObj.remove;
+        await classObj.removeClass_Schedules();
+        await classObj.removeTeacher_Calendars();
+        await classObj.removeUsers();
+        await classObj.removeComments();
+        await classObj.removeExercises();
+        await classObj.removeStudent_Classes();
         await classObj.destroy();
       })
     );
@@ -576,21 +589,222 @@ class ClassService {
   }
 
   async updateAttendance(data, calendarId) {
-    await Promise.all(
-      data.studentId.map(async (id, index) => {
-        await this.StudentAttendance.update(
-          {
-            status: data.status[index] ? data.status[index] : null,
-          },
-          {
-            where: {
-              calendarId,
-              studentId: id,
+    if (data.studentId && data.studentId.length) {
+      if (!Array.isArray(data.studentId)) data.studentId = [data.studentId];
+
+      await Promise.all(
+        data.studentId.map(async (id, index) => {
+          await this.StudentAttendance.update(
+            {
+              status: data.status[index] ? data.status[index] : null,
             },
-          }
-        );
+            {
+              where: {
+                calendarId,
+                studentId: id,
+              },
+            }
+          );
+        })
+      );
+    }
+  }
+
+  async createExercise(data, classId, user) {
+    const exercise = await this.Exercise.create({
+      title: data.title,
+      attachment: data.attachment,
+      content: data.content,
+      teacherId: user.id,
+      classId,
+    });
+
+    return exercise ? exercise : null;
+  }
+
+  async updateExercise(data, id) {
+    const status = await this.Exercise.update(
+      {
+        title: data.title,
+        attachment: data.attachment,
+        content: data.content,
+        updatedAt: new Date(),
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+
+    return status ? 1 : 0;
+  }
+
+  async deleteExercise(listId) {
+    await Promise.all(
+      listId.map(async (id) => {
+        const exercise = await this.Exercise.findByPk(id);
+        if (!exercise) throw new Error(MESSAGE_ERROR.CLASS.EXERCISE_NOT_FOUND);
+        await exercise.removeSubmit_Exercises();
+        await exercise.destroy();
       })
     );
+  }
+
+  async removeQuestions(listId) {
+    await Promise.all(
+      listId.map(async (id) => {
+        await this.Comment.destroy({
+          where: {
+            parentId: id,
+          },
+        });
+
+        await this.Comment.destroy({
+          where: {
+            id,
+          },
+        });
+      })
+    );
+  }
+
+  async createSubmitExercise(data, user) {
+    const submitExercise = await this.SubmitExercise.create({
+      studentId: user.id,
+      attachment: data.attachment ? data.attachment : null,
+      exerciseId: data.exerciseId,
+    });
+
+    return submitExercise ? submitExercise : null;
+  }
+
+  async updateSubmitExercise(data) {
+    const status = await this.SubmitExercise.update(
+      {
+        attachment: data.attachment,
+        updatedAt: new Date(),
+      },
+      {
+        where: {
+          id: data.submitExerciseId,
+        },
+      }
+    );
+
+    return status ? 1 : 0;
+  }
+
+  async deleteSubmitExercise(data) {
+    const status = await this.SubmitExercise.destroy({
+      where: {
+        id: data.submitExerciseId,
+      },
+    });
+
+    return status ? 1 : 0;
+  }
+
+  async createQuestion(data, user) {
+    const question = await this.Comment.create({
+      title: data.title,
+      content: data.content,
+      userId: user.id,
+      classId: data.classId,
+    });
+
+    return question ? question : null;
+  }
+
+  async findAllComments(classId, parent) {
+    const comments = await this.Comment.findAll({
+      where: {
+        classId,
+        parentId: parent,
+      },
+      include: {
+        model: this.User,
+        attributes: {
+          exclude: ["password"],
+        },
+      },
+    });
+
+    return comments;
+  }
+
+  async findQuestionById(id) {
+    const question = await this.Comment.findOne({
+      where: {
+        id,
+        parentId: null,
+      },
+      include: this.User,
+    });
+    return question ? question : null;
+  }
+
+  async findAllCommentsByQuestionId(id) {
+    const questions = await this.Comment.findAll({
+      where: {
+        parentId: id,
+      },
+      include: this.User,
+    });
+
+    return questions;
+  }
+
+  async updateQuestion(data, id) {
+    const status = await this.Comment.update(
+      {
+        title: data.title,
+        content: data.content,
+        updatedAt: new Date(),
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+
+    return status ? 1 : 0;
+  }
+
+  async createComment(data, parentId, classId, user) {
+    const comment = await this.Comment.create({
+      content: data.content,
+      parentId,
+      classId,
+      userId: user.id,
+    });
+    return comment ? comment : null;
+  }
+
+  async editComment(data) {
+    const status = await this.Comment.update(
+      {
+        content: data.content,
+      },
+      {
+        where: {
+          id: data.commentId,
+        },
+      }
+    );
+
+    return status ? 1 : 0;
+  }
+
+  async deleteComment(data) {
+    const status = await this.Comment.destroy({
+      where: {
+        id: data.commentId,
+      },
+    });
+
+    return status ? 1 : 0;
   }
 }
 

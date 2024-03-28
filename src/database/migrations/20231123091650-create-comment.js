@@ -15,8 +15,14 @@ module.exports = {
       content: {
         type: Sequelize.TEXT,
       },
-      attachment: {
-        type: Sequelize.STRING(200),
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: "users",
+          },
+          key: "id",
+        },
       },
       classId: {
         type: Sequelize.INTEGER,

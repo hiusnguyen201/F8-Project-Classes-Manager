@@ -12,6 +12,7 @@ const selectorModel = {
   classes: models.Class,
   course_modules: models.Course_Module,
   learning_statuses: models.Learning_Status,
+  exercises: models.Exercise,
 };
 
 const mimetype = {
@@ -128,6 +129,48 @@ const selectorRule = {
   time: function (name, error) {
     return check(name, error || "The field must be time").isTime({
       hourFormat: "hour24",
+    });
+  },
+
+  min: (name, error, value) => {
+    return check(name).custom((data) => {
+      if (Number.isInteger(+data)) {
+        if (+data < value) {
+          throw new Error(
+            error || `This field must have value maximum is ${value}`
+          );
+        }
+      } else {
+        const arr = data.split("");
+        if (arr.length < value) {
+          throw new Error(
+            error || `This field must have length maximum is ${value}`
+          );
+        }
+      }
+
+      return true;
+    });
+  },
+
+  max: (name, error, value) => {
+    return check(name).custom((data) => {
+      if (Number.isInteger(+data)) {
+        if (+data > value) {
+          throw new Error(
+            error || `This field must have value maximum is ${value}`
+          );
+        }
+      } else {
+        const arr = data.split("");
+        if (arr.length > value) {
+          throw new Error(
+            error || `This field must have length maximum is ${value}`
+          );
+        }
+      }
+
+      return true;
     });
   },
 };

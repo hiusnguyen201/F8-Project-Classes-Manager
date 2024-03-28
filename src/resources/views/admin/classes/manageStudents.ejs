@@ -1,0 +1,124 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %> <%- include("../parts/breadcrumb") %>
+
+<div class="card py-3 px-3 mx-2">
+  <div class="row">
+    <div class="col-xs-12 col-md-6 mb-3 col-lg-3">
+      <a
+        href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= classObj.id %><%= REDIRECT_PATH.ADMIN.ADD_STUDENT_CLASS %>"
+        class="btn btn-success w-100 py-2"
+        >Create</a
+      >
+    </div>
+    <div class="col-xs-12 col-md-6 mb-3 col-lg-3">
+      <button
+        type="button"
+        data-toggle="modal"
+        data-target="#btnDeleteAllChildrenSelected"
+        class="btn btn-danger w-100 py-2"
+        disabled
+      >
+        Delete selected
+      </button>
+    </div>
+  </div>
+  <table class="table table-bordered mb-3">
+    <thead>
+      <tr>
+        <th width="1%" class="px-1">
+          <label class="checkbox-btn">
+            <input type="checkbox" class="checkboxParent" />
+          </label>
+        </th>
+        <th>Name</th>
+        <th>Status</th>
+        <th width="1%">Operation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if(classObj.Student_Classes && classObj.Student_Classes.length) {
+      classObj.Student_Classes.forEach((studentClass) => {%>
+      <tr>
+        <td width="1%" class="px-1">
+          <label class="checkbox-btn">
+            <input
+              type="checkbox"
+              class="checkboxChildren"
+              value="<%= studentClass.id %>"
+            />
+          </label>
+        </td>
+        <td>
+          <a
+            href="<%= REDIRECT_PATH.ADMIN.DETAILS_STUDENT %>/<%= studentClass.User.id %>"
+            ><%= studentClass.User.name %></a
+          >
+        </td>
+        <td><%= studentClass.Learning_Status.name %></td>
+        <td class="d-flex align-items-center justify-content-center">
+          <a
+            href="<%= REDIRECT_PATH.ADMIN.DETAILS_CLASS %>/<%= classObj.id %><%= REDIRECT_PATH.ADMIN.EDIT_STUDENT_CLASS %>/<%= studentClass.id %>"
+            class="mx-1 icon-operation"
+            ><i class="fas fa-pen fa-xs"></i
+          ></a>
+          <button
+            class="mx-1 icon-operation"
+            type="button"
+            data-toggle="modal"
+            data-target="#modal-deleteChildren-<%= studentClass.id %>"
+          >
+            <i class="fas fa-trash fa-xs"></i>
+          </button>
+        </td>
+      </tr>
+
+      <%- include("./deleteStudentClass.modal.ejs", {studentClass}) %> <%}) } %>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="btnDeleteAllChildrenSelected" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div
+        class="line"
+        style="
+          width: 100%;
+          height: 5px;
+          background-color: #6246ea;
+          border-top-right-radius: 0.3rem;
+          border-top-left-radius: 0.3rem;
+        "
+      ></div>
+      <div class="modal-header">
+        <h5 class="modal-title" style="border: none; font-size: 22px">
+          Are you sure to delete all students selected ?
+        </h5>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          No
+        </button>
+        <form action="" method="post">
+          <input type="hidden" name="_method" value="DELETE" />
+          <input
+            type="hidden"
+            name="csrfToken"
+            value="<%= csrf.createToken() %>"
+          />
+          <button id="btnConfirmDeleteAllChildren" class="btn btn-danger">
+            Yes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

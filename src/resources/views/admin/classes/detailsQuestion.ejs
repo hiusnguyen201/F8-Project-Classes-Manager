@@ -1,0 +1,103 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %> <%- include("../parts/breadcrumb") %>
+
+<div class="card px-5 py-4 mx-2">
+  <div class="row align-items-center mb-2">
+    <i class="fas fa-question-circle icon-title mx-3"></i>
+    <h2 class="mb-0"><%= question.title %></h2>
+  </div>
+  <span
+    ><%= question.User.name %><span class="mx-2">•</span>Posted&nbsp;<%=
+    moment(question.createdAt).fromNow() %></span
+  >
+  <hr />
+  <label for="">Content:</label>
+  <%= question.content %>
+  <hr />
+  <label class="mb-3 d-block"
+    ><i class="fas fa-comments mr-2"></i
+    ><span><%= comments.length? comments.length : ''%> Comments</span></label
+  >
+
+  <% if(comments && comments.length) { comments.forEach(comment => {%>
+  <form action="" method="post">
+    <div class="row align-items-center">
+      <div class="col-3"><%= comment.User.name %></div>
+      <div class="col-7">
+        <textarea
+          name="content"
+          cols="30"
+          rows="2"
+          class="form-control"
+          placeholder="Content..."
+          style="resize: none"
+        >
+<%= comment.content %></textarea
+        >
+      </div>
+      <div class="col-2">
+        <div class="d-flex align-items-center justify-content-center">
+          <input type="hidden" name="_method" value="PATCH" />
+          <input type="hidden" name="commentId" value="<%= comment.id %>" />
+          <input
+            type="hidden"
+            name="csrfToken"
+            value="<%= csrf.createToken() %>"
+          />
+          <button class="mx-1 icon-operation" type="submit">
+            <i class="fas fa-pen fa-xs"></i>
+          </button>
+          <button
+            class="mx-1 icon-operation"
+            type="button"
+            data-toggle="modal"
+            data-target="#modal-deleteChildren-<%= comment.id %>"
+          >
+            <i class="fas fa-trash fa-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr />
+  <%- include("./deleteComment.modal.ejs", {comment}) %> <% })} %>
+
+  <form action="" method="post">
+    <div class="row align-items-center">
+      <div class="col-11">
+        <textarea
+          name="content"
+          cols="30"
+          rows="1"
+          placeholder="Content..."
+          class="form-control"
+          style="resize: none"
+        ></textarea>
+        <% if(errorsValidate['content']){ %>
+        <span class="text-danger"> <%= errorsValidate['content'] %> </span>
+        <% } %>
+      </div>
+      <div class="col-1">
+        <input type="hidden" name="_method" value="POST" />
+        <input
+          type="hidden"
+          name="csrfToken"
+          value="<%= csrf.createToken() %>"
+        />
+        <div class="row justify-content-center">
+          <button class="mx-1 icon-operation" type="submit">
+            <i class="fas fa-angle-right fa-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

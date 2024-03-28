@@ -1,0 +1,42 @@
+<% if(error?.length) { %>
+<input type="hidden" disabled class="toastMessageError" value="<%= error %>" />
+<% } %> <% if(success?.length) { %>
+<input
+  type="hidden"
+  disabled
+  class="toastMessageSuccess"
+  value="<%= success %>"
+/>
+<% } %>
+
+<%- include("../parts/breadcrumb") %>
+
+<div class="card py-3 px-3 mx-2">
+  <table class="table table-bordered mb-3">
+    <thead>
+      <tr>
+        <th>Date Learn</th>
+        <th>Operation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if(classObj.Teacher_Calendars && classObj.Teacher_Calendars.length) {
+      classObj.Teacher_Calendars.forEach(TeacherCalendar => {%>
+      <tr>
+        <td>
+          <%= moment(TeacherCalendar.scheduleDate).format("DD/MM/YYYY") %>
+        </td>
+        <td class="d-flex align-items-center justify-content-center">
+          <a
+            href="<%= req.originalUrl %><%= REDIRECT_PATH.ADMIN.CALENDARS_CLASS %>/<%= TeacherCalendar.id %>"
+            class="icon-operation mx-1"
+          >
+            <i class="far fa-calendar-alt"></i>
+          </a>
+        </td>
+      </tr>
+      <% })} %>
+    </tbody>
+  </table>
+</div>
+</div>

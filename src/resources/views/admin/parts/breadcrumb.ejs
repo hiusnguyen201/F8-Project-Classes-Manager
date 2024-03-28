@@ -1,0 +1,20 @@
+<div class="card py-1 mx-2">
+  <div class="row align-items-center">
+    <div class="col-xs-12 col-md-5 col-lg-5">
+      <h3 class="mb-0 px-3"><%= title %></h3>
+    </div>
+    <div class="col-xs-12 col-md-7 col-lg-7">
+      <ol class="breadcrumb float-sm-right mb-0">
+        <% const items = breadcrumb?.items %> <% const paths = breadcrumb?.paths
+        %> <% if(items && items.length) {for(let i = 0; i < items.length;
+        i++){%> <% if(i == items.length-1) {%>
+        <li class="breadcrumb-item active"><%= items[i] %></li>
+        <% } else { %>
+        <li class="breadcrumb-item">
+          <a href="<%= paths[i] %>"><%= items[i] %></a>
+        </li>
+        <% }}} %>
+      </ol>
+    </div>
+  </div>
+</div>
