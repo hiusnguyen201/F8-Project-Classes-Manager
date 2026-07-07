@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/ahai/.claude/skills/openwiki-docs/references/**)",
+      "Bash(rg --files -g '*.js' -g '*.ts' app)",
+      "Bash(rg --files -g '*.js' -g '*.ts')",
+      "Bash(rg --files)",
+      "Bash(rg --files -g '!node_modules' -g '!openwiki' -g '!.git' .)",
+      "Bash(grep -n \"//\" src/app.js)"
+    ]
+  }
+}
